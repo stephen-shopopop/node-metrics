@@ -1,0 +1,42 @@
+{
+	"recommendations": [
+		"nicoespeon.abracadabra",
+		// Code quality
+		"aaron-bond.better-comments",
+		"kisstkondoros.vscode-codemetrics",
+		"SonarSource.sonarlint-vscode",
+		"streetsidesoftware.code-spell-checker",
+		// Docker
+		"ms-vscode-remote.remote-containers",
+		"ms-azuretools.vscode-docker",
+		// Markdown
+		"DavidAnson.vscode-markdownlint",
+		"yzhang.markdown-all-in-one",
+		"bierner.markdown-mermaid",
+		// Github
+		"github.vscode-pull-request-github",
+		"vivaxy.vscode-conventional-commits",
+		"eamodio.gitlens",
+		"usernamehw.errorlens",
+		"github.vscode-github-actions",
+		// Database
+    "cweijan.dbclient-jdbc",
+		// Theme
+		"chadalen.vscode-jetbrains-icon-theme",
+		"qvist.jetbrains-new-ui-dark-theme",
+		// Tools
+		"mutantdino.resourcemonitor",
+		"fabiospampinato.vscode-open-in-github",
+		"antfu.open-in-github-button",
+		"quicktype.quicktype",
+		"gruntfuggly.todo-tree",
+		"antfu.array-index-inlay",
+		// Env file
+		"mikestead.dotenv",
+		// For me
+		"ms-ceintl.vscode-language-pack-fr",
+		// Formating/lint
+		"biomejs.biome",
+		"esbenp.prettier-vscode",
+	]
+}

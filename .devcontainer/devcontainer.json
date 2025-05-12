@@ -1,0 +1,84 @@
+{
+  "name": "node 22",
+  "image": "mcr.microsoft.com/devcontainers/typescript-node:1-22-bullseye",
+  // Configure tool-specific properties.
+  "customizations": {
+    // Configure properties specific to VS Code.
+    "vscode": {
+      // Set *default* container specific settings.json values on container create.
+      "settings": {
+        // Enables the project as a Deno project
+        "files.eol": "\n",
+        "files.insertFinalNewline": true,
+        "[javascript][typescript]": {
+          "editor.formatOnSave": true,
+          "editor.formatOnPaste": false, // work around https://github.com/simonhaenisch/prettier-plugin-organize-imports/issues/53
+          "editor.insertSpaces": true,
+          "editor.tabSize": 2,
+          "editor.detectIndentation": false,
+          "editor.defaultFormatter": "biomejs.biome"
+        },
+        "[json][[jsonc][yaml][typespec][markdown][css]": {
+          "editor.formatOnSave": true,
+          "editor.formatOnPaste": true,
+          "editor.insertSpaces": true,
+          "editor.tabSize": 2,
+          "editor.detectIndentation": false,
+          "editor.defaultFormatter": "esbenp.prettier-vscode"
+        },
+        "prettier.enable": false,
+        "editor.codeActionsOnSave": {
+          "source.organizeImports.biome": "explicit",
+          "quickfix.biome": "explicit"
+        },
+        "editor.fontFamily": "Jetbrains Mono, Monaco, 'Courier New', monospace",
+        "editor.fontSize": 13,
+        "editor.lineHeight": 1.4,
+        "errorLens.gutterIconsEnabled": true,
+        "errorLens.gutterIconSet": "borderless",
+        "errorLens.followCursor": "activeLine",
+        "editor.acceptSuggestionOnEnter": "on",
+        "[json]": {
+          "editor.defaultFormatter": "vscode.json-language-features"
+        }
+      },
+
+      // Add the IDs of extensions you want installed when the container is created.
+      "extensions": [
+        "nicoespeon.abracadabra",
+        // Code quality
+        "aaron-bond.better-comments",
+        "kisstkondoros.vscode-codemetrics",
+        "SonarSource.sonarlint-vscode",
+        "streetsidesoftware.code-spell-checker",
+        // Markdown
+        "DavidAnson.vscode-markdownlint",
+        "yzhang.markdown-all-in-one",
+        "bierner.markdown-mermaid",
+        // Github
+        "github.vscode-pull-request-github",
+        "vivaxy.vscode-conventional-commits",
+        "eamodio.gitlens",
+        "usernamehw.errorlens",
+        "github.vscode-github-actions",
+        // Theme
+        "chadalen.vscode-jetbrains-icon-theme",
+        "qvist.jetbrains-new-ui-dark-theme",
+        // Tools
+        "mutantdino.resourcemonitor",
+        "fabiospampinato.vscode-open-in-github",
+        "antfu.open-in-github-button",
+        "quicktype.quicktype",
+        "gruntfuggly.todo-tree",
+        "antfu.array-index-inlay",
+        // Env file
+        "mikestead.dotenv",
+        // For me
+        "ms-ceintl.vscode-language-pack-fr",
+        // Formating/lint
+        "biomejs.biome",
+        "esbenp.prettier-vscode"
+      ]
+    }
+  }
+}

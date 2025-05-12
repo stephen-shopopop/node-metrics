@@ -1,0 +1,39 @@
+{
+	"files.eol": "\n",
+	"files.insertFinalNewline": true,
+	"[javascript][typescript]": {
+		"editor.formatOnSave": true,
+		"editor.formatOnPaste": false, // work around https://github.com/simonhaenisch/prettier-plugin-organize-imports/issues/53
+		"editor.insertSpaces": true,
+		"editor.tabSize": 2,
+		"editor.detectIndentation": false,
+		"editor.defaultFormatter": "biomejs.biome"
+	},
+	"[json][[jsonc][yaml][typespec][markdown][css]": {
+		"editor.formatOnSave": true,
+		"editor.formatOnPaste": true,
+		"editor.insertSpaces": true,
+		"editor.tabSize": 2,
+		"editor.detectIndentation": false,
+		"editor.defaultFormatter": "esbenp.prettier-vscode"
+	},
+	"prettier.enable": false,
+	"editor.codeActionsOnSave": {
+		"source.organizeImports.biome": "explicit",
+		"quickfix.biome": "explicit"
+	},
+  "editor.fontFamily": "Jetbrains Mono, Monaco, 'Courier New', monospace",
+  "editor.fontSize": 13,
+  "editor.lineHeight": 1.4,
+	"errorLens.gutterIconsEnabled": true,
+	"errorLens.gutterIconSet": "borderless",
+	"errorLens.followCursor": "activeLine",
+	"editor.acceptSuggestionOnEnter": "on",
+	"typescript.tsdk": "node_modules/typescript/lib",
+	"[json]": {
+		"editor.defaultFormatter": "vscode.json-language-features"
+	},
+  "[typescript]": {
+		"editor.defaultFormatter": "biomejs.biome"
+	}
+}

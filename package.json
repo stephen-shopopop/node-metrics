@@ -1,0 +1,59 @@
+{
+  "$schema": "https://json.schemastore.org/package.json",
+  "name": "@shopopop/node-metrics",
+  "description": "node:metrics",
+  "version": "0.1.0",
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.cts",
+  "exports": {
+    "require": {
+      "types": "./dist/index.d.cts",
+      "default": "./dist/index.cjs"
+    },
+    "import": {
+      "types": "./dist/index.d.mts",
+      "default": "./dist/index.mjs"
+    }
+  },
+  "private": false,
+  "scripts": {
+    "test": "tsc --pretty --noEmit && npx tsx ./bin/test-runner.js **/**/*.test.ts **/*.test.js -C",
+    "build": "pkgroll --clean-dist",
+    "lint": "biome lint .",
+    "lint:fix": "biome lint --write .",
+    "format": "biome format --write .",
+    "check": "tsc --pretty --noEmit && npm run lint",
+    "clean": "rm -rf ./dist",
+    "maintenance": "npm run clean & rm -rf ./node_modules && npm cache clean --force",
+    "deps:update": "npx taze",
+    "deps:unused": "npx knip",
+    "tarball:check": "npm pack --dry-run",
+    "publish:dry-run": "npm publish --dry-run",
+    "prepack": "npm run build"
+  },
+  "author": "Stephen Deletang <stephen-shopopop@shopopop.com>",
+  "license": "ISC",
+  "devDependencies": {
+    "@biomejs/biome": "1.9.4",
+    "@types/node": "^22.13.11",
+    "pkgroll": "^2.11.2",
+    "tsx": "^4.19.2",
+    "typescript": "^5.7.3"
+  },
+  "simple-git-hooks": {
+    "pre-commit": "npm run check",
+    "commit-msg": "npx commitlint --edit $1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Shopopop/node-metrics"
+  },
+  "dependencies": {
+    "@reporters/github": "^1.7.2"
+  },
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com/"
+  }
+}
