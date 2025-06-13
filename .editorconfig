@@ -1,0 +1,39 @@
+root = true
+
+[*]
+charset = utf-8
+insert_final_newline = true
+trim_trailing_whitespace = true
+
+[*.json]
+indent_style = space
+indent_size = 2
+
+[*.md]
+indent_style = space
+indent_size = 2
+max_line_length = 140
+
+[{*.py, *.pyi}]
+indent_style = space
+indent_size = 4
+max_line_length = 120
+
+[*.sh]
+indent_style = space
+# Note: indent_size isn't applied for Bash scripts in PyCharm for some reason. Pycharm is using indentation size 2.
+indent_size = 2
+end_of_line = lf
+
+[*.xml]
+indent_style = space
+indent_size = 4
+
+[{*.yml, *.yaml}]
+indent_style = space
+indent_size = 2
+max_line_length = 120
+
+[*.toml]
+indent_style = space
+indent_size = 4

@@ -38,5 +38,9 @@
 		// Formating/lint
 		"biomejs.biome",
 		"esbenp.prettier-vscode",
+    // Make
+    "ms-vscode.makefile-tools",
+    // Toml
+    "amasfe.even-better-toml"
 	]
 }

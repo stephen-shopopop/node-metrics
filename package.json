@@ -22,8 +22,7 @@
     "test": "tsc --pretty --noEmit && npx tsx ./bin/test-runner.js **/*.test.ts -C",
     "build": "pkgroll --clean-dist",
     "lint": "biome lint .",
-    "lint:fix": "biome lint --write .",
-    "format": "biome format --write .",
+    "format": "biome lint --write . && biome format --write .",
     "check": "tsc --pretty --noEmit && npm run lint",
     "clean": "rm -rf ./dist",
     "maintenance": "npm run clean & rm -rf ./node_modules && npm cache clean --force",
@@ -37,9 +36,9 @@
   "license": "ISC",
   "devDependencies": {
     "@biomejs/biome": "1.9.4",
-    "@types/node": "^22.15.18",
+    "@types/node": "^22.15.31",
     "pkgroll": "^2.12.2",
-    "tsx": "^4.19.4",
+    "tsx": "^4.20.3",
     "typescript": "^5.8.3"
   },
   "simple-git-hooks": {
@@ -48,7 +47,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/Shopopop/node-metrics"
+    "url": "https://github.com/stephen-shopopop/node-metrics"
   },
   "dependencies": {
     "@reporters/github": "^1.7.2"

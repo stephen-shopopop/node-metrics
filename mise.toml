@@ -1,0 +1,33 @@
+min_version = "2025.5.16"
+
+[env]
+NODE_ENV = "{{ env.NODE_ENV | default(value='development') }}"
+
+# Use the project name derived from the current directory
+PROJECT_NAME = "{{ config_root | basename }}"
+
+[hooks]
+enter = 'mise i -q'
+
+[tools] # Use > mise use
+actionlint = "latest"
+node = '24'
+
+[tasks.install]
+description = 'Install the project dependencies'
+alias = 'i'
+run = 'npx simple-git-hooks && npm install'
+
+[tasks.check]
+description = "Linter for GithubAction files"
+run = 'actionlint && npm run check'
+
+[tasks.maintenance]
+description = 'Maintenance project'
+run = 'npm run maintenance && mise uninstall --all'
+
+[tasks.info]
+description = "Print project information"
+run = '''
+echo "Project: $PROJECT_NAME"
+'''

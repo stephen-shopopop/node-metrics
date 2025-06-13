@@ -1,39 +1,55 @@
 {
-	"files.eol": "\n",
-	"files.insertFinalNewline": true,
-	"[javascript][typescript]": {
-		"editor.formatOnSave": true,
-		"editor.formatOnPaste": false, // work around https://github.com/simonhaenisch/prettier-plugin-organize-imports/issues/53
-		"editor.insertSpaces": true,
-		"editor.tabSize": 2,
-		"editor.detectIndentation": false,
-		"editor.defaultFormatter": "biomejs.biome"
-	},
-	"[json][[jsonc][yaml][typespec][markdown][css]": {
-		"editor.formatOnSave": true,
-		"editor.formatOnPaste": true,
-		"editor.insertSpaces": true,
-		"editor.tabSize": 2,
-		"editor.detectIndentation": false,
-		"editor.defaultFormatter": "esbenp.prettier-vscode"
-	},
-	"prettier.enable": false,
-	"editor.codeActionsOnSave": {
-		"source.organizeImports.biome": "explicit",
-		"quickfix.biome": "explicit"
-	},
+  "files.eol": "\n",
+  "files.insertFinalNewline": true,
+  "git.ignoreRebaseWarning": true,
+  "git.replaceTagsWhenPull": true,
+  "makefile.configureOnOpen": true,
+  "[javascript][typescript]": {
+    "editor.formatOnSave": true,
+    "editor.formatOnPaste": false, // work around https://github.com/simonhaenisch/prettier-plugin-organize-imports/issues/53
+    "editor.insertSpaces": true,
+    "editor.tabSize": 2,
+    "editor.detectIndentation": false,
+    "editor.defaultFormatter": "biomejs.biome"
+  },
+  "[markdown]": {
+    "editor.formatOnSave": true,
+    "editor.formatOnPaste": true,
+    "editor.insertSpaces": true,
+    "editor.tabSize": 2,
+    "editor.detectIndentation": false,
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[yaml]": {
+    "editor.formatOnSave": true,
+    "editor.formatOnPaste": true,
+    "editor.insertSpaces": true,
+    "editor.tabSize": 2,
+    "editor.detectIndentation": false,
+    "editor.defaultFormatter": "redhat.vscode-yaml"
+  },
+  "prettier.enable": false,
+  "editor.codeActionsOnSave": {
+    "source.organizeImports.biome": "explicit",
+    "quickfix.biome": "explicit"
+  },
   "editor.fontFamily": "Jetbrains Mono, Monaco, 'Courier New', monospace",
   "editor.fontSize": 13,
   "editor.lineHeight": 1.4,
-	"errorLens.gutterIconsEnabled": true,
-	"errorLens.gutterIconSet": "borderless",
-	"errorLens.followCursor": "activeLine",
-	"editor.acceptSuggestionOnEnter": "on",
-	"typescript.tsdk": "node_modules/typescript/lib",
-	"[json]": {
-		"editor.defaultFormatter": "vscode.json-language-features"
-	},
+  "errorLens.gutterIconsEnabled": true,
+  "errorLens.gutterIconSet": "borderless",
+  "errorLens.followCursor": "activeLine",
+  "editor.acceptSuggestionOnEnter": "on",
+  "typescript.tsdk": "node_modules/typescript/lib",
+  "[json][jsonc]": {
+    "editor.defaultFormatter": "vscode.json-language-features",
+    "editor.tabSize": 2,
+    "editor.formatOnPaste": true,
+    "editor.formatOnSave": true,
+    "editor.insertSpaces": true,
+    "editor.detectIndentation": true
+  },
   "[typescript]": {
-		"editor.defaultFormatter": "biomejs.biome"
-	}
+    "editor.defaultFormatter": "biomejs.biome"
+  }
 }
