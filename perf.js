@@ -1,4 +1,3 @@
-import crypto from 'node:crypto';
 import http from 'node:http';
 import { performance } from 'node:perf_hooks';
 import { monitorEventLoopDelay } from 'node:perf_hooks';
@@ -14,6 +13,7 @@ function underPressure() {
   const resolution = 10;
 
   let heapUsed = 0;
+  let heapTotal = 0;
   let rssBytes = 0;
   let eventLoopUtilized = 0;
   let eventLoopDelay = 0;
@@ -52,6 +52,7 @@ function underPressure() {
     const mem = process.memoryUsage();
 
     heapUsed = mem.heapUsed;
+    heapTotal = mem.heapTotal;
     rssBytes = mem.rss;
 
     updateEventLoopDelay();
@@ -59,14 +60,18 @@ function underPressure() {
   }
 
   function beginMemoryUsageUpdate() {
-    console.table([
-      heapUsed / (1024 * 1024),
-      rssBytes / (1024 * 1024),
+    console.table({
+      heap_usage: heapUsed,
+      heap_total_usage: heapTotal,
+      rssBytes: rssBytes,
+      heap_usage_MB: heapUsed / (1024 * 1024),
+      heap_total_usage_MB: heapTotal / (1024 * 1024),
+      rssBytes_MB: rssBytes / (1024 * 1024),
       eventLoopUtilized,
-      eventLoopDelay,
-      'under pressure',
-      isUnderPressure()
-    ]);
+      eventLoopDelay: eventLoopDelay,
+      isUnderPressure: isUnderPressure(),
+      startInSec: Math.round(Date.now() / 1000 - process.uptime())
+    });
 
     updateMemoryUsage();
     timer.refresh();
@@ -99,10 +104,19 @@ function underPressure() {
 
 underPressure();
 
+function blockLoop() {
+  let obj = { a: 1 };
+  const niter = 20;
+  for (let i = 0; i < niter; i++) {
+    obj = { obj1: obj, obj2: obj }; // Object grows exponentially
+  }
+
+  JSON.stringify(obj); // Blocking here
+}
+
 const server = http.createServer((req, res) => {
-  for (let index = 0; index < 10000000; index++) {}
-  const rand = crypto.randomBytes(1024 * 1024 * 10);
-  console.log(rand);
+  blockLoop();
+
   res.end('test');
 });
 server.on('clientError', (err, socket) => {

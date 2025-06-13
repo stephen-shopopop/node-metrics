@@ -19,7 +19,7 @@
   },
   "private": false,
   "scripts": {
-    "test": "tsc --pretty --noEmit && npx tsx ./bin/test-runner.js **/**/*.test.ts **/*.test.js -C",
+    "test": "tsc --pretty --noEmit && npx tsx ./bin/test-runner.js **/*.test.ts -C",
     "build": "pkgroll --clean-dist",
     "lint": "biome lint .",
     "lint:fix": "biome lint --write .",
@@ -37,10 +37,10 @@
   "license": "ISC",
   "devDependencies": {
     "@biomejs/biome": "1.9.4",
-    "@types/node": "^22.13.11",
-    "pkgroll": "^2.11.2",
-    "tsx": "^4.19.2",
-    "typescript": "^5.7.3"
+    "@types/node": "^22.15.18",
+    "pkgroll": "^2.12.2",
+    "tsx": "^4.19.4",
+    "typescript": "^5.8.3"
   },
   "simple-git-hooks": {
     "pre-commit": "npm run check",

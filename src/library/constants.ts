@@ -1,0 +1,3 @@
+export const DEFAULT_RESOLUTION = 10;
+
+export const DEFAULT_SAMPLE_INTERVAL = 1e3;
