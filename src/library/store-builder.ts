@@ -1,35 +1,31 @@
-import type { MetricsValues } from './definitions.js';
-
 /**
  * A generic builder class for managing and storing metric values.
  *
- * The `MetricsBuilder` class provides a type-safe way to set, get, and serialize metrics.
- * It uses a generic type parameter `T` to define the shape of the metrics object.
- *
- * @typeParam T - The type of the metrics object. Defaults to `MetricsValues`.
+ * The `StoreBuilder` class provides a type-safe way to set, get, and serialize data.
+ * It uses a generic type parameter `T` to define the shape of the store object.
  *
  * ## Example
  * ```ts
  * import assert from 'node:assert';
  *
- * const metrics = new MetricsBuilder();
+ * const metrics = new StoreBuilder();
  * metrics.set('heapUsed', 12);
  * assert.equal(metrics.get('heapUsed'), 12);
  * assert.deepStrictEqual(metrics.toJson(), { heapUsed: 12 });
  * ```
  */
-export class MetricsBuilder<T extends object = MetricsValues> {
+export class StoreBuilder<T extends object = { [key: PropertyKey]: unknown }> {
   #dictionary = new Map();
 
   /**
-   * Set metric value
+   * Set store value
    *
    * # Example
    *
    * ```ts
    * import assert from 'node:assert';
    *
-   * const metrics = new MetricsBuilder();
+   * const metrics = new StoreBuilder();
    * metrics.set('heapUsed', 12);
    *
    * assert.equal(metrics.get('heapUsed'), 12 );
@@ -42,14 +38,14 @@ export class MetricsBuilder<T extends object = MetricsValues> {
   }
 
   /**
-   * Get metric value
+   * Get store value
    *
    * # Example
    *
    * ```ts
    * import assert from 'node:assert';
    *
-   * const metrics = new MetricsBuilder();
+   * const metrics = new StoreBuilder();
    * metrics.set('heapUsed', 12);
    *
    * assert.equal(metrics.get('heapUsed'), 12 );
@@ -60,14 +56,14 @@ export class MetricsBuilder<T extends object = MetricsValues> {
   }
 
   /**
-   * Convert metrics to json
+   * Convert store to json
    *
    * # Example
    *
    * ```ts
    * import assert from 'node:assert';
    *
-   * const metrics = new MetricsBuilder();
+   * const metrics = new StoreBuilder();
    * metrics.set('heapUsed', 12);
    *
    * assert.deepStrictEqual(metrics.toJson(), { heapUsed: 12 } );

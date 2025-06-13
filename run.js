@@ -3,8 +3,8 @@ import { setTimeout } from 'node:timers/promises';
 
 const metrics = Metrics.start({});
 
-console.log(metrics.measures());
+console.log(metrics.values());
 
 await setTimeout(3000);
 
-console.log(metrics.measures());
+console.log(metrics.values());

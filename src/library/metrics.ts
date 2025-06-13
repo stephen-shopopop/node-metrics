@@ -1,5 +1,5 @@
-import type { Options, Plugin } from './definitions.js';
-import { MetricsBuilder } from './metrics-builder.js';
+import type { MetricsValues, Options, Plugin } from './definitions.js';
+import { StoreBuilder } from './store-builder.js';
 import { MemoryUsagePlugin } from './plugins/memory-usage.js';
 import { EventLoopUtilizationPlugin } from './plugins/event-loop-utilization.js';
 import { MetricsMediator } from './metrics-mediator.js';
@@ -45,13 +45,13 @@ const getSampleInterval = (
  *
  * @public
  */
-export class Metrics {
+export class Metrics<T extends object = MetricsValues> {
   static #instance: Metrics;
   readonly #resolution: number;
   readonly #sampleInterval: number;
   #timer: NodeJS.Timeout | undefined;
   #metricsMediator = new MetricsMediator();
-  #metrics = new MetricsBuilder();
+  #metrics = new StoreBuilder<T>();
 
   // Prevent new with private constructor
   private constructor(private readonly options: Partial<Options>) {
@@ -68,16 +68,16 @@ export class Metrics {
   }
 
   /**
-   * Initializes and returns the singleton instance of the {@link Metrics} class.
-   * If the instance does not exist, it creates a new one with the provided options.
+   * Initializes and returns a singleton instance of the `Metrics` class.
+   * If an instance does not already exist, it creates one using the provided options.
    * Subsequent calls will return the existing instance.
    *
-   * @param options - Partial configuration options for initializing the Metrics instance.
-   * @returns The singleton {@link Metrics} instance.
+   * @param options - Partial configuration options for initializing the `Metrics` instance.
+   * @returns The singleton instance of `Metrics<MetricsValues>`.
    */
-  static start(options: Readonly<Partial<Options>>): Metrics {
+  static start(options: Readonly<Partial<Options>>): Metrics<MetricsValues> {
     if (!Metrics.#instance) {
-      Metrics.#instance = new Metrics(options);
+      Metrics.#instance = new Metrics<MetricsValues>(options);
     }
 
     return Metrics.#instance;
@@ -116,7 +116,7 @@ export class Metrics {
    *
    * @returns {object} The metrics data in JSON format.
    */
-  measures() {
+  values() {
     return Metrics.#instance.#metrics.toJson();
   }
 }

@@ -1,19 +1,19 @@
 import test, { describe, type TestContext } from 'node:test';
-import { MetricsBuilder } from '../src/library/metrics-builder.js';
+import { StoreBuilder } from '../src/library/store-builder.js';
 
-describe('Metrics builder', () => {
-  test('when instance of MetricsBuilder, then return object empty.', (t: TestContext) => {
+describe('Store builder', () => {
+  test('when instance of StoreBuilder, then return object empty.', (t: TestContext) => {
     // Arrange
-    const metrics = new MetricsBuilder();
+    const metrics = new StoreBuilder();
 
     // Act and Assert
     t.assert.deepStrictEqual(metrics.toJson(), {});
-    t.assert.ok(metrics instanceof MetricsBuilder);
+    t.assert.ok(metrics instanceof StoreBuilder);
   });
 
   test('when get eventLoopDelay, then return undefined.', (t: TestContext) => {
     // Arrange
-    const metrics = new MetricsBuilder();
+    const metrics = new StoreBuilder();
 
     // Act
     const eventLoopDelay = metrics.get('eventLoopDelay');
@@ -25,7 +25,7 @@ describe('Metrics builder', () => {
   test('when set eventLoopDelay, then return eventLoopDelay value.', (t: TestContext) => {
     // Arrange
     const eventLoopDelayValue = 12;
-    const metrics = new MetricsBuilder();
+    const metrics = new StoreBuilder();
 
     // Act
     const eventLoopDelay = metrics.set('eventLoopDelay', eventLoopDelayValue).get('eventLoopDelay');
@@ -34,10 +34,10 @@ describe('Metrics builder', () => {
     t.assert.strictEqual(eventLoopDelay, eventLoopDelayValue);
   });
 
-  test('when use set, then return class MetricsBuilder.', (t: TestContext) => {
+  test('when use set, then return class StoreBuilder.', (t: TestContext) => {
     // Arrange
     const eventLoopDelayValue = 12;
-    const metrics = new MetricsBuilder();
+    const metrics = new StoreBuilder();
 
     // Act
     metrics.set('eventLoopDelay', eventLoopDelayValue);
