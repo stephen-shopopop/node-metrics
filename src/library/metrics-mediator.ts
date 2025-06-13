@@ -1,7 +1,7 @@
 import type { Context, Plugin } from './definitions.js';
 
 interface Capture {
-  plugins: Plugin[];
+  plugins: Map<string, Plugin>;
   capture(context: Context): void;
 }
 
@@ -23,15 +23,25 @@ interface Capture {
  * @implements {Capture}
  */
 export class MetricsMediator implements Capture {
-  plugins: Plugin[] = [];
+  plugins = new Map<string, Plugin>();
 
   /**
    * Adds a new plugin to the list of registered plugins.
    *
    * @param plugin - The plugin instance to be added.
    */
-  add(plugin: Plugin) {
-    this.plugins.push(plugin);
+  add(plugin: Plugin): void {
+    if (!plugin.name) {
+      throw new Error('Plugin must have name properties');
+    }
+
+    if (this.plugins.has(plugin.name)) {
+      throw new Error(`Plugin ${plugin.name} is already registered`);
+    }
+
+    if (typeof plugin.capture === 'function') {
+      this.plugins.set(plugin.name, plugin);
+    }
   }
 
   /**
@@ -40,6 +50,6 @@ export class MetricsMediator implements Capture {
    * @param context - The context object containing relevant data to be captured by each plugin.
    */
   capture(context: Context): void {
-    this.plugins.map((plugin) => plugin.capture(context));
+    [...this.plugins].flatMap(([, plugin]) => [plugin]).map((plugin) => plugin.capture(context));
   }
 }

@@ -13,6 +13,7 @@ import { DEFAULT_RESOLUTION } from '../constants.js';
  */
 export class EventLoopDelayPlugin implements Plugin {
   #histogram: IntervalHistogram;
+  name = EventLoopDelayPlugin.name;
 
   /**
    * Creates an instance of the class and initializes the event loop delay histogram.

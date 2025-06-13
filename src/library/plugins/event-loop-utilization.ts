@@ -10,10 +10,11 @@ import type { Context, Plugin } from '../definitions.js';
  *
  */
 export class EventLoopUtilizationPlugin implements Plugin {
-  elu: EventLoopUtilization;
+  #elu: EventLoopUtilization;
+  name = EventLoopUtilizationPlugin.name;
 
   constructor() {
-    this.elu = performance.eventLoopUtilization();
+    this.#elu = performance.eventLoopUtilization();
   }
 
   /**
@@ -27,7 +28,7 @@ export class EventLoopUtilizationPlugin implements Plugin {
   capture(ctx: Context): void {
     ctx.set(
       'eventLoopUtilized',
-      this.elu ? performance.eventLoopUtilization(this.elu).utilization : 0
+      this.#elu ? performance.eventLoopUtilization(this.#elu).utilization : 0
     );
   }
 }

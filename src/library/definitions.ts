@@ -48,6 +48,7 @@ export type PluginCapture<T> = (value: T) => void;
  * @property capture - A function or object responsible for capturing data, parameterized by a `StoreBuilder` of type `T`.
  */
 export interface Plugin<T extends object = MetricsValues> {
+  name: Readonly<string>;
   capture: PluginCapture<StoreBuilder<T>>;
 }
 

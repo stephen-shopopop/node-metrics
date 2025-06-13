@@ -9,6 +9,8 @@ import type { Context, Plugin } from '../definitions.js';
  * @implements {Plugin}
  */
 export class MemoryUsagePlugin implements Plugin {
+  name = MemoryUsagePlugin.name;
+
   /**
    * Captures the current Node.js process memory usage statistics and sets them in the provided context.
    *

@@ -3,6 +3,8 @@ import { StoreBuilder } from '../src/library/store-builder.js';
 
 describe('Store builder', () => {
   test('when instance of StoreBuilder, then return object empty.', (t: TestContext) => {
+    t.plan(2);
+
     // Arrange
     const metrics = new StoreBuilder();
 
@@ -12,6 +14,8 @@ describe('Store builder', () => {
   });
 
   test('when get key not in store, then return undefined.', (t: TestContext) => {
+    t.plan(1);
+
     // Arrange
     const metrics = new StoreBuilder();
 
@@ -23,6 +27,8 @@ describe('Store builder', () => {
   });
 
   test('when set new key in store, then return new key value.', (t: TestContext) => {
+    t.plan(1);
+
     // Arrange
     const eventLoopDelayValue = 12;
     const metrics = new StoreBuilder();
@@ -35,6 +41,8 @@ describe('Store builder', () => {
   });
 
   test('when use toJson(), then return values in json object.', (t: TestContext) => {
+    t.plan(1);
+
     // Arrange
     const eventLoopDelayValue = 12;
     const metrics = new StoreBuilder();
@@ -47,6 +55,8 @@ describe('Store builder', () => {
   });
 
   test('when use set, then return class StoreBuilder for chaining.', (t: TestContext) => {
+    t.plan(2);
+
     // Arrange
     const eventLoopDelayValue = 12;
     const metrics = new StoreBuilder();
