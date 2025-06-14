@@ -1,79 +1,90 @@
-// import { EventLoopDelayPlugin } from '../src/library/plugins/event-loop-delay.js';
-// import { monitorEventLoopDelay } from 'node:perf_hooks';
-// import { DEFAULT_RESOLUTION } from '../src/library/constants.js';
+import it, { beforeEach, describe, type TestContext } from 'node:test';
+import { EventLoopDelayPlugin } from '../src/library/plugins/event-loop-delay.js';
+import { StoreBuilder } from '../src/library/store-builder.js';
+import type { MetricsValues } from '../src/index.js';
+import { DEFAULT_RESOLUTION } from '../src/library/constants.js';
 
-// jest.mock('node:perf_hooks', () => {
-//   const histogramMock = {
-//     enable: jest.fn(),
-//     reset: jest.fn(),
-//     mean: 0
-//   };
-//   return {
-//     monitorEventLoopDelay: jest.fn(() => histogramMock)
-//   };
-// });
+describe('EventLoopDelayPlugin', () => {
+  let plugin: EventLoopDelayPlugin;
+  let ctx = new StoreBuilder<MetricsValues>();
 
-// describe('EventLoopDelayPlugin', () => {
-//   let plugin: EventLoopDelayPlugin;
-//   let ctx: { set: jest.Mock; get: jest.Mock };
-//   let histogramMock: any;
+  beforeEach(() => {
+    // Arrange for all tests
+    plugin = new EventLoopDelayPlugin();
+    ctx = new StoreBuilder<MetricsValues>();
+  });
 
-//   beforeEach(() => {
-//     (monitorEventLoopDelay as jest.Mock).mockClear();
-//     histogramMock = {
-//       enable: jest.fn(),
-//       reset: jest.fn(),
-//       mean: 0
-//     };
-//     (monitorEventLoopDelay as jest.Mock).mockReturnValue(histogramMock);
+  it('should have the correct name', (t: TestContext) => {
+    t.plan(1);
 
-//     ctx = {
-//       set: jest.fn(),
-//       get: jest.fn()
-//     };
-//     plugin = new EventLoopDelayPlugin();
-//   });
+    // Act && Assert
+    t.assert.equal(plugin.name, 'EventLoopDelayPlugin');
+  });
 
-//   it('should initialize with default resolution and enable histogram', () => {
-//     expect(monitorEventLoopDelay).toHaveBeenCalledWith({ resolution: DEFAULT_RESOLUTION });
-//     expect(histogramMock.enable).toHaveBeenCalled();
-//     expect(plugin.name).toBe('EventLoopDelayPlugin');
-//   });
+  it('should initialize with default resolution and enable histogram', (t: TestContext) => {
+    t.plan(2);
 
-//   it('should initialize with custom resolution', () => {
-//     const customResolution = 123;
-//     plugin = new EventLoopDelayPlugin(customResolution);
-//     expect(monitorEventLoopDelay).toHaveBeenCalledWith({ resolution: customResolution });
-//   });
+    // Arrange
+    const fakeHistogramMean = 5e6; // 5ms in ns
 
-//   it('should set eventLoopDelay to mean/resolution in ms minus resolution', () => {
-//     histogramMock.mean = 5e6; // 5 ms in ns
-//     ctx.get.mockReturnValue(0);
+    Reflect.set(plugin, 'histogram', {
+      reset: t.mock.fn(),
+      mean: fakeHistogramMean
+    });
 
-//     plugin.capture(ctx as any);
+    const call = t.mock.method(ctx, 'set');
 
-//     // (5e6 / 1e6) - DEFAULT_RESOLUTION = 5 - DEFAULT_RESOLUTION
-//     expect(ctx.set).toHaveBeenCalledWith('eventLoopDelay', Math.max(0, 5 - DEFAULT_RESOLUTION));
-//     expect(histogramMock.reset).toHaveBeenCalled();
-//   });
+    // Act
+    plugin.capture(ctx);
 
-//   it('should set eventLoopDelay to 0 if mean/resolution is less than resolution', () => {
-//     histogramMock.mean = 0.5e6; // 0.5 ms in ns
-//     ctx.get.mockReturnValue(0);
+    // Assert
+    t.assert.strictEqual(call.mock.callCount(), 1);
+    t.assert.deepStrictEqual(call.mock.calls.at(0)?.arguments, [
+      'eventLoopDelay',
+      Math.max(0, 5 - DEFAULT_RESOLUTION)
+    ]);
+  });
 
-//     plugin.capture(ctx as any);
+  it('should initialize with default resolution and enable histogram', (t: TestContext) => {
+    t.plan(1);
 
-//     expect(ctx.set).toHaveBeenCalledWith('eventLoopDelay', 0);
-//     expect(histogramMock.reset).toHaveBeenCalled();
-//   });
+    // Arrange
+    const fakeHistogramMean = 0.5e6; // 0.5 ms in ns
 
-//   it('should set eventLoopDelay to Infinity if computed value is NaN', () => {
-//     histogramMock.mean = Number.NaN;
-//     ctx.get.mockReturnValue(Number.NaN);
+    Reflect.set(plugin, 'histogram', {
+      reset: t.mock.fn(),
+      mean: fakeHistogramMean
+    });
 
-//     plugin.capture(ctx as any);
+    const call = t.mock.method(ctx, 'set');
 
-//     expect(ctx.set).toHaveBeenCalledWith('eventLoopDelay', Number.POSITIVE_INFINITY);
-//     expect(histogramMock.reset).toHaveBeenCalled();
-//   });
-// });
+    // Act
+    plugin.capture(ctx);
+
+    // Assert
+    t.assert.deepStrictEqual(call.mock.calls.at(0)?.arguments, ['eventLoopDelay', 0]);
+  });
+
+  it('should set eventLoopDelay to Infinity if computed value is NaN', (t: TestContext) => {
+    t.plan(1);
+
+    // Arrange
+    const fakeHistogramMean = Number.NaN;
+
+    Reflect.set(plugin, 'histogram', {
+      reset: t.mock.fn(),
+      mean: fakeHistogramMean
+    });
+
+    const call = t.mock.method(ctx, 'set');
+
+    // Act
+    plugin.capture(ctx);
+
+    // Assert
+    t.assert.deepStrictEqual(call.mock.calls.at(1)?.arguments, [
+      'eventLoopDelay',
+      Number.POSITIVE_INFINITY
+    ]);
+  });
+});
