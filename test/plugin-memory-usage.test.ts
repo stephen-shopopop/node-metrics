@@ -24,7 +24,13 @@ describe('MemoryUsagePlugin', () => {
     t.plan(5);
 
     // Arrange
-    const memoryUsageMock = t.mock.method(process, 'memoryUsage');
+    const fakeMemoryUsage = {
+      heapUsed: 12345,
+      heapTotal: 23456,
+      rss: 34567
+    };
+
+    const memoryUsageMock = t.mock.method(process, 'memoryUsage', () => fakeMemoryUsage);
 
     const call = t.mock.method(ctx, 'set');
 
@@ -34,8 +40,14 @@ describe('MemoryUsagePlugin', () => {
     // Assert
     t.assert.strictEqual(call.mock.callCount(), 3);
     t.assert.strictEqual(memoryUsageMock.mock.callCount(), 1);
-    t.assert.strictEqual(call.mock.calls.at(0)?.arguments.at(0), 'heapUsed');
-    t.assert.strictEqual(call.mock.calls.at(1)?.arguments.at(0), 'heapTotal');
-    t.assert.strictEqual(call.mock.calls.at(2)?.arguments.at(0), 'rssBytes');
+    t.assert.deepStrictEqual(call.mock.calls.at(0)?.arguments, [
+      'heapUsed',
+      fakeMemoryUsage.heapUsed
+    ]);
+    t.assert.deepStrictEqual(call.mock.calls.at(1)?.arguments, [
+      'heapTotal',
+      fakeMemoryUsage.heapTotal
+    ]);
+    t.assert.deepStrictEqual(call.mock.calls.at(2)?.arguments, ['rssBytes', fakeMemoryUsage.rss]);
   });
 });

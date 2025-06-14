@@ -13,7 +13,7 @@ import { DEFAULT_RESOLUTION, DEFAULT_SAMPLE_INTERVAL } from './constants.js';
  * @param sampleIntervalInMs - The default sample interval in milliseconds. Defaults to `DEFAULT_SAMPLE_INTERVAL` if not provided.
  * @returns The effective sample interval in milliseconds.
  */
-const getSampleInterval = (
+export const getSampleInterval = (
   resolution: number,
   sampleIntervalInMs = DEFAULT_SAMPLE_INTERVAL
 ): number => Math.max(resolution, sampleIntervalInMs);

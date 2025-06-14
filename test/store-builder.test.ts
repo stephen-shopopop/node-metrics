@@ -68,4 +68,66 @@ describe('Store builder', () => {
     t.assert.deepStrictEqual(metricsInstance, metrics);
     t.assert.ok(metricsInstance instanceof StoreBuilder);
   });
+
+  test('when set multiple keys, then toJson returns all key-value pairs.', (t: TestContext) => {
+    t.plan(1);
+
+    // Arrange
+    const metrics = new StoreBuilder();
+    metrics.set('heapUsed', 100).set('rss', 200);
+
+    // Act
+    const json = metrics.toJson();
+
+    // Assert
+    t.assert.deepStrictEqual(json, { heapUsed: 100, rss: 200 });
+  });
+
+  test('when set key twice, then get returns last value.', (t: TestContext) => {
+    t.plan(1);
+
+    // Arrange
+    const metrics = new StoreBuilder();
+    metrics.set('heapUsed', 100);
+    metrics.set('heapUsed', 300);
+
+    // Act
+    const value = metrics.get('heapUsed');
+
+    // Assert
+    t.assert.strictEqual(value, 300);
+  });
+
+  test('when toJson is called, returned object is frozen.', (t: TestContext) => {
+    t.plan(1);
+
+    // Arrange
+    const metrics = new StoreBuilder();
+    metrics.set('heapUsed', 123);
+
+    // Act
+    const json = metrics.toJson();
+
+    // Assert
+    t.assert.throws(() => {
+      // @ts-expect-error
+      json.heapUsed = 456;
+    });
+  });
+
+  test('when using generic type, then type safety is enforced.', (t: TestContext) => {
+    t.plan(2);
+
+    // Arrange
+    type Metrics = { foo: number; bar: string };
+    const metrics = new StoreBuilder<Metrics>();
+
+    // Act
+    metrics.set('foo', 42);
+    metrics.set('bar', 'baz');
+
+    // Assert
+    t.assert.strictEqual(metrics.get('foo'), 42);
+    t.assert.strictEqual(metrics.get('bar'), 'baz');
+  });
 });

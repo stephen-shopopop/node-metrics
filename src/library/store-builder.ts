@@ -69,7 +69,7 @@ export class StoreBuilder<T extends object = { [key: PropertyKey]: unknown }> {
    * assert.deepStrictEqual(metrics.toJson(), { heapUsed: 12 } );
    * ```
    */
-  toJson(): Readonly<T> {
-    return Object.freeze(Object.fromEntries(this.#dictionary)) as Readonly<T>;
+  toJson(): Readonly<Partial<T>> {
+    return Object.freeze(Object.fromEntries(this.#dictionary));
   }
 }

@@ -12,7 +12,7 @@ import { DEFAULT_RESOLUTION } from '../constants.js';
  * @implements {Plugin}
  */
 export class EventLoopDelayPlugin implements Plugin {
-  #histogram: IntervalHistogram;
+  private histogram: IntervalHistogram;
   name = EventLoopDelayPlugin.name;
 
   /**
@@ -22,8 +22,8 @@ export class EventLoopDelayPlugin implements Plugin {
    *                     Defaults to `DEFAULT_RESOLUTION` if not provided.
    */
   constructor(private readonly resolution = DEFAULT_RESOLUTION) {
-    this.#histogram = monitorEventLoopDelay({ resolution: this.resolution });
-    this.#histogram.enable();
+    this.histogram = monitorEventLoopDelay({ resolution: this.resolution });
+    this.histogram.enable();
   }
 
   /**
@@ -36,11 +36,11 @@ export class EventLoopDelayPlugin implements Plugin {
    * @param ctx - The context object where the event loop delay metric will be set.
    */
   capture(ctx: Context): void {
-    ctx.set('eventLoopDelay', Math.max(0, this.#histogram.mean / 1e6 - this.resolution));
+    ctx.set('eventLoopDelay', Math.max(0, this.histogram.mean / 1e6 - this.resolution));
 
     if (Number.isNaN(ctx.get('eventLoopDelay')))
       ctx.set('eventLoopDelay', Number.POSITIVE_INFINITY);
 
-    this.#histogram.reset();
+    this.histogram.reset();
   }
 }

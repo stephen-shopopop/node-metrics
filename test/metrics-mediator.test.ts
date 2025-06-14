@@ -1,4 +1,4 @@
-import test, { beforeEach, describe, type TestContext } from 'node:test';
+import test, { beforeEach, describe, mock, type TestContext } from 'node:test';
 import { MetricsMediator } from '../src/library/metrics-mediator.js';
 import type { MetricsValues, Plugin } from '../src/index.js';
 import { StoreBuilder } from '../src/library/store-builder.js';
@@ -9,21 +9,17 @@ describe('MetricsMediator', () => {
   let pluginB: Readonly<Plugin>;
   let context: StoreBuilder<MetricsValues>;
 
-  const nope = () => {
-    /** */
-  };
-
   beforeEach(() => {
     // Arrange for all tests
     mediator = new MetricsMediator();
     context = new StoreBuilder<MetricsValues>();
     pluginA = {
       name: 'pluginA',
-      capture: nope
+      capture: mock.fn()
     } as const;
     pluginB = {
       name: 'pluginB',
-      capture: nope
+      capture: mock.fn()
     } as const;
   });
 
@@ -42,7 +38,7 @@ describe('MetricsMediator', () => {
       t.plan(1);
 
       // Arrange
-      const badPlugin = { capture: nope } as unknown as Plugin;
+      const badPlugin = { capture: mock.fn() } as unknown as Plugin;
 
       // Act
       const addedPlugin = () => mediator.add(badPlugin);

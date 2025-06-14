@@ -1,6 +1,6 @@
 {
   "$schema": "https://json.schemastore.org/package.json",
-  "name": "@shopopop/node-metrics",
+  "name": "@stephen-shopopop/node-metrics",
   "description": "node:metrics",
   "version": "0.1.0",
   "type": "module",
@@ -30,7 +30,8 @@
     "deps:unused": "npx knip",
     "tarball:check": "npm pack --dry-run",
     "publish:dry-run": "npm publish --dry-run",
-    "prepack": "npm run build"
+    "prepack": "npm run build",
+    "docs": "npx typedoc --tsconfig tsconfig.json --excludePrivate --excludeProtected --excludeExternals --entryPointStrategy expand ./src"
   },
   "author": "Stephen Deletang <stephen-shopopop@shopopop.com>",
   "license": "ISC",
@@ -39,6 +40,7 @@
     "@types/node": "^24.0.1",
     "pkgroll": "^2.12.2",
     "tsx": "^4.20.3",
+    "typedoc": "^0.28.5",
     "typescript": "^5.8.3"
   },
   "simple-git-hooks": {
