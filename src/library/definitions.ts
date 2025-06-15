@@ -11,6 +11,15 @@ export type Options = {
   resolution: number;
 };
 
+/**
+ * Represents the set of property names for various Node.js process metrics.
+ *
+ * - `eventLoopDelay`: The delay experienced by the Node.js event loop.
+ * - `eventLoopUtilized`: The percentage of event loop utilization.
+ * - `heapUsed`: The amount of memory used by the V8 heap.
+ * - `heapTotal`: The total size of the V8 heap.
+ * - `rssBytes`: The resident set size, or total memory allocated for the process.
+ */
 type MetricProperties =
   | 'eventLoopDelay'
   | 'eventLoopUtilized'
@@ -22,15 +31,21 @@ type MetricProperties =
  * Represents a mapping of metric property names to their corresponding numeric values.
  * Each key is a property from `MetricProperties`, and the value is a number representing the metric's value.
  *
- * @example
+ * ## Example
+ *
+ * ```ts
  * const metrics: MetricsValues = {
- *   requests: 120,
- *   errors: 5,
- *   latency: 200
+ *   eventLoopDelay: 120,
+ *   'metric.delay': 5,
+ *   'metadata.healthCheck': 'OK'
  * };
+ * ```
  */
 export type MetricsValues = {
   [key in MetricProperties]: number;
+} & {
+  [key: `metric.${string}`]: number;
+  [key: `metadata.${string}`]: object | string;
 };
 
 /**
@@ -58,4 +73,4 @@ export interface Plugin<T extends object = MetricsValues> {
  * @template T - The type of the metrics values, defaults to `MetricsValues`.
  * @see StoreBuilder
  */
-export type Context<T extends object = MetricsValues> = StoreBuilder<T>;
+export type MetricsContext<T extends object = MetricsValues> = StoreBuilder<T>;

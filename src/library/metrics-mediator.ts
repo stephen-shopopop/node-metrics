@@ -1,8 +1,8 @@
-import type { Context, Plugin } from './definitions.js';
+import type { MetricsContext, Plugin } from './definitions.js';
 
 interface Capture {
   plugins: Map<string, Plugin>;
-  capture(context: Context): void;
+  capture(context: MetricsContext): void;
 }
 
 /**
@@ -49,7 +49,7 @@ export class MetricsMediator implements Capture {
    *
    * @param context - The context object containing relevant data to be captured by each plugin.
    */
-  capture(context: Context): void {
+  capture(context: MetricsContext): void {
     [...this.plugins].flatMap(([, plugin]) => [plugin]).map((plugin) => plugin.capture(context));
   }
 }

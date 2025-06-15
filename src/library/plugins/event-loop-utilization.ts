@@ -1,5 +1,5 @@
 import type { EventLoopUtilization } from 'node:perf_hooks';
-import type { Context, Plugin } from '../definitions.js';
+import type { MetricsContext, Plugin } from '../definitions.js';
 
 /**
  * A plugin that captures Node.js event loop utilization metrics.
@@ -25,7 +25,7 @@ export class EventLoopUtilizationPlugin implements Plugin {
    *              If `this.elu` is defined, it uses `performance.eventLoopUtilization(this.elu).utilization`;
    *              otherwise, it sets the value to 0.
    */
-  capture(ctx: Context): void {
+  capture(ctx: MetricsContext): void {
     ctx.set(
       'eventLoopUtilized',
       this.elu ? performance.eventLoopUtilization(this.elu).utilization : 0

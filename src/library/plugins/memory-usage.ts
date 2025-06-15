@@ -1,4 +1,4 @@
-import type { Context, Plugin } from '../definitions.js';
+import type { MetricsContext, Plugin } from '../definitions.js';
 
 /**
  * Plugin that captures and records Node.js process memory usage statistics.
@@ -19,7 +19,7 @@ export class MemoryUsagePlugin implements Plugin {
    *   - 'heapTotal': The total size of the V8 heap (in bytes).
    *   - 'rssBytes': The resident set size, total memory allocated for the process execution (in bytes).
    */
-  capture(ctx: Context): void {
+  capture(ctx: MetricsContext): void {
     const mem = process.memoryUsage();
 
     ctx.set('heapUsed', mem.heapUsed).set('heapTotal', mem.heapTotal).set('rssBytes', mem.rss);

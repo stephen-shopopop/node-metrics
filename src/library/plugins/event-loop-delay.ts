@@ -1,5 +1,5 @@
 import { monitorEventLoopDelay, type IntervalHistogram } from 'node:perf_hooks';
-import type { Context, Plugin } from '../definitions.js';
+import type { MetricsContext, Plugin } from '../definitions.js';
 import { DEFAULT_RESOLUTION } from '../constants.js';
 
 /**
@@ -35,7 +35,7 @@ export class EventLoopDelayPlugin implements Plugin {
    *
    * @param ctx - The context object where the event loop delay metric will be set.
    */
-  capture(ctx: Context): void {
+  capture(ctx: MetricsContext): void {
     ctx.set('eventLoopDelay', Math.max(0, this.histogram.mean / 1e6 - this.resolution));
 
     if (Number.isNaN(ctx.get('eventLoopDelay')))

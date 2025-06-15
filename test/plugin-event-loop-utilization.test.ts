@@ -1,11 +1,11 @@
 import it, { beforeEach, describe, type TestContext } from 'node:test';
 import { EventLoopUtilizationPlugin } from '../src/library/plugins/event-loop-utilization.js';
-import type { Context, MetricsValues } from '../src/library/definitions.js';
+import type { MetricsContext, MetricsValues } from '../src/library/definitions.js';
 import { StoreBuilder } from '../src/library/store-builder.js';
 
 describe('EventLoopUtilizationPlugin', () => {
   let plugin: EventLoopUtilizationPlugin;
-  let ctx: Context;
+  let ctx: MetricsContext;
 
   beforeEach(() => {
     // Arrange for all tests

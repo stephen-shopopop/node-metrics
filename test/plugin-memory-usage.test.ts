@@ -1,11 +1,11 @@
 import it, { beforeEach, describe, type TestContext } from 'node:test';
 import { MemoryUsagePlugin } from '../src/library/plugins/memory-usage.js';
-import type { Context, MetricsValues } from '../src/index.js';
+import type { MetricsContext, MetricsValues } from '../src/index.js';
 import { StoreBuilder } from '../src/library/store-builder.js';
 
 describe('MemoryUsagePlugin', () => {
   let plugin: MemoryUsagePlugin;
-  let ctx: Context;
+  let ctx: MetricsContext;
 
   beforeEach(() => {
     // Arrange for all tests

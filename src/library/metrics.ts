@@ -7,18 +7,6 @@ import { EventLoopDelayPlugin } from './plugins/event-loop-delay.js';
 import { DEFAULT_RESOLUTION, DEFAULT_SAMPLE_INTERVAL } from './constants.js';
 
 /**
- * Returns the greater value between the provided resolution and the sample interval in milliseconds.
- *
- * @param resolution - The minimum interval (in milliseconds) to use for sampling.
- * @param sampleIntervalInMs - The default sample interval in milliseconds. Defaults to `DEFAULT_SAMPLE_INTERVAL` if not provided.
- * @returns The effective sample interval in milliseconds.
- */
-export const getSampleInterval = (
-  resolution: number,
-  sampleIntervalInMs = DEFAULT_SAMPLE_INTERVAL
-): number => Math.max(resolution, sampleIntervalInMs);
-
-/**
  * Singleton class for collecting and managing application metrics.
  *
  * The `Metrics` class provides a centralized mechanism to register metric plugins,
@@ -56,7 +44,10 @@ export class Metrics<T extends object = MetricsValues> {
   // Prevent new with private constructor
   private constructor(private readonly options: Partial<Options>) {
     this.#resolution = this.options.resolution || DEFAULT_RESOLUTION;
-    this.#sampleInterval = getSampleInterval(this.#resolution, this.options.sampleIntervalInMs);
+    this.#sampleInterval = Math.max(
+      this.#resolution,
+      this.options.sampleIntervalInMs || DEFAULT_SAMPLE_INTERVAL
+    );
 
     // Default register
     this.register(new MemoryUsagePlugin());
@@ -112,11 +103,11 @@ export class Metrics<T extends object = MetricsValues> {
   }
 
   /**
-   * Returns the current set of metrics as a JSON object.
+   * Returns a partial object containing the current metric values.
    *
-   * @returns {object} The metrics data in JSON format.
+   * @returns {Partial<MetricsValues>} An object with the current metrics, possibly missing some properties.
    */
-  values() {
+  values(): Partial<MetricsValues> {
     return Metrics.#instance.#metrics.toJson();
   }
 }
