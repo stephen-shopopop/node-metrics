@@ -20,7 +20,7 @@ export type Options = {
  * - `heap_total_bytes`: The total size of the V8 heap.
  * - `rss_bytes`: The resident set size, or total memory allocated for the process.
  */
-type MetricProperties =
+export type MetricProperties =
   | 'event_loop_delay_milliseconds'
   | 'event_loop_utilized'
   | 'heap_used_bytes'
