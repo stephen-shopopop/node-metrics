@@ -10,8 +10,8 @@ const aggregateResources = (resources: string[]) => {
   const data: Record<string, number> = {};
 
   for (const resource of resources) {
-    if (Reflect.has(data, resource)) {
-      data[resource] = +1;
+    if (Reflect.has(data, resource) && typeof data[resource] === 'number') {
+      data[resource] += 1;
     } else {
       data[resource] = 1;
     }

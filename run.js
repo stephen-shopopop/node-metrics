@@ -20,32 +20,13 @@ function aggregateByObjectName(list) {
   return data;
 }
 
-function aggregateResource(resources) {
-  const data = {};
-
-  for (let i = 0; i < resources.length; i++) {
-    const resource = resources[i];
-
-    if (Object.hasOwn(data, resource)) {
-      data[resource] += 1;
-    } else {
-      data[resource] = 1;
-    }
-  }
-
-  return data;
-}
-
 const metrics = Metrics.start({});
 
 console.log(metrics.values());
 
 await setTimeout(3000);
 
+console.log(process._getActiveHandles());
 console.log('nodejs_active_handles', aggregateByObjectName(process._getActiveHandles()));
-
-console.table({ nodejs_active_resources: aggregateResource(process.getActiveResourcesInfo()) });
-
-console.table({ nodejs_active_requests: aggregateByObjectName(process._getActiveRequests()) });
 
 console.log(metrics.values());
