@@ -1,13 +1,13 @@
 import test, { beforeEach, describe, mock, type TestContext } from 'node:test';
 import { MetricsMediator } from '../src/library/metrics-mediator.js';
-import type { MetricsValues, Plugin } from '../src/index.js';
+import type { MetricsContext, MetricsValues, Plugin } from '../src/index.js';
 import { StoreBuilder } from '../src/library/store-builder.js';
 
 describe('MetricsMediator', () => {
   let mediator: MetricsMediator;
   let pluginA: Readonly<Plugin>;
   let pluginB: Readonly<Plugin>;
-  let context: StoreBuilder<MetricsValues>;
+  let context: MetricsContext;
 
   beforeEach(() => {
     // Arrange for all tests

@@ -1,12 +1,12 @@
 import it, { beforeEach, describe, type TestContext } from 'node:test';
 import { EventLoopDelayPlugin } from '../src/library/plugins/event-loop-delay.js';
 import { StoreBuilder } from '../src/library/store-builder.js';
-import type { MetricsValues } from '../src/index.js';
+import type { MetricsContext, MetricsValues } from '../src/index.js';
 import { DEFAULT_RESOLUTION } from '../src/library/constants.js';
 
 describe('EventLoopDelayPlugin', () => {
   let plugin: EventLoopDelayPlugin;
-  let ctx = new StoreBuilder<MetricsValues>();
+  let ctx: MetricsContext;
 
   beforeEach(() => {
     // Arrange for all tests
