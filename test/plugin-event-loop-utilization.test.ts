@@ -45,7 +45,7 @@ describe('EventLoopUtilizationPlugin', () => {
     t.assert.strictEqual(performanceEventLoopUtilizationMock.mock.callCount(), 1);
     t.assert.strictEqual(call.mock.callCount(), 1);
     t.assert.deepStrictEqual(call.mock.calls.at(0)?.arguments, [
-      'eventLoopUtilized',
+      'event_loop_utilized',
       fakeElu.utilization
     ]);
   });
@@ -63,6 +63,6 @@ describe('EventLoopUtilizationPlugin', () => {
 
     // Assert
     t.assert.strictEqual(call.mock.callCount(), 1);
-    t.assert.deepStrictEqual(call.mock.calls.at(0)?.arguments, ['eventLoopUtilized', 0]);
+    t.assert.deepStrictEqual(call.mock.calls.at(0)?.arguments, ['event_loop_utilized', 0]);
   });
 });

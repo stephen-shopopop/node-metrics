@@ -36,10 +36,13 @@ export class EventLoopDelayPlugin implements Plugin {
    * @param ctx - The context object where the event loop delay metric will be set.
    */
   capture(ctx: MetricsContext): void {
-    ctx.set('eventLoopDelay', Math.max(0, this.histogram.mean / 1e6 - this.resolution));
+    ctx.set(
+      'event_loop_delay_milliseconds',
+      Math.max(0, this.histogram.mean / 1e6 - this.resolution)
+    );
 
-    if (Number.isNaN(ctx.get('eventLoopDelay')))
-      ctx.set('eventLoopDelay', Number.POSITIVE_INFINITY);
+    if (Number.isNaN(ctx.get('event_loop_delay_milliseconds')))
+      ctx.set('event_loop_delay_milliseconds', Number.POSITIVE_INFINITY);
 
     this.histogram.reset();
   }

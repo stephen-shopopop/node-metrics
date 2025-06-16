@@ -14,18 +14,18 @@ export type Options = {
 /**
  * Represents the set of property names for various Node.js process metrics.
  *
- * - `eventLoopDelay`: The delay experienced by the Node.js event loop.
- * - `eventLoopUtilized`: The percentage of event loop utilization.
- * - `heapUsed`: The amount of memory used by the V8 heap.
- * - `heapTotal`: The total size of the V8 heap.
- * - `rssBytes`: The resident set size, or total memory allocated for the process.
+ * - `event_loop_delay_milliseconds`: The delay experienced by the Node.js event loop.
+ * - `event_loop_utilized`: The percentage of event loop utilization.
+ * - `heap_used_bytes`: The amount of memory used by the V8 heap.
+ * - `heap_total_bytes`: The total size of the V8 heap.
+ * - `rss_bytes`: The resident set size, or total memory allocated for the process.
  */
 type MetricProperties =
-  | 'eventLoopDelay'
-  | 'eventLoopUtilized'
-  | 'heapUsed'
-  | 'heapTotal'
-  | 'rssBytes';
+  | 'event_loop_delay_milliseconds'
+  | 'event_loop_utilized'
+  | 'heap_used_bytes'
+  | 'heap_total_bytes'
+  | 'rss_bytes';
 
 /**
  * Represents a mapping of metric property names to their corresponding numeric values.
@@ -35,9 +35,9 @@ type MetricProperties =
  *
  * ```ts
  * const metrics: MetricsValues = {
- *   eventLoopDelay: 120,
+ *   event_loop_delay_milliseconds: 120,
  *   'metric.delay': 5,
- *   'metadata.healthCheck': 'OK'
+ *   'metadata.health_check': 'OK'
  * };
  * ```
  */

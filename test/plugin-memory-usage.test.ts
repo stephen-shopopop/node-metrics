@@ -41,13 +41,13 @@ describe('MemoryUsagePlugin', () => {
     t.assert.strictEqual(call.mock.callCount(), 3);
     t.assert.strictEqual(memoryUsageMock.mock.callCount(), 1);
     t.assert.deepStrictEqual(call.mock.calls.at(0)?.arguments, [
-      'heapUsed',
+      'heap_used_bytes',
       fakeMemoryUsage.heapUsed
     ]);
     t.assert.deepStrictEqual(call.mock.calls.at(1)?.arguments, [
-      'heapTotal',
+      'heap_total_bytes',
       fakeMemoryUsage.heapTotal
     ]);
-    t.assert.deepStrictEqual(call.mock.calls.at(2)?.arguments, ['rssBytes', fakeMemoryUsage.rss]);
+    t.assert.deepStrictEqual(call.mock.calls.at(2)?.arguments, ['rss_bytes', fakeMemoryUsage.rss]);
   });
 });

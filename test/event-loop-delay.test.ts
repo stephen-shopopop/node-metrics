@@ -40,7 +40,7 @@ describe('EventLoopDelayPlugin', () => {
     // Assert
     t.assert.strictEqual(call.mock.callCount(), 1);
     t.assert.deepStrictEqual(call.mock.calls.at(0)?.arguments, [
-      'eventLoopDelay',
+      'event_loop_delay_milliseconds',
       Math.max(0, 5 - DEFAULT_RESOLUTION)
     ]);
   });
@@ -62,7 +62,10 @@ describe('EventLoopDelayPlugin', () => {
     plugin.capture(ctx);
 
     // Assert
-    t.assert.deepStrictEqual(call.mock.calls.at(0)?.arguments, ['eventLoopDelay', 0]);
+    t.assert.deepStrictEqual(call.mock.calls.at(0)?.arguments, [
+      'event_loop_delay_milliseconds',
+      0
+    ]);
   });
 
   it('should set eventLoopDelay to Infinity if computed value is NaN', (t: TestContext) => {
@@ -83,7 +86,7 @@ describe('EventLoopDelayPlugin', () => {
 
     // Assert
     t.assert.deepStrictEqual(call.mock.calls.at(1)?.arguments, [
-      'eventLoopDelay',
+      'event_loop_delay_milliseconds',
       Number.POSITIVE_INFINITY
     ]);
   });

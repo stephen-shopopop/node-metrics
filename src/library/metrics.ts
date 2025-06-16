@@ -69,6 +69,9 @@ export class Metrics<T extends object = MetricsValues> {
   static start(options: Readonly<Partial<Options>>): Metrics<MetricsValues> {
     if (!Metrics.#instance) {
       Metrics.#instance = new Metrics<MetricsValues>(options);
+
+      // Declare NodeJs version on metrics
+      Metrics.#instance.#metrics.set('metadata.nodejs_version_info', process.versions.node);
     }
 
     return Metrics.#instance;
