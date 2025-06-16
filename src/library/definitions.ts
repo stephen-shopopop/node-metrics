@@ -25,7 +25,11 @@ type MetricProperties =
   | 'event_loop_utilized'
   | 'heap_used_bytes'
   | 'heap_total_bytes'
-  | 'rss_bytes';
+  | 'rss_bytes'
+  | 'process_start_time_seconds'
+  | 'process_cpu_user_seconds_total'
+  | 'process_cpu_system_seconds_total'
+  | 'process_cpu_seconds_total';
 
 /**
  * Represents a mapping of metric property names to their corresponding numeric values.

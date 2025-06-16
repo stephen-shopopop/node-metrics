@@ -5,6 +5,9 @@ import { EventLoopUtilizationPlugin } from './plugins/event-loop-utilization.js'
 import { MetricsMediator } from './metrics-mediator.js';
 import { EventLoopDelayPlugin } from './plugins/event-loop-delay.js';
 import { DEFAULT_RESOLUTION, DEFAULT_SAMPLE_INTERVAL } from './constants.js';
+import { ProcessUpTimePlugin } from './plugins/process-uptime.js';
+import { ProcessCpuUsagePlugin } from './plugins/process-cpu-usage.js';
+import { ActiveResourcesInfoPlugin } from './plugins/active-resources-info.js';
 
 /**
  * Singleton class for collecting and managing application metrics.
@@ -28,7 +31,7 @@ import { DEFAULT_RESOLUTION, DEFAULT_SAMPLE_INTERVAL } from './constants.js';
  * ```
  *
  * @remarks
- * By default, the class registers memory usage, event loop delay, and event loop utilization plugins.
+ * By default, the class registers memory usage, event loop delay event loop utilization plugins, process uptime and process cpu usage.
  * The sampling interval and resolution can be customized via the `options` parameter.
  *
  * @public
@@ -53,6 +56,9 @@ export class Metrics<T extends object = MetricsValues> {
     this.register(new MemoryUsagePlugin());
     this.register(new EventLoopDelayPlugin(this.#resolution));
     this.register(new EventLoopUtilizationPlugin());
+    this.register(new ProcessUpTimePlugin());
+    this.register(new ProcessCpuUsagePlugin());
+    this.register(new ActiveResourcesInfoPlugin());
 
     this.#timer = setTimeout(this.#begin, this.#sampleInterval);
     this.#timer.unref();
