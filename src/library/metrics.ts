@@ -36,7 +36,7 @@ import { ProcessCpuUsagePlugin } from './plugins/process-cpu-usage.js';
  * @public
  */
 export class Metrics<T extends object = MetricsValues> {
-  static #instance: Metrics;
+  private static _instance: Metrics;
   readonly #resolution: number;
   readonly #sampleInterval: number;
   #timer: NodeJS.Timeout | undefined;
@@ -71,14 +71,14 @@ export class Metrics<T extends object = MetricsValues> {
    * @returns The singleton instance of `Metrics<MetricsValues>`.
    */
   static start(options: Readonly<Partial<Options>>): Metrics<MetricsValues> {
-    if (!Metrics.#instance) {
-      Metrics.#instance = new Metrics<MetricsValues>(options);
+    if (!Metrics._instance) {
+      Metrics._instance = new Metrics<MetricsValues>(options);
 
       // Declare NodeJs version on metrics
-      Metrics.#instance.#metrics.set('metadata.nodejs_version_info', process.versions.node);
+      Metrics._instance.#metrics.set('metadata.nodejs_version_info', process.versions.node);
     }
 
-    return Metrics.#instance;
+    return Metrics._instance;
   }
 
   /**
@@ -94,9 +94,9 @@ export class Metrics<T extends object = MetricsValues> {
   }
 
   #begin(): void {
-    Metrics.#instance.#metricsMediator.capture(Metrics.#instance.#metrics);
+    Metrics._instance.#metricsMediator.capture(Metrics._instance.#metrics);
 
-    Metrics.#instance.#timer?.refresh();
+    Metrics._instance.#timer?.refresh();
   }
 
   /**
@@ -106,7 +106,12 @@ export class Metrics<T extends object = MetricsValues> {
    * Should be called when the Metrics instance is no longer needed to avoid memory leaks or unintended behavior.
    */
   destroy(): void {
-    clearTimeout(Metrics.#instance.#timer);
+    clearTimeout(Metrics._instance.#timer);
+
+    // Use this for testing only
+    if (process.env['NODE_ENV'] !== 'production') {
+      Reflect.set(Metrics, '_instance', undefined);
+    }
   }
 
   /**
@@ -114,7 +119,7 @@ export class Metrics<T extends object = MetricsValues> {
    *
    * @returns {Partial<MetricsValues>} An object with the current metrics, possibly missing some properties.
    */
-  values(): Partial<MetricsValues> {
-    return Metrics.#instance.#metrics.toJson();
+  measures(): Partial<MetricsValues> {
+    return Metrics._instance.#metrics.toJson();
   }
 }
