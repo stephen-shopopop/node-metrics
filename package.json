@@ -37,7 +37,12 @@
   "license": "ISC",
   "devDependencies": {
     "@biomejs/biome": "1.9.4",
+    "@types/express": "^5.0.3",
+    "@types/koa": "^2.15.0",
     "@types/node": "^24.0.1",
+    "express": "^5.1.0",
+    "hono": "^4.7.11",
+    "koa": "^3.0.0",
     "pkgroll": "^2.12.2",
     "tsx": "^4.20.3",
     "typedoc": "^0.28.5",

@@ -11,6 +11,14 @@ export type Options = {
   resolution: number;
 };
 
+export type MiddlewareOptions = {
+  maxEventLoopDelay: number;
+  maxEventLoopUtilization: number;
+  blockEventLoopDelayInMs: number;
+  blockEventLoopUtilizationInMs: number;
+  retryAfter: number;
+} & Options;
+
 /**
  * Represents the set of property names for various Node.js process metrics.
  *
