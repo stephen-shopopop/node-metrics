@@ -40,7 +40,7 @@
     "@reporters/github": "^1.7.2",
     "@types/express": "^5.0.3",
     "@types/koa": "^2.15.0",
-    "@types/node": "^24.0.1",
+    "@types/node": "^24.0.3",
     "express": "^5.1.0",
     "hono": "^4.7.11",
     "koa": "^3.0.0",
