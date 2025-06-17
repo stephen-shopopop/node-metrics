@@ -37,6 +37,7 @@
   "license": "ISC",
   "devDependencies": {
     "@biomejs/biome": "1.9.4",
+    "@reporters/github": "^1.7.2",
     "@types/express": "^5.0.3",
     "@types/koa": "^2.15.0",
     "@types/node": "^24.0.1",
@@ -55,9 +56,6 @@
   "repository": {
     "type": "git",
     "url": "https://github.com/stephen-shopopop/node-metrics"
-  },
-  "dependencies": {
-    "@reporters/github": "^1.7.2"
   },
   "publishConfig": {
     "registry": "https://npm.pkg.github.com/"
