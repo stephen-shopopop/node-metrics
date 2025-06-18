@@ -7,6 +7,7 @@ import { EventLoopDelayPlugin } from './plugins/event-loop-delay.js';
 import { DEFAULT_RESOLUTION, DEFAULT_SAMPLE_INTERVAL } from './constants.js';
 import { ProcessUpTimePlugin } from './plugins/process-uptime.js';
 import { ProcessCpuUsagePlugin } from './plugins/process-cpu-usage.js';
+import { MetricsObservable } from './metrics-observer.js';
 
 /**
  * Singleton class for collecting and managing application metrics.
@@ -42,6 +43,7 @@ export class Metrics<T extends object = MetricsValues> {
   #timer: NodeJS.Timeout | undefined;
   #metricsMediator = new MetricsMediator();
   #metrics = new StoreBuilder<T>();
+  observer = new MetricsObservable();
 
   // Prevent new with private constructor
   private constructor(private readonly options: Partial<Options>) {

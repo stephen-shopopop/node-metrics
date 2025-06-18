@@ -11,6 +11,15 @@ export type Options = {
   resolution: number;
 };
 
+/**
+ * Options for configuring system pressure monitoring
+ *
+ * @interface UnderPressureOptions
+ * @property {number} maxEventLoopDelay - Maximum allowed event loop delay in milliseconds
+ * @property {number} maxEventLoopUtilization - Maximum allowed event loop utilization (between 0 and 1)
+ * @property {number} maxHeapUsedBytes - Maximum allowed heap memory usage in bytes
+ * @property {number} maxRssBytes - Maximum allowed Resident Set Size (RSS) in bytes
+ */
 export type UnderPressureOptions = {
   maxEventLoopDelay: number;
   maxEventLoopUtilization: number;
@@ -18,6 +27,14 @@ export type UnderPressureOptions = {
   maxRssBytes: number;
 };
 
+/**
+ * Configuration options for the middleware.
+ *
+ * @typedef {Object} MiddlewareOptions
+ * @extends {Options}
+ * @extends {UnderPressureOptions}
+ * @property {number} retryAfter - The number of seconds to wait before retrying a request
+ */
 export type MiddlewareOptions = {
   retryAfter: number;
 } & Options &
@@ -90,3 +107,10 @@ export interface Plugin<T extends object = MetricsValues> {
  * @see StoreBuilder
  */
 export type MetricsContext<T extends object = MetricsValues> = StoreBuilder<T>;
+
+/**
+ * Represents an observer function type that handles logging or monitoring events.
+ * @param message - The main message or payload to be observed. Can be either a string or an object.
+ * @param metadata - Optional additional contextual information associated with the message.
+ */
+export type Observer = (message: string | object, metadata?: object) => void;

@@ -38,6 +38,8 @@ export const underPressureKoaMiddleware = ({
 
   return async (ctx: Context, next: Next): Promise<void> => {
     if (isUnderPressure({ ...options, ...metrics.measures() })) {
+      metrics.observer.notify('System under pressure', metrics.measures());
+
       ctx.set('Retry-After', `${retryAfter}`);
       ctx.throw(503);
     }

@@ -36,6 +36,8 @@ export const underPressureHonoMiddleware = ({
 
   return async (_c, next) => {
     if (isUnderPressure({ ...options, ...metrics.measures() })) {
+      metrics.observer.notify('System under pressure', metrics.measures());
+
       return new Response('Service Unavailable', {
         headers: [['Retry-After', `${retryAfter}`]],
         status: 503

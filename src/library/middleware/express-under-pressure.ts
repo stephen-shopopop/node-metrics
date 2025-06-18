@@ -43,6 +43,8 @@ export const underPressureExpressMiddleware = ({
 
   return (_req: express.Request, res: express.Response, next: express.NextFunction) => {
     if (isUnderPressure({ ...options, ...metrics.measures() })) {
+      metrics.observer.notify('System under pressure', metrics.measures());
+
       res.setHeader('Retry-After', `${retryAfter}`);
       res.status(503).end();
     }
