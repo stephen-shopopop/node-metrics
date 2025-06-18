@@ -1,6 +1,8 @@
 import type express from 'express';
 import type { MiddlewareOptions } from '../definitions.js';
 import { Metrics } from '../metrics.js';
+import { DEFAULT_RESOLUTION, DEFAULT_SAMPLE_INTERVAL } from '../constants.js';
+import { isUnderPressure } from './under-pressure.js';
 
 /**
  * Creates an Express middleware that monitors event loop metrics and returns 503 status
@@ -28,10 +30,11 @@ import { Metrics } from '../metrics.js';
  * ```
  */
 export const underPressureExpressMiddleware = ({
-  sampleIntervalInMs,
-  resolution,
+  sampleIntervalInMs = DEFAULT_SAMPLE_INTERVAL,
+  resolution = DEFAULT_RESOLUTION,
+  retryAfter = 10,
   ...options
-}: Readonly<MiddlewareOptions>): ((
+}: Readonly<Partial<MiddlewareOptions>>): ((
   req: express.Request,
   res: express.Response,
   next: express.NextFunction
@@ -39,13 +42,8 @@ export const underPressureExpressMiddleware = ({
   const metrics = Metrics.start({ sampleIntervalInMs, resolution });
 
   return (_req: express.Request, res: express.Response, next: express.NextFunction) => {
-    const { event_loop_delay_milliseconds = 0, event_loop_utilized = 0 } = metrics.measures();
-
-    if (
-      event_loop_delay_milliseconds > options.maxEventLoopDelay ||
-      event_loop_utilized > options.maxEventLoopUtilization
-    ) {
-      res.setHeader('Retry-After', `${options.retryAfter ?? 10}`);
+    if (isUnderPressure({ ...options, ...metrics.measures() })) {
+      res.setHeader('Retry-After', `${retryAfter}`);
       res.status(503).end();
     }
 

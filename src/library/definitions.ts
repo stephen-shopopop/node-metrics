@@ -11,13 +11,17 @@ export type Options = {
   resolution: number;
 };
 
-export type MiddlewareOptions = {
+export type UnderPressureOptions = {
   maxEventLoopDelay: number;
   maxEventLoopUtilization: number;
-  blockEventLoopDelayInMs: number;
-  blockEventLoopUtilizationInMs: number;
+  maxHeapUsedBytes: number;
+  maxRssBytes: number;
+};
+
+export type MiddlewareOptions = {
   retryAfter: number;
-} & Options;
+} & Options &
+  UnderPressureOptions;
 
 /**
  * Represents the set of property names for various Node.js process metrics.

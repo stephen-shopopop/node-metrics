@@ -5,7 +5,7 @@
   "version": "0.1.0",
   "type": "module",
   "main": "./dist/index.cjs",
-  "module": "./dist/index.mjs",
+  "module": "./dist/index.js",
   "types": "./dist/index.d.cts",
   "exports": {
     "require": {
@@ -13,14 +13,29 @@
       "default": "./dist/index.cjs"
     },
     "import": {
-      "types": "./dist/index.d.mts",
-      "default": "./dist/index.mjs"
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
     }
   },
   "private": false,
+  "tsup": {
+    "entry": [
+      "src/index.ts"
+    ],
+    "splitting": false,
+    "sourcemap": false,
+    "clean": true,
+    "platform": "node",
+    "format": [
+      "cjs",
+      "esm"
+    ],
+    "dts": true,
+    "minify": false
+  },
   "scripts": {
     "test": "tsc --pretty --noEmit && npx tsx ./bin/test-runner.js **/*.test.ts -C",
-    "build": "pkgroll --clean-dist",
+    "build": "tsup-node",
     "lint": "biome lint .",
     "format": "biome lint --write . && biome format --write .",
     "check": "tsc --pretty --noEmit && npm run lint",
@@ -38,13 +53,12 @@
   "devDependencies": {
     "@biomejs/biome": "1.9.4",
     "@reporters/github": "^1.7.2",
-    "@types/express": "^5.0.3",
     "@types/koa": "^2.15.0",
-    "@types/node": "^24.0.1",
+    "@types/node": "^24.0.3",
     "express": "^5.1.0",
-    "hono": "^4.7.11",
+    "hono": "^4.8.0",
     "koa": "^3.0.0",
-    "pkgroll": "^2.12.2",
+    "tsup": "^8.5.0",
     "tsx": "^4.20.3",
     "typedoc": "^0.28.5",
     "typescript": "^5.8.3"
@@ -58,6 +72,7 @@
     "url": "https://github.com/stephen-shopopop/node-metrics"
   },
   "publishConfig": {
-    "registry": "https://npm.pkg.github.com/"
+    "registry": "https://npm.pkg.github.com/",
+    "access": "public"
   }
 }

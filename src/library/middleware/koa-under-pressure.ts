@@ -1,6 +1,8 @@
 import type { Context, Next } from 'koa';
 import type { MiddlewareOptions } from '../definitions.js';
 import { Metrics } from '../metrics.js';
+import { DEFAULT_RESOLUTION, DEFAULT_SAMPLE_INTERVAL } from '../constants.js';
+import { isUnderPressure } from './under-pressure.js';
 
 /**
  * Creates a Koa middleware that monitors event loop performance and returns 503 errors when system is under pressure
@@ -27,20 +29,16 @@ import { Metrics } from '../metrics.js';
  * ```
  */
 export const underPressureKoaMiddleware = ({
-  sampleIntervalInMs,
-  resolution,
+  sampleIntervalInMs = DEFAULT_SAMPLE_INTERVAL,
+  retryAfter = 10,
+  resolution = DEFAULT_RESOLUTION,
   ...options
-}: Readonly<MiddlewareOptions>): ((ctx: Context, next: Next) => Promise<void>) => {
+}: Readonly<Partial<MiddlewareOptions>>): ((ctx: Context, next: Next) => Promise<void>) => {
   const metrics = Metrics.start({ sampleIntervalInMs, resolution });
 
   return async (ctx: Context, next: Next): Promise<void> => {
-    const { event_loop_delay_milliseconds = 0, event_loop_utilized = 0 } = metrics.measures();
-
-    if (
-      event_loop_delay_milliseconds > options.maxEventLoopDelay ||
-      event_loop_utilized > options.maxEventLoopUtilization
-    ) {
-      ctx.set('Retry-After', `${options.retryAfter ?? 10}`);
+    if (isUnderPressure({ ...options, ...metrics.measures() })) {
+      ctx.set('Retry-After', `${retryAfter}`);
       ctx.throw(503);
     }
 

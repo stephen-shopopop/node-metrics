@@ -1,6 +1,8 @@
 import type { MiddlewareHandler } from 'hono';
 import type { MiddlewareOptions } from '../definitions.js';
 import { Metrics } from '../metrics.js';
+import { DEFAULT_RESOLUTION, DEFAULT_SAMPLE_INTERVAL } from '../constants.js';
+import { isUnderPressure } from './under-pressure.js';
 
 /**
  * Creates a middleware handler for monitoring server load using event loop metrics.
@@ -25,21 +27,17 @@ import { Metrics } from '../metrics.js';
  * ```
  */
 export const underPressureHonoMiddleware = ({
-  sampleIntervalInMs,
-  resolution,
+  sampleIntervalInMs = DEFAULT_SAMPLE_INTERVAL,
+  resolution = DEFAULT_RESOLUTION,
+  retryAfter = 10,
   ...options
-}: Readonly<MiddlewareOptions>): MiddlewareHandler => {
+}: Readonly<Partial<MiddlewareOptions>>): MiddlewareHandler => {
   const metrics = Metrics.start({ sampleIntervalInMs, resolution });
 
   return async (_c, next) => {
-    const { event_loop_delay_milliseconds = 0, event_loop_utilized = 0 } = metrics.measures();
-
-    if (
-      event_loop_delay_milliseconds > options.maxEventLoopDelay ||
-      event_loop_utilized > options.maxEventLoopUtilization
-    ) {
+    if (isUnderPressure({ ...options, ...metrics.measures() })) {
       return new Response('Service Unavailable', {
-        headers: [['Retry-After', `${options.retryAfter ?? 10}`]],
+        headers: [['Retry-After', `${retryAfter}`]],
         status: 503
       });
     }

@@ -2,7 +2,8 @@
   "$schema": "https://json.schemastore.org/tsconfig",
   "compilerOptions": {
     "outDir": "dist",
-    "sourceMap": true,
+    "declaration": true,
+    "sourceMap": false,
     "target": "ES2022",
     "module": "NodeNext",
     "moduleResolution": "NodeNext",
@@ -16,7 +17,9 @@
     "isolatedModules": true,
     "forceConsistentCasingInFileNames": true,
     "skipLibCheck": true,
-    "lib": ["ESNext"],
+    "lib": [
+      "ESNext"
+    ],
     "allowUnusedLabels": true,
     "allowUnreachableCode": true,
     "exactOptionalPropertyTypes": true,
@@ -26,7 +29,11 @@
     "noUncheckedIndexedAccess": true,
     "noUnusedParameters": true,
     "verbatimModuleSyntax": true,
-    "checkJs": false
+    "checkJs": false,
+    "emitDeclarationOnly": true
   },
-  "exclude": ["dist"]
+  "exclude": [
+    "dist",
+    "test"
+  ]
 }
