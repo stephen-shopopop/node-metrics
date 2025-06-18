@@ -17,9 +17,7 @@
     "isolatedModules": true,
     "forceConsistentCasingInFileNames": true,
     "skipLibCheck": true,
-    "lib": [
-      "ESNext"
-    ],
+    "lib": ["ESNext"],
     "allowUnusedLabels": true,
     "allowUnreachableCode": true,
     "exactOptionalPropertyTypes": true,
@@ -32,8 +30,5 @@
     "checkJs": false,
     "emitDeclarationOnly": true
   },
-  "exclude": [
-    "dist",
-    "test"
-  ]
+  "exclude": ["dist", "test"]
 }

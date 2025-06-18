@@ -19,17 +19,12 @@
   },
   "private": false,
   "tsup": {
-    "entry": [
-      "src/index.ts"
-    ],
+    "entry": ["src/index.ts"],
     "splitting": false,
     "sourcemap": false,
     "clean": true,
     "platform": "node",
-    "format": [
-      "cjs",
-      "esm"
-    ],
+    "format": ["cjs", "esm"],
     "dts": true,
     "minify": false
   },
@@ -55,6 +50,7 @@
     "@reporters/github": "^1.7.2",
     "@types/koa": "^2.15.0",
     "@types/node": "^24.0.3",
+    "axios": "^1.10.0",
     "express": "^5.1.0",
     "hono": "^4.8.0",
     "koa": "^3.0.0",

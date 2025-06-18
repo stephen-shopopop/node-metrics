@@ -41,7 +41,9 @@ export const underPressureKoaMiddleware = ({
       metrics.observer.notify('System under pressure', metrics.measures());
 
       ctx.set('Retry-After', `${retryAfter}`);
-      ctx.throw(503);
+      ctx.response.status = 503;
+      ctx.response.message = 'Service Unavailable';
+      ctx.res.end();
     }
 
     await next();
