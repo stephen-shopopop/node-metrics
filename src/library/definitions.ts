@@ -114,3 +114,40 @@ export type MetricsContext<T extends object = MetricsValues> = StoreBuilder<T>;
  * @param metadata - Optional additional contextual information associated with the message.
  */
 export type Observer = (message: string | object, metadata?: object) => void;
+
+/**
+ * Represents the context of an HTTP request handled by the web server.
+ *
+ * @property method - The HTTP method of the request (e.g., 'GET', 'POST').
+ * @property headers - A record containing the request headers as key-value pairs.
+ * @property path - The URL path of the request.
+ * @property query - An object representing the parsed query parameters.
+ * @property body - The parsed body of the request, if any.
+ */
+export type Context = {
+  method: string;
+  headers: Record<string, string>;
+  path: string;
+  query: Record<string, unknown>;
+  body: unknown;
+};
+
+/**
+ * Represents a callback function to handle HTTP requests in a web server context.
+ *
+ * @param request - The context object representing the incoming HTTP request.
+ * @returns A `Response` object or a `Promise` that resolves to a `Response`.
+ */
+export type FetchCallback = (request: Context) => Promise<Response> | Response;
+
+/**
+ * Configuration options for the web server.
+ *
+ * @property port - The port number on which the server will listen. Defaults to 0 if not specified.
+ * @property fetchCallback - A callback function to handle fetch requests.
+ */
+export type WebServerOptions = {
+  /** Use default value = 0 */
+  port?: number;
+  fetchCallback: FetchCallback;
+};
