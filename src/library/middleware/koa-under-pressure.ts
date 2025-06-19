@@ -5,26 +5,34 @@ import { DEFAULT_RESOLUTION, DEFAULT_SAMPLE_INTERVAL } from '../constants.js';
 import { isUnderPressure } from './under-pressure.js';
 
 /**
- * Creates a Koa middleware that monitors event loop performance and returns 503 errors when system is under pressure
+ * Creates a Koa middleware that monitors system metrics and responds with a 503 Service Unavailable status
+ * when the system is under pressure, as determined by the provided options and current metrics.
  *
- * @param options - Configuration options for the middleware
- * @param options.sampleIntervalInMs - The interval in milliseconds at which to sample metrics
- * @param options.resolution - The resolution at which metrics are calculated
- * @param options.maxEventLoopDelay - Maximum allowed event loop delay in milliseconds before responding with 503
- * @param options.maxEventLoopUtilization - Maximum allowed event loop utilization (0-1) before responding with 503
- * @param options.retryAfter - Optional number of seconds to include in Retry-After header (defaults to 10)
+ * @param options - Partial configuration for the middleware, including:
+ *   - sampleIntervalInMs: Interval in milliseconds for sampling system metrics (default: DEFAULT_SAMPLE_INTERVAL).
+ *   - retryAfter: Value (in seconds) for the `Retry-After` header when under pressure (default: 10).
+ *   - webServerMetricsPort: Port for exposing web server metrics (default: 0).
+ *   - resolution: Resolution for metrics sampling (default: DEFAULT_RESOLUTION).
+ *   - Additional options for pressure detection.
+ * @returns A Koa middleware function that checks system pressure and responds accordingly.
  *
- * @returns A Koa middleware function that monitors system pressure
- * @throws {503} When system exceeds configured pressure thresholds
+ * @remarks
+ * When the system is detected to be under pressure, the middleware:
+ *   - Notifies observers with the current metrics.
+ *   - Sets the `Retry-After` header.
+ *   - Responds with HTTP 503 Service Unavailable.
+ *   - Ends the response.
+ * Otherwise, it passes control to the next middleware.
  *
- * @example
- * ```typescript
+ * ## Example
+ *
+ * ```ts
  * app.use(underPressureKoaMiddleware({
  *   sampleIntervalInMs: 1000,
  *   resolution: 10,
- *   maxEventLoopDelay: 100,
- *   maxEventLoopUtilization: 0.9,
- *   retryAfter: 5
+ *   webServerMetricsPort: 9090,
+ *   maxEventLoopDelay: 1000,
+ *   maxEventLoopUtilization: 0.9
  * }));
  * ```
  */
