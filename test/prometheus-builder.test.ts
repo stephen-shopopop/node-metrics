@@ -79,7 +79,7 @@ describe('Gauge', () => {
 });
 
 describe('PrometheusBuild', () => {
-  it.only('should register a gauge metric and output correct OpenMetrics format', async (t: TestContext) => {
+  it('should register a gauge metric and output correct OpenMetrics format', async (t: TestContext) => {
     t.plan(3);
 
     // Arrange
