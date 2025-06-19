@@ -28,7 +28,7 @@ app.use(async ctx => {
 app.listen(3000);
 ```
 
-## Express
+### Express
 
 ```js
 const express = require('express')
@@ -55,7 +55,7 @@ app.listen(port, () => {
 })
 ```
 
-## Hono
+### Hono
 
 ```js
 import { Hono } from 'hono"
@@ -77,7 +77,7 @@ app get('/', (c) => c. text( 'Hello Hono!'))
 export default app
 ```
 
-## Manuel
+### Manuel
 
 ```js
 import { createServer } from 'node:http';
@@ -131,7 +131,7 @@ server.listen(port, hostname, () => {
 
 ## Prometheus metrics
 
-**Example of metrics:** GET http://127.0.0.1:9090/metrics
+**Example of metrics:**  `GET http://127.0.0.1:9090/metrics`
 
 ```txt
 # HELP event_loop_delay_milliseconds The mean of the recorded event loop delays
