@@ -29,10 +29,11 @@ import { isUnderPressure } from './under-pressure.js';
 export const underPressureHonoMiddleware = ({
   sampleIntervalInMs = DEFAULT_SAMPLE_INTERVAL,
   resolution = DEFAULT_RESOLUTION,
+  webServerMetricsPort = 0,
   retryAfter = 10,
   ...options
 }: Readonly<Partial<MiddlewareOptions>>): MiddlewareHandler => {
-  const metrics = Metrics.start({ sampleIntervalInMs, resolution });
+  const metrics = Metrics.start({ sampleIntervalInMs, resolution, webServerMetricsPort });
 
   return async (_c, next) => {
     if (isUnderPressure({ ...options, ...metrics.measures() })) {

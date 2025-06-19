@@ -8,6 +8,7 @@ import { DEFAULT_RESOLUTION, DEFAULT_SAMPLE_INTERVAL } from './constants.js';
 import { ProcessUpTimePlugin } from './plugins/process-uptime.js';
 import { ProcessCpuUsagePlugin } from './plugins/process-cpu-usage.js';
 import { MetricsObservable } from './metrics-observer.js';
+import { MetricsServer } from './metrics-server.js';
 
 /**
  * Singleton class for collecting and managing application metrics.
@@ -44,6 +45,7 @@ export class Metrics<T extends object = MetricsValues> {
   #metricsMediator = new MetricsMediator();
   #metrics = new StoreBuilder<T>();
   observer = new MetricsObservable();
+  #server: MetricsServer | undefined;
 
   // Prevent new with private constructor
   private constructor(private readonly options: Partial<Options>) {
@@ -65,11 +67,13 @@ export class Metrics<T extends object = MetricsValues> {
   }
 
   /**
-   * Initializes and returns a singleton instance of the `Metrics` class.
-   * If an instance does not already exist, it creates one using the provided options.
-   * Subsequent calls will return the existing instance.
+   * Initializes and starts the Metrics singleton instance with the provided options.
    *
-   * @param options - Partial configuration options for initializing the `Metrics` instance.
+   * - If the Metrics instance does not already exist, it creates a new one.
+   * - Sets the Node.js version information as a metric.
+   * - Optionally starts a metrics web server if `webServerMetricsPort` is specified in the options.
+   *
+   * @param options - Partial configuration options for initializing the Metrics instance.
    * @returns The singleton instance of `Metrics<MetricsValues>`.
    */
   static start(options: Readonly<Partial<Options>>): Metrics<MetricsValues> {
@@ -78,6 +82,24 @@ export class Metrics<T extends object = MetricsValues> {
 
       // Declare NodeJs version on metrics
       Metrics._instance.#metrics.set('metadata.nodejs_version_info', process.versions.node);
+
+      // Start metrics server
+      if (options.webServerMetricsPort) {
+        Metrics._instance.#server = new MetricsServer(
+          Metrics._instance.#metrics,
+          Metrics._instance.observer
+        );
+
+        Metrics._instance.#server?.start(options.webServerMetricsPort);
+      }
+
+      // Wait and see
+      // for (const signal of ['SIGTERM', 'SIGINT'] as const) {
+      //   process.once(signal, () => {
+      //     Metrics.start({}).closeWebServerMetrics();
+      //     // ✅ Don't process exit, please!
+      //   });
+      // }
     }
 
     return Metrics._instance;
@@ -114,6 +136,19 @@ export class Metrics<T extends object = MetricsValues> {
     if (process.env['NODE_ENV'] !== 'production') {
       Reflect.set(Metrics, '_instance', undefined);
     }
+  }
+
+  /**
+   * Closes the web server used for exposing metrics, if it exists.
+   *
+   * This method asynchronously destroys the internal HTTP server instance
+   * that serves metrics endpoints. It is safe to call even if the server
+   * was never started.
+   *
+   * @returns {Promise<void>} A promise that resolves when the server has been closed.
+   */
+  async closeWebServerMetrics(): Promise<void> {
+    await Metrics._instance.#server?.destroy();
   }
 
   /**

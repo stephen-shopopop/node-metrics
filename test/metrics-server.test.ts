@@ -103,4 +103,23 @@ describe('MetricsServer', () => {
     t.assert.strictEqual(response.status, 200);
     t.assert.strictEqual(await response.text(), '');
   });
+
+  test('should return 503 when system is under pressure', async (t: TestContext) => {
+    t.plan(3);
+
+    // Arrange
+    await metricsServer.start(3000);
+    metricsContext.set('event_loop_delay_milliseconds', 2000); // Above threshold
+    metricsContext.set('event_loop_utilized', 0.99); // Above threshold
+
+    // Act
+    const response = await fetch(
+      `http://localhost:${metricsServer.getAddressInfo()?.port}/metrics`
+    );
+
+    // Assert
+    t.assert.strictEqual(response.status, 503);
+    t.assert.strictEqual(response.headers.get('retry-after'), '10');
+    t.assert.strictEqual(await response.text(), 'Service Unavailable');
+  });
 });

@@ -4,6 +4,8 @@ import type { AddressInfo } from 'node:net';
 import type { Context, MetricsContext } from './definitions.js';
 import { PrometheusBuild } from './prometheus-builder.js';
 import type { MetricsObservable } from './metrics-observer.js';
+import { isUnderPressure } from './middleware/under-pressure.js';
+import { MAX_EVENT_LOOP_DELAY, MAX_EVENT_LOOP_UTILIZATION } from './constants.js';
 
 /**
  * A server for exposing application and process metrics in Prometheus format.
@@ -30,19 +32,33 @@ export class MetricsServer {
   async #fetchCallback(context: Context): Promise<Response> {
     this.observer.notify(`${context.method} ${context.path}`, { ...structuredClone(context) });
 
-    if (context.method === 'GET' && context.path === '/metrics') {
-      const {
-        event_loop_delay_milliseconds = 0,
-        event_loop_utilized = 0,
-        heap_used_bytes = 0,
-        heap_total_bytes = 0,
-        rss_bytes = 0,
-        process_start_time_seconds = 0,
-        process_cpu_user_seconds_total = 0,
-        process_cpu_system_seconds_total = 0,
-        process_cpu_seconds_total = 0
-      } = this.metricsContext.toJson();
+    const {
+      event_loop_delay_milliseconds = 0,
+      event_loop_utilized = 0,
+      heap_used_bytes = 0,
+      heap_total_bytes = 0,
+      rss_bytes = 0,
+      process_start_time_seconds = 0,
+      process_cpu_user_seconds_total = 0,
+      process_cpu_system_seconds_total = 0,
+      process_cpu_seconds_total = 0
+    } = this.metricsContext.toJson();
 
+    if (
+      isUnderPressure({
+        event_loop_delay_milliseconds,
+        event_loop_utilized,
+        maxEventLoopDelay: MAX_EVENT_LOOP_DELAY,
+        maxEventLoopUtilization: MAX_EVENT_LOOP_UTILIZATION
+      })
+    ) {
+      return new Response('Service Unavailable', {
+        headers: [['Retry-After', '10']],
+        status: 503
+      });
+    }
+
+    if (context.method === 'GET' && context.path === '/metrics') {
       return new PrometheusBuild()
         .setGauge(
           'event_loop_delay_milliseconds',

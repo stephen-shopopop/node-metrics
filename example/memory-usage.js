@@ -1,4 +1,4 @@
-import { DebugPlugin, Metrics } from '../dist/index.mjs';
+import { DebugPlugin, Metrics } from '../dist/index.js';
 import { setTimeout } from 'node:timers/promises';
 
 const maxHeapUsedBytes = 100_000_000;
@@ -16,13 +16,14 @@ const blockMemory = () => {
 
 const metrics = Metrics.start({});
 metrics.register(new DebugPlugin());
+metrics.observer.attach(console.debug);
 
 while (true) {
   await setTimeout(1000);
 
   blockMemory();
 
-  const { heap_used_bytes, rss_bytes } = metrics.values();
+  const { heap_used_bytes, rss_bytes } = metrics.measures();
 
   if (heap_used_bytes > maxHeapUsedBytes) {
     console.error('heap used max');

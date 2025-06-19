@@ -3,7 +3,7 @@ import {
   DebugPlugin,
   ActiveResourcesInfoPlugin,
   ActiveHandlesPlugin
-} from '../dist/index.mjs';
+} from '../dist/index.js';
 import { setTimeout } from 'node:timers/promises';
 
 const maxEventLoopDelay = 1e3;
@@ -20,6 +20,7 @@ const metrics = Metrics.start({});
 metrics.register(new ActiveResourcesInfoPlugin());
 metrics.register(new ActiveHandlesPlugin());
 metrics.register(new DebugPlugin());
+metrics.observer.attach(console.debug);
 
 let i = 0;
 
@@ -28,7 +29,7 @@ while (true) {
 
   process.nextTick(() => block(i > 10 ? blockEventLoopDelayInMs : blockEventLoopUtilizationInMs));
 
-  const { event_loop_delay_milliseconds, event_loop_utilized } = metrics.values();
+  const { event_loop_delay_milliseconds, event_loop_utilized } = metrics.measures();
 
   if (event_loop_delay_milliseconds > maxEventLoopDelay) {
     console.error('event loop delay blocked!');

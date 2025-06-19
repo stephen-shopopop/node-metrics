@@ -31,10 +31,11 @@ import { isUnderPressure } from './under-pressure.js';
 export const underPressureKoaMiddleware = ({
   sampleIntervalInMs = DEFAULT_SAMPLE_INTERVAL,
   retryAfter = 10,
+  webServerMetricsPort = 0,
   resolution = DEFAULT_RESOLUTION,
   ...options
 }: Readonly<Partial<MiddlewareOptions>>): ((ctx: Context, next: Next) => Promise<void>) => {
-  const metrics = Metrics.start({ sampleIntervalInMs, resolution });
+  const metrics = Metrics.start({ sampleIntervalInMs, resolution, webServerMetricsPort });
 
   return async (ctx: Context, next: Next): Promise<void> => {
     if (isUnderPressure({ ...options, ...metrics.measures() })) {

@@ -32,6 +32,7 @@ import { isUnderPressure } from './under-pressure.js';
 export const underPressureExpressMiddleware = ({
   sampleIntervalInMs = DEFAULT_SAMPLE_INTERVAL,
   resolution = DEFAULT_RESOLUTION,
+  webServerMetricsPort = 0,
   retryAfter = 10,
   ...options
 }: Readonly<Partial<MiddlewareOptions>>): ((
@@ -39,7 +40,7 @@ export const underPressureExpressMiddleware = ({
   res: express.Response,
   next: express.NextFunction
 ) => void) => {
-  const metrics = Metrics.start({ sampleIntervalInMs, resolution });
+  const metrics = Metrics.start({ sampleIntervalInMs, resolution, webServerMetricsPort });
 
   return (_req: express.Request, res: express.Response, next: express.NextFunction) => {
     if (isUnderPressure({ ...options, ...metrics.measures() })) {
