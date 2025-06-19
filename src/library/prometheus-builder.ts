@@ -83,6 +83,8 @@ export class PrometheusBuild {
     const gauge = new Gauge(name, value, label, this.prefix);
 
     this.#registries.push(gauge.registry());
+
+    return this;
   }
 
   /**

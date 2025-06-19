@@ -3,6 +3,21 @@ import http from 'node:http';
 import type { AddressInfo } from 'node:net';
 import { Readable } from 'node:stream';
 import type { Context, FetchCallback, WebServerOptions } from './definitions.js';
+import diagnostics_channel from 'node:diagnostics_channel';
+
+const channels = {
+  /**
+   * ```ts
+   * import diagnostics_channel from ‘node:diagnostics_channel’
+   *
+   * diagnostics_channel.subscribe(‘handling-web-server:error’, (message, name) => {
+   *  console.log(message, name)
+   * })
+   * ```
+   */
+  error: diagnostics_channel.channel('handling-web-server:error'),
+  info: diagnostics_channel.channel('handling-web-server:info')
+};
 
 /**
  * Safely parses a JSON string, returning the parsed object if successful,
@@ -84,6 +99,8 @@ export const handleResponseError = (e: unknown, outgoing: Readonly<http.ServerRe
   if (err.code === 'ERR_STREAM_PREMATURE_CLOSE') {
     console.info('The user aborted a request.');
   } else {
+    channels.error.publish(e);
+
     console.error(e);
 
     if (!outgoing.headersSent) {
@@ -119,6 +136,8 @@ const getRequestListener = (fetchCallback: FetchCallback) => {
     incoming: Readonly<http.IncomingMessage>,
     outgoing: Readonly<http.ServerResponse>
   ) => {
+    channels.info.publish(`${incoming.method} http://${incoming.headers.host}${incoming.url}`);
+
     let body: ReadableStream<Uint8Array<ArrayBufferLike>> | null = null;
 
     if (!(incoming.method === 'GET' || incoming.method === 'HEAD')) {
@@ -134,6 +153,10 @@ const getRequestListener = (fetchCallback: FetchCallback) => {
 
     try {
       const res = await fetchCallback(await buildContext(request));
+
+      channels.info.publish(
+        `${incoming.method} http://${incoming.headers.host}${incoming.url} ${res.status}`
+      );
 
       if (res.body) {
         const buffer = await res.arrayBuffer();
@@ -210,4 +233,6 @@ export const closeWebServer = async (server: Server | undefined): Promise<void> 
         resolve();
       });
     }
+
+    resolve();
   });

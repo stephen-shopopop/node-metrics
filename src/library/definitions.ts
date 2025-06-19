@@ -41,13 +41,17 @@ export type MiddlewareOptions = {
   UnderPressureOptions;
 
 /**
- * Represents the set of property names for various Node.js process metrics.
+ * Represents the set of supported metric property names for Node.js process and event loop monitoring.
  *
- * - `event_loop_delay_milliseconds`: The delay experienced by the Node.js event loop.
- * - `event_loop_utilized`: The percentage of event loop utilization.
- * - `heap_used_bytes`: The amount of memory used by the V8 heap.
- * - `heap_total_bytes`: The total size of the V8 heap.
- * - `rss_bytes`: The resident set size, or total memory allocated for the process.
+ * - `'event_loop_delay_milliseconds'`: The delay in the Node.js event loop, measured in milliseconds.
+ * - `'event_loop_utilized'`: The proportion of time the event loop is actively processing events.
+ * - `'heap_used_bytes'`: The number of bytes used by the V8 heap.
+ * - `'heap_total_bytes'`: The total number of bytes allocated for the V8 heap.
+ * - `'rss_bytes'`: The resident set size, or the amount of memory allocated for the process.
+ * - `'process_start_time_seconds'`: The process start time, represented in seconds since the Unix epoch.
+ * - `'process_cpu_user_seconds_total'`: The total user CPU time consumed by the process, in seconds.
+ * - `'process_cpu_system_seconds_total'`: The total system CPU time consumed by the process, in seconds.
+ * - `'process_cpu_seconds_total'`: The total CPU time (user + system) consumed by the process, in seconds.
  */
 export type MetricProperties =
   | 'event_loop_delay_milliseconds'
