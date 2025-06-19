@@ -47,6 +47,7 @@ export const underPressureExpressMiddleware = ({
 
       res.setHeader('Retry-After', `${retryAfter}`);
       res.status(503).end();
+      return;
     }
 
     next();
