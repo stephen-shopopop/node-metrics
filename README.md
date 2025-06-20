@@ -2,6 +2,12 @@
 
 Process load measuring plugin for nodeJs (koa, express, hono), with automatic handling of "Service Unavailable". It can check maxEventLoopDelay, maxHeapUsedBytes, maxRssBytes, and maxEventLoopUtilization values. You can also specify a port server for prometheus metrics's server.
 
+## Install
+
+```shell
+npm i @stephen-shopopop/node-metrics
+```
+
 ## Usage
 
 ### Koa
