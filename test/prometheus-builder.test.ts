@@ -91,7 +91,6 @@ describe('PrometheusBuild', () => {
     const body = await response.text();
 
     // Assert
-    console.log(body);
     t.assert.match(body, /# HELP active_users Number of active users/);
     t.assert.match(body, /# TYPE active_users gauge/);
     t.assert.match(body, /active_users 42/);

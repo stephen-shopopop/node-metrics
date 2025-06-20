@@ -116,7 +116,7 @@ export class MetricsServer {
   async start(port: number): Promise<void> {
     const { server, address } = await createWebServer({
       port,
-      fetchCallback: (request) => this.#fetchCallback(request)
+      fetchCallback: (ctx) => this.#fetchCallback(ctx)
     });
 
     this.observer.notify(`Starting metrics server on ${address.port}`, { ...address });
