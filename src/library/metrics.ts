@@ -122,7 +122,7 @@ export class Metrics<T extends object = MetricsValues> {
    *
    * This method performs the following actions:
    * - Captures the current metrics state using the metrics mediator.
-   * - Publishes the metrics data to the broadcastChannel.
+   * - Publishes the metrics data to the broadcastChannel with topic: "channel:metrics" .
    * - Refreshes the internal timer if it exists.
    *
    * @private

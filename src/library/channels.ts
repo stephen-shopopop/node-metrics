@@ -19,5 +19,14 @@ export const channels = {
    * ```
    */
   error: diagnostics_channel.channel('handling-web-server:error'),
+  /**
+   * ```ts
+   * import diagnostics_channel from ‘node:diagnostics_channel’
+   *
+   * diagnostics_channel.subscribe(‘handling-web-server:info, (message, name) => {
+   *  console.log(message, name)
+   * })
+   * ```
+   */
   info: diagnostics_channel.channel('handling-web-server:info')
 };
