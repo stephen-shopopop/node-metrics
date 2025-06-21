@@ -116,15 +116,16 @@ export class MetricsServer {
         start: (controller) => {
           controller.enqueue(`: Welcome to #${CHANNEL_TOPIC_METRICS} message!\n\n`);
 
-          // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-          channel.onmessage = (event: any) => {
-            const body = `data: ${JSON.stringify({
-              id: crypto.randomUUID(),
-              ts: new Date().toISOString(),
-              type: event.type,
-              payload: event.data
-            })}\n\n`;
-            controller.enqueue(body);
+          channel.onmessage = (message: unknown) => {
+            const event = message as MessageEvent;
+
+            controller.enqueue(
+              `data: ${JSON.stringify({
+                ts: new Date().toISOString(),
+                type: event.type,
+                payload: event.data
+              })}\n\n`
+            );
           };
         },
         cancel() {

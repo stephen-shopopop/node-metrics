@@ -3,6 +3,7 @@ import { MetricsServer } from '../src/library/metrics-server.js';
 import { StoreBuilder } from '../src/library/store-builder.js';
 import type { MetricsValues } from '../src/index.js';
 import { MetricsObservable } from '../src/library/metrics-observer.js';
+import { resolve } from 'node:path';
 
 const template = `# HELP event_loop_delay_milliseconds The mean of the recorded event loop delays
 # TYPE event_loop_delay_milliseconds gauge
@@ -104,7 +105,7 @@ describe('MetricsServer', () => {
     t.assert.strictEqual(await response.text(), '');
   });
 
-  test.skip('should expose metrics-stream endpoint with event-stream headers', async (t: TestContext) => {
+  test('should expose metrics-stream endpoint with event-stream headers', async (t: TestContext) => {
     t.plan(3);
 
     // Arrange
@@ -113,14 +114,13 @@ describe('MetricsServer', () => {
     // Act
     const response = await fetch(
       `http://localhost:${metricsServer.getAddressInfo()?.port}/metrics-stream`,
-      { headers: { Accept: 'text/event-stream' } }
+      { headers: { Accept: 'text/event-stream' }, signal: AbortSignal.timeout(100) }
     );
 
     // Assert
     t.assert.strictEqual(response.status, 200);
     t.assert.strictEqual(response.headers.get('content-type'), 'text/event-stream');
 
-    await metricsServer.destroy();
     const reader = response.body?.getReader();
     // biome-ignore lint/style/noNonNullAssertion: <explanation>
     const { value } = await reader!.read();

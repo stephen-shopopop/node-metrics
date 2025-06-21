@@ -555,6 +555,61 @@ describe('web-server', () => {
         // Assert
         t.assert.strictEqual(ended, true);
       });
+
+      it('should remove event listeners after completion', async (t: TestContext) => {
+        t.plan(2);
+
+        // Arrange
+        const writable = new Writable({
+          write(_chunk, _enc, cb) {
+            cb();
+          }
+        });
+
+        const stream = new ReadableStream<Uint8Array>({
+          start(controller) {
+            controller.enqueue(new Uint8Array([1]));
+            controller.close();
+          }
+        });
+
+        // Act
+        await writeFromReadableStream(stream, writable);
+
+        // Assert
+        // There should be no 'close' or 'error' listeners left
+        t.assert.strictEqual(writable.listenerCount('close'), 0);
+        t.assert.strictEqual(writable.listenerCount('error'), 0);
+      });
+
+      it('should not write if writable is destroyed before reading', async (t: TestContext) => {
+        t.plan(2);
+
+        // Arrange
+        let written = false;
+        const writable = new Writable({
+          write(_chunk, _enc, cb) {
+            written = true;
+            cb();
+          }
+        });
+        writable.destroyed = true;
+
+        let cancelled = false;
+
+        const stream = new ReadableStream<Uint8Array>({
+          cancel() {
+            cancelled = true;
+          }
+        });
+
+        // Act
+        await writeFromReadableStream(stream, writable);
+
+        // Assert
+        t.assert.strictEqual(written, false);
+        t.assert.strictEqual(cancelled, true);
+      });
     });
   });
 });

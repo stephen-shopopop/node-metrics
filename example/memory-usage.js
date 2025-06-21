@@ -15,13 +15,13 @@ const blockMemory = () => {
 };
 
 const metrics = Metrics.start({ webServerMetricsPort: 9090 });
-// metrics.register(new DebugPlugin());
+metrics.register(new DebugPlugin());
 metrics.observer.attach(console.debug);
 
 while (true) {
   await setTimeout(1000);
 
-  // blockMemory();
+  blockMemory();
 
   const { heap_used_bytes, rss_bytes } = metrics.measures();
 
@@ -35,7 +35,7 @@ while (true) {
       rss_bytes / (1024 * 1024)
     );
 
-    // process.exit(0);
+    process.exit(0);
   }
 
   if (heap_used_bytes > maxHeapUsedBytes) {

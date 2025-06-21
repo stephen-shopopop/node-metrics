@@ -138,6 +138,7 @@ export function writeFromReadableStream(stream: ReadableStream<Uint8Array>, writ
 
   if (writable.destroyed) {
     stream.cancel();
+
     return;
   }
 
