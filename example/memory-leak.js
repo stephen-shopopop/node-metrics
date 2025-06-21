@@ -4,15 +4,17 @@ import { setTimeout } from 'node:timers/promises';
 const maxHeapUsedBytes = 100_000_000;
 const maxRssBytes = 100_000_000;
 
-const blockMemory = () => {
-  let obj = { a: 1 };
-  const niter = 20;
-  for (let i = 0; i < niter; i++) {
-    obj = { obj1: obj, obj2: obj }; // Object grows exponentially
-  }
+const memoryLeak = new Map();
 
-  JSON.stringify(obj); // Blocking here
-};
+function runMemoryLeakTask() {
+  for (let i = 0; i < 10000; i++) {
+    const person = {
+      name: `Person number ${i}`,
+      age: i
+    };
+    memoryLeak.set(person, `I am a person number ${i}`);
+  }
+}
 
 const metrics = Metrics.start({ webServerMetricsPort: 9090 });
 metrics.register(new DebugPlugin());
@@ -21,13 +23,9 @@ metrics.observer.attach(console.debug);
 while (true) {
   await setTimeout(1000);
 
-  blockMemory();
+  runMemoryLeakTask();
 
   const { heap_used_bytes, rss_bytes } = metrics.measures();
-
-  if (heap_used_bytes > maxHeapUsedBytes) {
-    console.error('heap used max');
-  }
 
   if (rss_bytes > maxRssBytes) {
     console.error(
