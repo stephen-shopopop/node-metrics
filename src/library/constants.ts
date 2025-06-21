@@ -38,3 +38,11 @@ export const MAX_EVENT_LOOP_DELAY = 1e3;
  * @see {@link https://nodejs.org/api/perf_hooks.html#eventlooputilization}
  */
 export const MAX_EVENT_LOOP_UTILIZATION = 0.98;
+
+/**
+ * The topic name used for broadcasting metrics over a channel.
+ *
+ * This constant is used to identify the broadcast channel for metrics communication
+ * between different parts of the application or between different browser contexts.
+ */
+export const CHANNEL_TOPIC_METRICS = 'channel:metrics';

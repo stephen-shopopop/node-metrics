@@ -5,18 +5,27 @@ import type { Context, MetricsContext } from './definitions.js';
 import { PrometheusBuild } from './prometheus-builder.js';
 import type { MetricsObservable } from './metrics-observer.js';
 import { isUnderPressure } from './middleware/under-pressure.js';
-import { MAX_EVENT_LOOP_DELAY, MAX_EVENT_LOOP_UTILIZATION } from './constants.js';
+import {
+  CHANNEL_TOPIC_METRICS,
+  MAX_EVENT_LOOP_DELAY,
+  MAX_EVENT_LOOP_UTILIZATION
+} from './constants.js';
 
 /**
- * A server for exposing application and process metrics in Prometheus format.
+ * Provides a metrics server for exposing application and process metrics.
  *
- * The `MetricsServer` class provides an HTTP server that listens for requests on a configurable port
- * and serves metrics collected from the application context. It notifies an observer of server events
- * and incoming requests, and exposes metrics such as event loop delay, heap usage, RSS, and CPU time.
+ * The `MetricsServer` class initializes and manages a web server that exposes
+ * metrics endpoints for Prometheus scraping and real-time metrics streaming.
+ * It supports graceful startup and shutdown, notifies observers of server events,
+ * and provides access to collected metrics such as event loop delay, memory usage,
+ * and CPU statistics.
  *
  * @remarks
- * - The server responds to `GET /metrics` requests with a Prometheus-formatted metrics payload.
- * - All incoming requests and server lifecycle events are reported to the provided `MetricsObservable`.
+ * - The `/metrics` endpoint returns Prometheus-formatted metrics.
+ * - The `/metrics-stream` endpoint provides a real-time event stream of metrics updates. `curl -H Accept:text/event-stream http://localhost:9090/metrics-stream`
+ * - Observers are notified of server lifecycle events and incoming requests.
+ *
+ * @public
  */
 export class MetricsServer {
   #server: Server | undefined;
@@ -98,6 +107,39 @@ export class MetricsServer {
           'The total CPU time (user + system) consumed by the process, in seconds'
         )
         .printRegistries();
+    }
+
+    if (context.method === 'GET' && context.path === '/metrics-stream') {
+      const channel = new BroadcastChannel(CHANNEL_TOPIC_METRICS);
+
+      const stream = new ReadableStream({
+        start: (controller) => {
+          controller.enqueue(`: Welcome to #${CHANNEL_TOPIC_METRICS} message!\n\n`);
+
+          // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+          channel.onmessage = (event: any) => {
+            const body = `data: ${JSON.stringify({
+              id: crypto.randomUUID(),
+              ts: new Date().toISOString(),
+              type: event.type,
+              payload: event.data
+            })}\n\n`;
+            controller.enqueue(body);
+          };
+        },
+        cancel() {
+          channel.close();
+        }
+      });
+
+      return new Response(stream.pipeThrough(new TextEncoderStream()), {
+        headers: {
+          'Transfer-Encoding': 'chunked',
+          connection: 'keep-alive',
+          'cache-control': 'no-cache',
+          'content-type': 'text/event-stream'
+        }
+      });
     }
 
     return new Response();

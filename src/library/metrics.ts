@@ -4,7 +4,7 @@ import { MemoryUsagePlugin } from './plugins/memory-usage.js';
 import { EventLoopUtilizationPlugin } from './plugins/event-loop-utilization.js';
 import { MetricsMediator } from './metrics-mediator.js';
 import { EventLoopDelayPlugin } from './plugins/event-loop-delay.js';
-import { DEFAULT_RESOLUTION, DEFAULT_SAMPLE_INTERVAL } from './constants.js';
+import { CHANNEL_TOPIC_METRICS, DEFAULT_RESOLUTION, DEFAULT_SAMPLE_INTERVAL } from './constants.js';
 import { ProcessUpTimePlugin } from './plugins/process-uptime.js';
 import { ProcessCpuUsagePlugin } from './plugins/process-cpu-usage.js';
 import { MetricsObservable } from './metrics-observer.js';
@@ -117,8 +117,22 @@ export class Metrics<T extends object = MetricsValues> {
     return this;
   }
 
+  /**
+   * Initializes the metrics collection process.
+   *
+   * This method performs the following actions:
+   * - Captures the current metrics state using the metrics mediator.
+   * - Publishes the metrics data to the broadcastChannel.
+   * - Refreshes the internal timer if it exists.
+   *
+   * @private
+   */
   #begin(): void {
     Metrics._instance.#metricsMediator.capture(Metrics._instance.#metrics);
+
+    const channel = new BroadcastChannel(CHANNEL_TOPIC_METRICS);
+    channel.postMessage(Metrics._instance.#metrics.toJson());
+    channel.close();
 
     Metrics._instance.#timer?.refresh();
   }

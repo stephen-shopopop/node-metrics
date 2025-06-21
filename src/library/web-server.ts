@@ -1,23 +1,10 @@
 import type { OutgoingHttpHeaders, Server } from 'node:http';
 import http from 'node:http';
 import type { AddressInfo } from 'node:net';
-import { Readable } from 'node:stream';
+import { Readable, type Writable } from 'node:stream';
 import type { Context, FetchCallback, WebServerOptions } from './definitions.js';
-import diagnostics_channel from 'node:diagnostics_channel';
-
-const channels = {
-  /**
-   * ```ts
-   * import diagnostics_channel from ‘node:diagnostics_channel’
-   *
-   * diagnostics_channel.subscribe(‘handling-web-server:error’, (message, name) => {
-   *  console.log(message, name)
-   * })
-   * ```
-   */
-  error: diagnostics_channel.channel('handling-web-server:error'),
-  info: diagnostics_channel.channel('handling-web-server:info')
-};
+import type { ReadableStreamReadResult } from 'node:stream/web';
+import { channels } from './channels.js';
 
 /**
  * Safely parses a JSON string, returning the parsed object if successful,
@@ -131,6 +118,66 @@ export const buildContext = async (request: Request): Promise<Context> => ({
   body: safeJsonParse(Buffer.from(await request.arrayBuffer()).toString())
 });
 
+/**
+ * Pipes data from a web-standard `ReadableStream<Uint8Array>` to a Node.js `Writable` stream.
+ *
+ * This function reads chunks from the provided `ReadableStream` and writes them to the given
+ * Node.js `Writable` stream, handling backpressure and stream cancellation. If the writable
+ * stream is destroyed or encounters an error, the readable stream is cancelled. Likewise,
+ * if the readable stream ends, the writable stream is ended.
+ *
+ * @param stream - The web-standard readable stream to read data from.
+ * @param writable - The Node.js writable stream to write data to.
+ * @throws {TypeError} If the readable stream is already locked.
+ * @returns A promise that resolves when the readable stream is closed and all cleanup is complete.
+ */
+export function writeFromReadableStream(stream: ReadableStream<Uint8Array>, writable: Writable) {
+  if (stream.locked) {
+    throw new TypeError('ReadableStream is locked.');
+  }
+
+  if (writable.destroyed) {
+    stream.cancel();
+    return;
+  }
+
+  const reader = stream.getReader();
+  writable.on('close', cancel);
+  writable.on('error', cancel);
+  reader.read().then(flow, cancel);
+
+  return reader.closed.finally(() => {
+    writable.off('close', cancel);
+    writable.off('error', cancel);
+  });
+
+  // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+  function cancel(error?: any) {
+    reader.cancel(error).catch(() => {});
+    if (error) {
+      writable.destroy(error);
+    }
+  }
+
+  function onDrain() {
+    reader.read().then(flow, cancel);
+  }
+
+  function flow({ done, value }: ReadableStreamReadResult<Uint8Array>): void | Promise<void> {
+    try {
+      if (done) {
+        writable.end();
+      } else if (!writable.write(value)) {
+        writable.once('drain', onDrain);
+      } else {
+        return reader.read().then(flow, cancel);
+      }
+    } catch (e) {
+      cancel(e);
+    }
+  }
+}
+
 const getRequestListener = (fetchCallback: FetchCallback) => {
   return async (
     incoming: Readonly<http.IncomingMessage>,
@@ -158,7 +205,11 @@ const getRequestListener = (fetchCallback: FetchCallback) => {
         `${incoming.method} http://${incoming.headers.host}${incoming.url} ${res.status}`
       );
 
-      if (res.body) {
+      if (res.headers.get('Transfer-Encoding')) {
+        outgoing.writeHead(res.status, buildOutgoingHttpHeaders(res.headers));
+
+        await writeFromReadableStream(res.body as ReadableStream<Uint8Array>, outgoing);
+      } else if (res.body) {
         const buffer = await res.arrayBuffer();
         res.headers.set('Content-Length', buffer.byteLength.toString());
 

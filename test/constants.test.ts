@@ -1,4 +1,5 @@
 import {
+  CHANNEL_TOPIC_METRICS,
   DEFAULT_RESOLUTION,
   DEFAULT_SAMPLE_INTERVAL,
   MAX_EVENT_LOOP_DELAY,
@@ -49,5 +50,15 @@ describe('constants', () => {
   it('should have MAX_EVENT_LOOP_UTILIZATION as a number', (t: TestContext) => {
     t.plan(1);
     t.assert.strictEqual(typeof MAX_EVENT_LOOP_UTILIZATION, 'number');
+  });
+
+  it('should export BROADCAST_CHANNEL_TOPIC_METRICS with value "channel:metrics"', (t: TestContext) => {
+    t.plan(1);
+    t.assert.strictEqual(CHANNEL_TOPIC_METRICS, 'channel:metrics');
+  });
+
+  it('should have BROADCAST_CHANNEL_TOPIC_METRICS as a string', (t: TestContext) => {
+    t.plan(1);
+    t.assert.strictEqual(typeof CHANNEL_TOPIC_METRICS, 'string');
   });
 });

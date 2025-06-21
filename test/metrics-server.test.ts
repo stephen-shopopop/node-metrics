@@ -104,6 +104,30 @@ describe('MetricsServer', () => {
     t.assert.strictEqual(await response.text(), '');
   });
 
+  test.skip('should expose metrics-stream endpoint with event-stream headers', async (t: TestContext) => {
+    t.plan(3);
+
+    // Arrange
+    await metricsServer.start(3000);
+
+    // Act
+    const response = await fetch(
+      `http://localhost:${metricsServer.getAddressInfo()?.port}/metrics-stream`,
+      { headers: { Accept: 'text/event-stream' } }
+    );
+
+    // Assert
+    t.assert.strictEqual(response.status, 200);
+    t.assert.strictEqual(response.headers.get('content-type'), 'text/event-stream');
+
+    await metricsServer.destroy();
+    const reader = response.body?.getReader();
+    // biome-ignore lint/style/noNonNullAssertion: <explanation>
+    const { value } = await reader!.read();
+    const text = new TextDecoder().decode(value);
+    t.assert.match(text, /Welcome to #/);
+  });
+
   test('should return 503 when system is under pressure', async (t: TestContext) => {
     t.plan(3);
 

@@ -9,6 +9,8 @@ import {
 import type http from 'node:http';
 import it, { afterEach, describe, type TestContext } from 'node:test';
 import { buildContext } from '../src/library/web-server';
+import { writeFromReadableStream } from '../src/library/web-server';
+import { Writable } from 'node:stream';
 
 describe('web-server', () => {
   describe('parseAndCoerceHeaders', () => {
@@ -374,6 +376,184 @@ describe('web-server', () => {
 
         // Cleanup
         console.error = originalError;
+      });
+    });
+
+    describe('writeFromReadableStream', () => {
+      it('should write all chunks from ReadableStream to Writable', async (t: TestContext) => {
+        t.plan(1);
+
+        // Arrange
+        const chunks = [new Uint8Array([1, 2]), new Uint8Array([3, 4])];
+        const written: Uint8Array[] = [];
+        const writable = new Writable({
+          write(chunk, _enc, cb) {
+            written.push(chunk);
+            cb();
+          }
+        });
+
+        const stream = new ReadableStream<Uint8Array>({
+          start(controller) {
+            for (const chunk of chunks) {
+              controller.enqueue(chunk);
+            }
+            controller.close();
+          }
+        });
+
+        // Act
+        await writeFromReadableStream(stream, writable);
+
+        // Assert
+        t.assert.strictEqual(writable.writableEnded, true);
+      });
+
+      it('should throw if ReadableStream is locked', (t: TestContext) => {
+        t.plan(1);
+
+        // Arrange
+        const stream = new ReadableStream<Uint8Array>();
+        // Lock the stream
+        stream.getReader();
+
+        const writable = new Writable({
+          write(_chunk, _enc, cb) {
+            cb();
+          }
+        });
+
+        // Act & Assert
+        t.assert.throws(() => writeFromReadableStream(stream, writable), {
+          name: 'TypeError',
+          message: 'ReadableStream is locked.'
+        });
+      });
+
+      it('should cancel stream and return if writable is destroyed', async (t: TestContext) => {
+        t.plan(1);
+
+        // Arrange
+        let cancelled = false;
+        const stream = new ReadableStream<Uint8Array>({
+          cancel() {
+            cancelled = true;
+          }
+        });
+
+        const writable = new Writable();
+        writable.destroyed = true;
+
+        // Act
+        await writeFromReadableStream(stream, writable);
+
+        // Assert
+        t.assert.strictEqual(cancelled, true);
+      });
+
+      it('should handle backpressure (drain event)', async (t: TestContext) => {
+        t.plan(1);
+
+        // Arrange
+        const chunks = [new Uint8Array([1]), new Uint8Array([2])];
+        const written: Uint8Array[] = [];
+        let writeCount = 0;
+
+        const writable = new Writable({
+          write(chunk, _enc, cb) {
+            written.push(chunk);
+            writeCount++;
+            // Simulate backpressure on first write
+            if (writeCount === 1) {
+              // Don't call cb immediately, simulate full buffer
+              setTimeout(cb, 10);
+              return false;
+            }
+            cb();
+            return true;
+          }
+        });
+
+        const stream = new ReadableStream<Uint8Array>({
+          start(controller) {
+            for (const chunk of chunks) {
+              controller.enqueue(chunk);
+            }
+            controller.close();
+          }
+        });
+
+        // Act
+        await writeFromReadableStream(stream, writable);
+
+        // Assert
+        t.assert.strictEqual(writable.writableEnded, true);
+      });
+
+      it('should end writable and cancel reader if writable emits error', async (t: TestContext) => {
+        t.plan(2);
+
+        // Arrange
+        let cancelled = false;
+        let destroyed = false;
+        const stream = new ReadableStream<Uint8Array>({
+          cancel() {
+            cancelled = true;
+          },
+          start(controller) {
+            controller.enqueue(new Uint8Array([1, 2, 3]));
+          }
+        });
+
+        const writable = new Writable({
+          write(_chunk, _enc, cb) {
+            cb();
+          }
+        });
+
+        writable.on('error', () => {
+          destroyed = true;
+        });
+
+        // Simulate error after a tick
+        setImmediate(() => {
+          writable.emit('error', new Error('fail'));
+        });
+
+        // Act
+        await writeFromReadableStream(stream, writable);
+
+        // Assert
+        t.assert.strictEqual(cancelled, true);
+        t.assert.strictEqual(destroyed, true);
+      });
+
+      it('should end writable when readable stream is done', async (t: TestContext) => {
+        t.plan(1);
+
+        // Arrange
+        let ended = false;
+        const writable = new Writable({
+          write(_chunk, _enc, cb) {
+            cb();
+          },
+          final(cb) {
+            ended = true;
+            cb();
+          }
+        });
+
+        const stream = new ReadableStream<Uint8Array>({
+          start(controller) {
+            controller.close();
+          }
+        });
+
+        // Act
+        await writeFromReadableStream(stream, writable);
+
+        // Assert
+        t.assert.strictEqual(ended, true);
       });
     });
   });
