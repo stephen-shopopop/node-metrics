@@ -39,7 +39,9 @@ export class MetricsServer {
   }
 
   async #fetchCallback(context: Context): Promise<Response> {
-    this.observer.notify(`${context.method} ${context.path}`, { ...structuredClone(context) });
+    this.observer.notify(`${context.method} http://${context.headers['host']}${context.path}`, {
+      query: context.query
+    });
 
     const {
       event_loop_delay_milliseconds = 0,
