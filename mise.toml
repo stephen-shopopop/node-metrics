@@ -26,6 +26,39 @@ run = 'actionlint && npm run check'
 description = 'Maintenance project'
 run = 'npm run maintenance && mise uninstall --all'
 
+[tasks.bench-node-server]
+description = 'Bench node server'
+run = 'node example/sample-node-server.js & sleep 2 ; echo \"Run bench!!\" & npx autocannon -c 100 -d 40 -t 10 --renderStatusCodes http://127.0.0.1:3000 && killall node'
+
+[tasks.bench-node-server-wih-metrics]
+description = 'Bench node server with metrics'
+run = 'node example/sample-node-server.js -m & sleep 2 ; echo \"Run bench!!\" & npx autocannon -c 100 -d 40 -t 10 --renderStatusCodes http://127.0.0.1:3000 && killall node'
+
+[tasks.bench-koa]
+description = 'Bench Koa server'
+run = 'node example/sample-koa.js & sleep 2 ; echo \"Run bench!!\" & npx autocannon -c 100 -d 40 -t 10 --renderStatusCodes http://127.0.0.1:3000 && killall node'
+
+[tasks.bench-koa-with-metrics]
+description = 'Bench Koa server with metrics'
+run = 'node example/sample-koa.js -m & sleep 2 ; echo \"Run bench!!\" & npx autocannon -c 100 -d 40 -t 10 --renderStatusCodes http://127.0.0.1:3000 && killall node'
+
+[tasks.bench-express]
+description = 'Bench express server'
+run = 'node example/sample-express.js & sleep 2 ; echo \"Run bench!!\" & npx autocannon -c 100 -d 40 -t 10 --renderStatusCodes http://127.0.0.1:3000 && killall node'
+
+[tasks.bench-express-with-metrics]
+description = 'Bench express server with metrics'
+run = 'node example/sample-express.js -m & sleep 2 ; echo \"Run bench!!\" & npx autocannon -c 100 -d 40 -t 10 --renderStatusCodes http://127.0.0.1:3000 && killall node'
+
+[tasks.bench-hono]
+description = 'Bench hono server'
+run = 'node example/sample-hono.js & sleep 2 ; echo \"Run bench!!\" & npx autocannon -c 100 -d 40 -t 10 --renderStatusCodes http://127.0.0.1:3000 && killall node'
+
+[tasks.bench-hono-with-metrics]
+description = 'Bench hono server with metrics'
+run = 'node example/sample-hono.js -m & sleep 2 ; echo \"Run bench!!\" & npx autocannon -c 100 -d 40 -t 10 --renderStatusCodes http://127.0.0.1:3000 && killall node'
+
+
 [tasks.info]
 description = "Print project information"
 run = '''
