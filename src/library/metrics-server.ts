@@ -30,6 +30,7 @@ import {
 export class MetricsServer {
   #server: Server | undefined;
   #address: AddressInfo | undefined;
+  #prefixName: `${string}_` | undefined;
 
   constructor(
     private readonly metricsContext: MetricsContext,
@@ -70,7 +71,7 @@ export class MetricsServer {
     }
 
     if (context.method === 'GET' && context.path === '/metrics') {
-      return new PrometheusBuild()
+      return new PrometheusBuild(this.#prefixName)
         .setGauge(
           'event_loop_delay_milliseconds',
           event_loop_delay_milliseconds,
@@ -158,7 +159,9 @@ export class MetricsServer {
    * @param port - The port number on which the metrics server should listen.
    * @returns A promise that resolves when the server has started.
    */
-  async start(port: number): Promise<void> {
+  async start(port: number, prefixName?: `${string}_`): Promise<void> {
+    this.#prefixName = prefixName;
+
     const { server, address } = await createWebServer({
       port,
       fetchCallback: (ctx) => this.#fetchCallback(ctx)

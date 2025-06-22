@@ -90,7 +90,7 @@ export class Metrics<T extends object = MetricsValues> {
           Metrics._instance.observer
         );
 
-        Metrics._instance.#server?.start(options.webServerMetricsPort);
+        Metrics._instance.#server?.start(options.webServerMetricsPort, options.name);
       }
 
       // Wait and see
