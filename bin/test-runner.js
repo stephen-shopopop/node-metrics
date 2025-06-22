@@ -66,11 +66,7 @@ if (args.values?.help) {
 try {
   // see https://nodejs.org/api/test.html#runoptions
   const stream = run({
-    execArgv: [
-      args.values['expose-gc'] === true
-        ? '--trace-gc --experimental-test-module-mocks'
-        : '--experimental-test-module-mocks'
-    ].filter(Boolean),
+    execArgv: [args.values['expose-gc'] === true ? '--trace-gc' : ''].filter(Boolean),
     concurrency: Number.parseInt(args.values.concurrency, 10),
     coverage: args.values.coverage,
     coverageExcludeGlobs: args.values.pattern,
