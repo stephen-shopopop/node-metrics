@@ -58,6 +58,17 @@ run = 'node example/sample-hono.js & sleep 2 ; echo \"Run bench!!\" & npx autoca
 description = 'Bench hono server with metrics'
 run = 'node example/sample-hono.js -m & sleep 2 ; echo \"Run bench!!\" & npx autocannon -c 100 -d 40 -t 10 --renderStatusCodes http://127.0.0.1:3000 && killall node'
 
+[tasks.docker-compose-up]
+description = 'Docker compose UP && run app sample'
+run = 'docker compose -f compose.yml up -d & sleep 2 ; echo \"Run App!!\" & node example/sample.js'
+
+[tasks.docker-compose-down]
+description = 'Docker compose DOWN & Clean'
+run = 'docker compose -f compose.yml down --rmi local --volumes --remove-orphans'
+
+[tasks.docker-builder-prune]
+description = 'Docker prune'
+run = 'docker builder prune -a && docker image prune && docker network prune'
 
 [tasks.info]
 description = "Print project information"

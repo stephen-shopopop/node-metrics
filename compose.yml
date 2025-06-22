@@ -1,0 +1,37 @@
+volumes:
+  prometheus-data:
+  grafana-data:
+
+services:
+  docker-host:
+    image: qoomon/docker-host
+    cap_add:
+      - NET_ADMIN
+      - NET_RAW
+    restart: on-failure
+    environment:
+      - PORTS=8080
+
+  prometheus:
+    image: prom/prometheus:v3.4.1
+    restart: unless-stopped
+    volumes:
+      - ./prometheus:/etc/prometheus
+      - prometheus-data:/prometheus
+    command: --web.enable-lifecycle  --config.file=/etc/prometheus/prometheus.yml
+    ports:
+      - 9090:9090
+
+  grafana:
+    image: grafana/grafana
+    user: "472"
+    depends_on:
+      - prometheus
+    restart: unless-stopped
+    volumes:
+      - ./grafana/provisioning:/etc/grafana/provisioning
+      - grafana-data:/var/lib/grafana
+    env_file:
+      - ./grafana/config.monitoring
+    ports:
+      - 3000:3000

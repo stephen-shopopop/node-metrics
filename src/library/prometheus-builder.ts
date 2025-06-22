@@ -88,12 +88,13 @@ export class PrometheusBuild {
   }
 
   /**
-   * Returns a HTTP response containing the list of all registered Prometheus registries.
+   * Generates a plain text representation of all registered Prometheus metrics and returns it as an HTTP response.
    *
-   * The registries are joined into a single string, separated by newlines, and returned
-   * with a content type of 'application/openmetrics-text'.
+   * The response body is constructed by flattening each metric's `help`, `type`, and `value` fields,
+   * joining them with newline characters. The response is returned with a `Content-Type` header
+   * set to `text/plain; version=0.0.4; charset=utf-8`, which is compatible with Prometheus exposition format.
    *
-   * @returns {Response} A response object with the joined registries as the body and a 200 status code.
+   * @returns {Response} An HTTP response containing the formatted metrics data.
    */
   printRegistries(): Response {
     const body = this.#registries
@@ -102,7 +103,10 @@ export class PrometheusBuild {
 
     return new Response(body, {
       status: 200,
-      headers: { 'Content-Type': 'application/openmetrics-text' }
+      headers: {
+        'Content-Type': 'text/plain; version=0.0.4; charset=utf-8'
+        // 'Content-Type': 'application/openmetrics-text; version=1.0.0; charset=utf-8' - need "#EOF \n" after each metrics
+      }
     });
   }
 }

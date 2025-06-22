@@ -85,7 +85,10 @@ describe('MetricsServer', () => {
 
     // Assert
     t.assert.strictEqual(response.status, 200);
-    t.assert.strictEqual(response.headers.get('content-type'), 'application/openmetrics-text');
+    t.assert.strictEqual(
+      response.headers.get('content-type'),
+      'text/plain; version=0.0.4; charset=utf-8'
+    );
     t.assert.strictEqual(metricsText, template);
   });
 

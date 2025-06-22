@@ -161,6 +161,9 @@ describe('PrometheusBuild', () => {
 
     // Assert
     t.assert.strictEqual(response.status, 200);
-    t.assert.strictEqual(response.headers.get('Content-Type'), 'application/openmetrics-text');
+    t.assert.strictEqual(
+      response.headers.get('Content-Type'),
+      'text/plain; version=0.0.4; charset=utf-8'
+    );
   });
 });
