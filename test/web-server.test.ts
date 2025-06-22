@@ -115,9 +115,9 @@ describe('web-server', () => {
       // Arrange
       const { server: srv, address } = await createWebServer({
         port: 0,
-        fetchCallback: (ctx) => {
+        fetchCallback: async (ctx) => {
           if (ctx.method === 'POST' && ctx.path === '/data') {
-            return new Response(JSON.stringify(ctx.body), {
+            return new Response(JSON.stringify(await ctx.body()), {
               status: 200,
               headers: { 'content-type': 'application/json' }
             });
@@ -211,7 +211,7 @@ describe('web-server', () => {
         });
         t.assert.strictEqual(ctx.path, '/test');
         t.assert.deepStrictEqual(ctx.query, { foo: 'bar', baz: '42' });
-        t.assert.deepStrictEqual(ctx.body, bodyObj);
+        t.assert.deepStrictEqual(await ctx.body(), bodyObj);
       });
 
       it('should handle non-JSON body gracefully', async (t: TestContext) => {
@@ -227,7 +227,7 @@ describe('web-server', () => {
         const ctx = await buildContext(req);
 
         // Assert
-        t.assert.strictEqual(ctx.body, 'plain text');
+        t.assert.strictEqual(await ctx.body(), 'plain text');
       });
 
       it('should handle empty body', async (t: TestContext) => {
@@ -242,7 +242,7 @@ describe('web-server', () => {
         const ctx = await buildContext(req);
 
         // Assert
-        t.assert.strictEqual(ctx.body, '');
+        t.assert.strictEqual(await ctx.body(), '');
       });
 
       it('should parse query parameters correctly', async (t: TestContext) => {

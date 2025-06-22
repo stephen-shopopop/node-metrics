@@ -100,22 +100,22 @@ export const handleResponseError = (e: unknown, outgoing: Readonly<http.ServerRe
 };
 
 /**
- * Asynchronously builds a context object from a given HTTP request.
+ * Builds a context object from the incoming HTTP request.
  *
- * @param request - The incoming HTTP request to extract context from.
+ * @param request - The incoming HTTP request object.
  * @returns A promise that resolves to a `Context` object containing:
  *   - `method`: The HTTP method of the request.
- *   - `headers`: An object representation of the request headers.
- *   - `path`: The pathname portion of the request URL.
- *   - `query`: An object representation of the query parameters.
- *   - `body`: The parsed JSON body of the request, or the raw value if parsing fails.
+ *   - `headers`: An object representing the request headers.
+ *   - `path`: The pathname of the request URL.
+ *   - `query`: An object representing the query parameters.
+ *   - `body`: An async function that parses and returns the JSON body of the request.
  */
 export const buildContext = async (request: Request): Promise<Context> => ({
   method: request.method,
   headers: Object.fromEntries(request.headers),
   path: new URL(request.url).pathname,
   query: Object.fromEntries(new URL(request.url).searchParams),
-  body: safeJsonParse(Buffer.from(await request.arrayBuffer()).toString())
+  body: async () => safeJsonParse(Buffer.from(await request.arrayBuffer()).toString())
 });
 
 /**

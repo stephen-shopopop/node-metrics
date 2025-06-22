@@ -122,20 +122,20 @@ export type MetricsContext<T extends object = MetricsValues> = StoreBuilder<T>;
 export type Observer = (message: string | object, metadata?: object) => void;
 
 /**
- * Represents the context of an HTTP request handled by the web server.
+ * Represents the context of an HTTP request.
  *
- * @property method - The HTTP method of the request (e.g., 'GET', 'POST').
- * @property headers - A record containing the request headers as key-value pairs.
- * @property path - The URL path of the request.
- * @property query - An object representing the parsed query parameters.
- * @property body - The parsed body of the request, if any.
+ * @property method - The HTTP method (e.g., 'GET', 'POST').
+ * @property headers - A record of HTTP headers associated with the request.
+ * @property path - The request path (URL endpoint).
+ * @property query - An object containing query parameters from the URL.
+ * @property body - A function that returns a promise resolving to the parsed request body.
  */
 export type Context = {
   method: string;
   headers: Record<string, string>;
   path: string;
-  query: Record<string, unknown>;
-  body: unknown;
+  query: Record<string, string>;
+  body: () => Promise<unknown>;
 };
 
 /**
