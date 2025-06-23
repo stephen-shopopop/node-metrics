@@ -6,13 +6,13 @@ import type { StoreBuilder } from './store-builder.js';
  * @property sampleIntervalInMs - The interval, in milliseconds, at which samples are collected.
  * @property resolution - The resolution or granularity of the collected metrics.
  * @property webServerMetricsPort - The port number on which the web server for metrics will listen.
- * @property name - The name identifier for the metrics instance, must end with an underscore.
+ * @property appName - The name of the application, formatted as `${string}-${string}` (e.g., "service-order").
  */
 export type Options = {
   sampleIntervalInMs: number;
   resolution: number;
   webServerMetricsPort: number;
-  name: `${string}_`;
+  appName: `${string}-${string}`;
 };
 
 /**

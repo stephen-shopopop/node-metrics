@@ -17,26 +17,31 @@ type StandardMetric = {
 };
 
 /**
- * Represents a Prometheus Gauge metric.
+ * Represents a Prometheus Gauge metric for monitoring purposes.
  *
  * A Gauge is a metric that represents a single numerical value that can arbitrarily go up and down.
- * This class allows you to define a gauge with a name, value, optional label, and optional prefix.
+ * This class helps construct a Prometheus-compatible gauge metric with optional labeling and service identification.
  *
  * ## Example
  *
  * ```ts
- * const gauge = new Gauge('active_users', 42, 'Number of active users', 'app_');
- * const metric = gauge.register();
+ * const gauge = new Gauge('active_users', 42, 'Number of active users', 'user-service');
+ * const metric = gauge.registry();
  * ```
  *
- * @public
+ * @param name - The name of the metric (without prefix).
+ * @param value - The current value of the gauge.
+ * @param label - (Optional) A description or label for the metric.
+ * @param service - (Optional) The service name associated with the metric. Defaults to 'unknown'.
+ * @param prefix - (Optional) The prefix for the metric name. Defaults to 'nodejs_'.
  */
 export class Gauge {
   constructor(
     readonly name: string,
     readonly value: number,
     readonly label = '',
-    readonly prefix = ''
+    readonly service = 'unknown',
+    readonly prefix = 'nodejs_'
   ) {
     /** */
   }
@@ -45,7 +50,7 @@ export class Gauge {
     return {
       help: `# HELP ${this.prefix}${this.name} ${this.label}`,
       type: `# TYPE ${this.prefix}${this.name} gauge`,
-      value: `${this.prefix}${this.name} ${this.value}`
+      value: `${this.prefix}${this.name}{service="${this.service}"} ${this.value}`
     };
   }
 }
@@ -59,7 +64,7 @@ export class Gauge {
  * OpenMetrics text format.
  *
  * @remarks
- * - The prefix, if provided, is prepended to all metric names.
+ * - The serviceName, if provided, is prepended to all metric labels.
  * - The `printRegistries` method returns a `Response` object with all metrics formatted for Prometheus scraping.
  *
  * @public
@@ -67,7 +72,7 @@ export class Gauge {
 export class PrometheusBuild {
   #registries: StandardMetric[] = [];
 
-  constructor(readonly prefix?: `${string}_`) {
+  constructor(readonly serviceName?: `${string}-${string}`) {
     /** */
   }
 
@@ -80,7 +85,7 @@ export class PrometheusBuild {
    * @param label - (Optional) A label to associate with the gauge metric.
    */
   setGauge(name: string, value: number, label?: string) {
-    const gauge = new Gauge(name, value, label, this.prefix);
+    const gauge = new Gauge(name, value, label, this.serviceName);
 
     this.#registries.push(gauge.registry());
 

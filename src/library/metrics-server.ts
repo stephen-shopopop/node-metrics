@@ -30,7 +30,7 @@ import {
 export class MetricsServer {
   #server: Server | undefined;
   #address: AddressInfo | undefined;
-  #prefixName: `${string}_` | undefined;
+  #appName: `${string}-${string}` | undefined;
 
   constructor(
     private readonly metricsContext: MetricsContext,
@@ -71,7 +71,7 @@ export class MetricsServer {
     }
 
     if (context.method === 'GET' && context.path === '/metrics') {
-      return new PrometheusBuild(this.#prefixName)
+      return new PrometheusBuild(this.#appName)
         .setGauge(
           'event_loop_delay_milliseconds',
           event_loop_delay_milliseconds,
@@ -157,10 +157,11 @@ export class MetricsServer {
    * stores the server and address instances for later use.
    *
    * @param port - The port number on which the metrics server should listen.
+   * @param appName - (Optional) The application name in the format `${string}-${string}`.
    * @returns A promise that resolves when the server has started.
    */
-  async start(port: number, prefixName?: `${string}_`): Promise<void> {
-    this.#prefixName = prefixName;
+  async start(port: number, appName?: `${string}-${string}`): Promise<void> {
+    this.#appName = appName;
 
     const { server, address } = await createWebServer({
       port,

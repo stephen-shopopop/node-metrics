@@ -4,61 +4,61 @@ import { StoreBuilder } from '../src/library/store-builder.js';
 import type { MetricsValues } from '../src/index.js';
 import { MetricsObservable } from '../src/library/metrics-observer.js';
 
-const template = `# HELP event_loop_delay_milliseconds The mean of the recorded event loop delays
-# TYPE event_loop_delay_milliseconds gauge
-event_loop_delay_milliseconds 0
-# HELP event_loop_utilized The percentage of event loop utilization
-# TYPE event_loop_utilized gauge
-event_loop_utilized 0
-# HELP heap_used_bytes The amount of memory used by the V8 heap
-# TYPE heap_used_bytes gauge
-heap_used_bytes 0
-# HELP heap_total_bytes The total size of the V8 heap.
-# TYPE heap_total_bytes gauge
-heap_total_bytes 0
-# HELP rss_bytes The resident set size, or total memory allocated for the process
-# TYPE rss_bytes gauge
-rss_bytes 0
-# HELP process_start_time_seconds The process start time, represented in seconds since the Unix epoch
-# TYPE process_start_time_seconds gauge
-process_start_time_seconds 0
-# HELP process_cpu_user_seconds_total The total user CPU time consumed by the process, in seconds
-# TYPE process_cpu_user_seconds_total gauge
-process_cpu_user_seconds_total 0
-# HELP process_cpu_system_seconds_total The total system CPU time consumed by the process, in seconds
-# TYPE process_cpu_system_seconds_total gauge
-process_cpu_system_seconds_total 0
-# HELP process_cpu_seconds_total The total CPU time (user + system) consumed by the process, in seconds
-# TYPE process_cpu_seconds_total gauge
-process_cpu_seconds_total 0`;
+const template = `# HELP nodejs_event_loop_delay_milliseconds The mean of the recorded event loop delays
+# TYPE nodejs_event_loop_delay_milliseconds gauge
+nodejs_event_loop_delay_milliseconds{service="unknown"} 0
+# HELP nodejs_event_loop_utilized The percentage of event loop utilization
+# TYPE nodejs_event_loop_utilized gauge
+nodejs_event_loop_utilized{service="unknown"} 0
+# HELP nodejs_heap_used_bytes The amount of memory used by the V8 heap
+# TYPE nodejs_heap_used_bytes gauge
+nodejs_heap_used_bytes{service="unknown"} 0
+# HELP nodejs_heap_total_bytes The total size of the V8 heap.
+# TYPE nodejs_heap_total_bytes gauge
+nodejs_heap_total_bytes{service="unknown"} 0
+# HELP nodejs_rss_bytes The resident set size, or total memory allocated for the process
+# TYPE nodejs_rss_bytes gauge
+nodejs_rss_bytes{service="unknown"} 0
+# HELP nodejs_process_start_time_seconds The process start time, represented in seconds since the Unix epoch
+# TYPE nodejs_process_start_time_seconds gauge
+nodejs_process_start_time_seconds{service="unknown"} 0
+# HELP nodejs_process_cpu_user_seconds_total The total user CPU time consumed by the process, in seconds
+# TYPE nodejs_process_cpu_user_seconds_total gauge
+nodejs_process_cpu_user_seconds_total{service="unknown"} 0
+# HELP nodejs_process_cpu_system_seconds_total The total system CPU time consumed by the process, in seconds
+# TYPE nodejs_process_cpu_system_seconds_total gauge
+nodejs_process_cpu_system_seconds_total{service="unknown"} 0
+# HELP nodejs_process_cpu_seconds_total The total CPU time (user + system) consumed by the process, in seconds
+# TYPE nodejs_process_cpu_seconds_total gauge
+nodejs_process_cpu_seconds_total{service="unknown"} 0`;
 
-const templateWithPrefix = `# HELP node_event_loop_delay_milliseconds The mean of the recorded event loop delays
-# TYPE node_event_loop_delay_milliseconds gauge
-node_event_loop_delay_milliseconds 0
-# HELP node_event_loop_utilized The percentage of event loop utilization
-# TYPE node_event_loop_utilized gauge
-node_event_loop_utilized 0
-# HELP node_heap_used_bytes The amount of memory used by the V8 heap
-# TYPE node_heap_used_bytes gauge
-node_heap_used_bytes 0
-# HELP node_heap_total_bytes The total size of the V8 heap.
-# TYPE node_heap_total_bytes gauge
-node_heap_total_bytes 0
-# HELP node_rss_bytes The resident set size, or total memory allocated for the process
-# TYPE node_rss_bytes gauge
-node_rss_bytes 0
-# HELP node_process_start_time_seconds The process start time, represented in seconds since the Unix epoch
-# TYPE node_process_start_time_seconds gauge
-node_process_start_time_seconds 0
-# HELP node_process_cpu_user_seconds_total The total user CPU time consumed by the process, in seconds
-# TYPE node_process_cpu_user_seconds_total gauge
-node_process_cpu_user_seconds_total 0
-# HELP node_process_cpu_system_seconds_total The total system CPU time consumed by the process, in seconds
-# TYPE node_process_cpu_system_seconds_total gauge
-node_process_cpu_system_seconds_total 0
-# HELP node_process_cpu_seconds_total The total CPU time (user + system) consumed by the process, in seconds
-# TYPE node_process_cpu_seconds_total gauge
-node_process_cpu_seconds_total 0`;
+const templateWithAppName = `# HELP nodejs_event_loop_delay_milliseconds The mean of the recorded event loop delays
+# TYPE nodejs_event_loop_delay_milliseconds gauge
+nodejs_event_loop_delay_milliseconds{service="service-order"} 0
+# HELP nodejs_event_loop_utilized The percentage of event loop utilization
+# TYPE nodejs_event_loop_utilized gauge
+nodejs_event_loop_utilized{service="service-order"} 0
+# HELP nodejs_heap_used_bytes The amount of memory used by the V8 heap
+# TYPE nodejs_heap_used_bytes gauge
+nodejs_heap_used_bytes{service="service-order"} 0
+# HELP nodejs_heap_total_bytes The total size of the V8 heap.
+# TYPE nodejs_heap_total_bytes gauge
+nodejs_heap_total_bytes{service="service-order"} 0
+# HELP nodejs_rss_bytes The resident set size, or total memory allocated for the process
+# TYPE nodejs_rss_bytes gauge
+nodejs_rss_bytes{service="service-order"} 0
+# HELP nodejs_process_start_time_seconds The process start time, represented in seconds since the Unix epoch
+# TYPE nodejs_process_start_time_seconds gauge
+nodejs_process_start_time_seconds{service="service-order"} 0
+# HELP nodejs_process_cpu_user_seconds_total The total user CPU time consumed by the process, in seconds
+# TYPE nodejs_process_cpu_user_seconds_total gauge
+nodejs_process_cpu_user_seconds_total{service="service-order"} 0
+# HELP nodejs_process_cpu_system_seconds_total The total system CPU time consumed by the process, in seconds
+# TYPE nodejs_process_cpu_system_seconds_total gauge
+nodejs_process_cpu_system_seconds_total{service="service-order"} 0
+# HELP nodejs_process_cpu_seconds_total The total CPU time (user + system) consumed by the process, in seconds
+# TYPE nodejs_process_cpu_seconds_total gauge
+nodejs_process_cpu_seconds_total{service="service-order"} 0`;
 
 describe('MetricsServer', () => {
   let metricsServer: MetricsServer;
@@ -123,7 +123,7 @@ describe('MetricsServer', () => {
     t.plan(3);
 
     // Arrange
-    await metricsServer.start(3000, 'node_');
+    await metricsServer.start(3000, 'service-order');
 
     // Arrange
     const response = await fetch(
@@ -137,7 +137,7 @@ describe('MetricsServer', () => {
       response.headers.get('content-type'),
       'text/plain; version=0.0.4; charset=utf-8'
     );
-    t.assert.strictEqual(metricsText, templateWithPrefix);
+    t.assert.strictEqual(metricsText, templateWithAppName);
   });
 
   test('should return empty response for non-metrics endpoints', async (t: TestContext) => {

@@ -28,33 +28,33 @@
 <li><code>retryAfter</code>, The number of seconds to wait before retrying a request.</li>
 </ul>
 <h2 id="prometheus-metrics" class="tsd-anchor-link">Prometheus metrics<a href="#prometheus-metrics" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></h2><p><strong>Example of metrics:</strong>  <code>GET http://127.0.0.1:9090/metrics</code></p>
-<pre><code class="txt"># HELP event_loop_delay_milliseconds The mean of the recorded event loop delays
-# TYPE event_loop_delay_milliseconds gauge
-event_loop_delay_milliseconds 0.9878575824175826
-# HELP event_loop_utilized The percentage of event loop utilization
-# TYPE event_loop_utilized gauge
-event_loop_utilized 0.10445105761836926
-# HELP heap_used_bytes The amount of memory used by the V8 heap
-# TYPE heap_used_bytes gauge
-heap_used_bytes 32637488
-# HELP heap_total_bytes The total size of the V8 heap.
-# TYPE heap_total_bytes gauge
-heap_total_bytes 34684928
-# HELP rss_bytes The resident set size, or total memory allocated for the process
-# TYPE rss_bytes gauge
-rss_bytes 179077120
-# HELP process_start_time_seconds The process start time, represented in seconds since the Unix epoch
-# TYPE process_start_time_seconds gauge
-process_start_time_seconds 1750345329
-# HELP process_cpu_user_seconds_total The total user CPU time consumed by the process, in seconds
-# TYPE process_cpu_user_seconds_total gauge
-process_cpu_user_seconds_total 1.494779
-# HELP process_cpu_system_seconds_total The total system CPU time consumed by the process, in seconds
-# TYPE process_cpu_system_seconds_total gauge
-process_cpu_system_seconds_total 0.120983
-# HELP process_cpu_seconds_total The total CPU time (user + system) consumed by the process, in seconds
-# TYPE process_cpu_seconds_total gauge
-process_cpu_seconds_total 1.615762
+<pre><code class="txt"># HELP nodejs_event_loop_delay_milliseconds The mean of the recorded event loop delays
+# TYPE nodejs_event_loop_delay_milliseconds gauge
+nodejs_event_loop_delay_milliseconds{service=&quot;unknown&quot;} 0.9878575824175826
+# HELP nodejs_event_loop_utilized The percentage of event loop utilization
+# TYPE nodejs_event_loop_utilized gauge
+nodejs_event_loop_utilized{service=&quot;unknown&quot;} 0.10445105761836926
+# HELP nodejs_heap_used_bytes The amount of memory used by the V8 heap
+# TYPE nodejs_heap_used_bytes gauge
+nodejs_heap_used_bytes{service=&quot;unknown&quot;} 32637488
+# HELP nodejs_heap_total_bytes The total size of the V8 heap.
+# TYPE nodejs_heap_total_bytes gauge
+nodejs_heap_total_bytes{service=&quot;unknown&quot;} 34684928
+# HELP nodejs_rss_bytes The resident set size, or total memory allocated for the process
+# TYPE nodejs_rss_bytes gauge
+nodejs_rss_bytes{service=&quot;unknown&quot;} 179077120
+# HELP nodejs_process_start_time_seconds The process start time, represented in seconds since the Unix epoch
+# TYPE nodejs_process_start_time_seconds gauge
+nodejs_process_start_time_seconds{service=&quot;unknown&quot;} 1750345329
+# HELP nodejs_process_cpu_user_seconds_total The total user CPU time consumed by the process, in seconds
+# TYPE nodejs_process_cpu_user_seconds_total gauge
+nodejs_process_cpu_user_seconds_total{service=&quot;unknown&quot;} 1.494779
+# HELP nodejs_process_cpu_system_seconds_total The total system CPU time consumed by the process, in seconds
+# TYPE nodejs_process_cpu_system_seconds_total gauge
+nodejs_process_cpu_system_seconds_total{service=&quot;unknown&quot;} 0.120983
+# HELP nodejs_process_cpu_seconds_total The total CPU time (user + system) consumed by the process, in seconds
+# TYPE nodejs_process_cpu_seconds_total gauge
+nodejs_process_cpu_seconds_total{service=&quot;unknown&quot;} 1.615762
 </code><button type="button">Copy</button></pre>
 
 <h2 id="additional-information" class="tsd-anchor-link">Additional information<a href="#additional-information" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></h2><blockquote>
