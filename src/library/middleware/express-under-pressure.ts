@@ -11,6 +11,7 @@ import { isUnderPressure } from './under-pressure.js';
  * determines if the server is under excessive load. If so, it sends a 503 Service Unavailable response
  * with a `Retry-After` header, otherwise it passes control to the next middleware.
  *
+ * @params appName - The name of the application, formatted as `${string}-${string}` (e.g., "service-order")
  * @param sampleIntervalInMs - Interval in milliseconds between metric samples. Defaults to `DEFAULT_SAMPLE_INTERVAL`.
  * @param resolution - The resolution for metric sampling. Defaults to `DEFAULT_RESOLUTION`.
  * @param webServerMetricsPort - Optional port for exposing web server metrics. Defaults to `0` (disabled).
@@ -35,6 +36,7 @@ export const underPressureExpressMiddleware = ({
   sampleIntervalInMs = DEFAULT_SAMPLE_INTERVAL,
   resolution = DEFAULT_RESOLUTION,
   webServerMetricsPort = 0,
+  appName,
   retryAfter = 10,
   ...options
 }: Readonly<Partial<MiddlewareOptions>>): ((
@@ -42,7 +44,7 @@ export const underPressureExpressMiddleware = ({
   res: express.Response,
   next: express.NextFunction
 ) => void) => {
-  const metrics = Metrics.start({ sampleIntervalInMs, resolution, webServerMetricsPort });
+  const metrics = Metrics.start({ appName, sampleIntervalInMs, resolution, webServerMetricsPort });
 
   return (_req: express.Request, res: express.Response, next: express.NextFunction) => {
     if (isUnderPressure({ ...options, ...metrics.measures() })) {

@@ -9,6 +9,7 @@ import { isUnderPressure } from './under-pressure.js';
  * when the system is under pressure, as determined by the provided options and current metrics.
  *
  * @param options - Partial configuration for the middleware, including:
+ *   - `appName`: The name of the application, formatted as `${string}-${string}` (e.g., "service-order")
  *   - `sampleIntervalInMs`: Interval in milliseconds for sampling system metrics (default: `DEFAULT_SAMPLE_INTERVAL`).
  *   - `resolution`: The resolution for metrics sampling (default: `DEFAULT_RESOLUTION`).
  *   - `webServerMetricsPort`: Port for exposing web server metrics (default: `0`).
@@ -29,13 +30,14 @@ import { isUnderPressure } from './under-pressure.js';
  * ```
  */
 export const underPressureHonoMiddleware = ({
+  appName,
   sampleIntervalInMs = DEFAULT_SAMPLE_INTERVAL,
   resolution = DEFAULT_RESOLUTION,
   webServerMetricsPort = 0,
   retryAfter = 10,
   ...options
 }: Readonly<Partial<MiddlewareOptions>>): MiddlewareHandler => {
-  const metrics = Metrics.start({ sampleIntervalInMs, resolution, webServerMetricsPort });
+  const metrics = Metrics.start({ appName, sampleIntervalInMs, resolution, webServerMetricsPort });
 
   return async (_c, next) => {
     if (isUnderPressure({ ...options, ...metrics.measures() })) {

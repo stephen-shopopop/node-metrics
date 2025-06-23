@@ -12,7 +12,7 @@ export type Options = {
   sampleIntervalInMs: number;
   resolution: number;
   webServerMetricsPort: number;
-  appName: `${string}-${string}`;
+  appName: `${string}-${string}` | undefined;
 };
 
 /**

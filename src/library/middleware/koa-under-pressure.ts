@@ -9,6 +9,7 @@ import { isUnderPressure } from './under-pressure.js';
  * when the system is under pressure, as determined by the provided options and current metrics.
  *
  * @param options - Partial configuration for the middleware, including:
+ *   - `appName`: The name of the application, formatted as `${string}-${string}` (e.g., "service-order")
  *   - sampleIntervalInMs: Interval in milliseconds for sampling system metrics (default: DEFAULT_SAMPLE_INTERVAL).
  *   - retryAfter: Value (in seconds) for the `Retry-After` header when under pressure (default: 10).
  *   - webServerMetricsPort: Port for exposing web server metrics (default: 0).
@@ -37,13 +38,14 @@ import { isUnderPressure } from './under-pressure.js';
  * ```
  */
 export const underPressureKoaMiddleware = ({
+  appName,
   sampleIntervalInMs = DEFAULT_SAMPLE_INTERVAL,
   retryAfter = 10,
   webServerMetricsPort = 0,
   resolution = DEFAULT_RESOLUTION,
   ...options
 }: Readonly<Partial<MiddlewareOptions>>): ((ctx: Context, next: Next) => Promise<void>) => {
-  const metrics = Metrics.start({ sampleIntervalInMs, resolution, webServerMetricsPort });
+  const metrics = Metrics.start({ appName, sampleIntervalInMs, resolution, webServerMetricsPort });
 
   return async (ctx: Context, next: Next): Promise<void> => {
     if (isUnderPressure({ ...options, ...metrics.measures() })) {
