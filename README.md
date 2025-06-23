@@ -14,11 +14,12 @@ npm i @stephen-shopopop/node-metrics
 
 ```js
 const Koa = require('koa');
-const { underPressureKoaMiddleware } = require('node-metrics');
+const { underPressureKoaMiddleware } = require('@shopopop/node-metrics');
 
 const app = new Koa();
 
 app.use(underPressureKoaMiddleware({
+  appName: 'service-order',
   maxEventLoopDelay: 1000,
   maxHeapUsedBytes: 100000000,
   maxRssBytes: 100000000,
@@ -38,12 +39,13 @@ app.listen(3000);
 
 ```js
 const express = require('express')
-const { underPressureExpressMiddleware } = require('node-metrics')
+const { underPressureExpressMiddleware } = require('@shopopop/node-metrics')
 
 const app = express()
 const port = 3000
 
 app.use(underPressureExpressMiddleware({
+  appName: 'service-order',
   maxEventLoopDelay: 1000,
   maxHeapUsedBytes: 100000000,
   maxRssBytes: 100000000,
@@ -65,11 +67,12 @@ app.listen(port, () => {
 
 ```js
 import { Hono } from 'hono"
-import { underPressureHonoMiddleware } from 'node-metrics'
+import { underPressureHonoMiddleware } from '@shopopop/node-metrics'
 
 const app = new Hono()
 
 app.use('*', underPressureHonoMiddleware({
+  appName: 'service-order',
   maxEventLoopDelay: 1000,
   maxHeapUsedBytes: 100000000,
   maxRssBytes: 100000000,
@@ -87,9 +90,14 @@ export default app
 
 ```js
 import { createServer } from 'node:http';
-import { Metrics, isUnderPressure } from 'node-metrics';
+import { Metrics, isUnderPressure } from '@shopopop/node-metrics';
 
-const metrics = Metrics.start({ sampleIntervalInMs, resolution, webServerMetricsPort });
+const metrics = Metrics.start({
+   appName: 'service-order',
+  sampleIntervalInMs: 1000,
+  resolution: 10,
+  webServerMetricsPort: 9090
+});
 
 const options = {
   maxEventLoopDelay: 1000,
