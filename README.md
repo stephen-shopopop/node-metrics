@@ -129,6 +129,7 @@ server.listen(port, hostname, () => {
 - `sampleIntervalInMs`, The interval, in milliseconds, at which samples are collected. Default is `1000`
 - `resolution`, The resolution or granularity of the collected metrics. Default is `10`
 - `webServerMetricsPort`, The port number on which the web server for metrics will listen. We recommend using port `9090`.
+- `appName`, The name of the application, formatted as `${string}-${string}` (e.g., "service-order").
 - `maxEventLoopDelay`, Maximum allowed event loop delay in milliseconds.
 - `maxEventLoopUtilization`, Maximum allowed event loop utilization (between 0 and 1).
 - `maxHeapUsedBytes`, Maximum allowed heap memory usage in bytes.
