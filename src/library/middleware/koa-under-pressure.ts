@@ -8,13 +8,12 @@ import { isUnderPressure } from './under-pressure.js';
  * Creates a Koa middleware that monitors system metrics and responds with a 503 Service Unavailable status
  * when the system is under pressure, as determined by the provided options and current metrics.
  *
- * @param options - Partial configuration for the middleware, including:
- *   - `appName`: The name of the application, formatted as `${string}-${string}` (e.g., "service-order")
- *   - sampleIntervalInMs: Interval in milliseconds for sampling system metrics (default: DEFAULT_SAMPLE_INTERVAL).
- *   - retryAfter: Value (in seconds) for the `Retry-After` header when under pressure (default: 10).
- *   - webServerMetricsPort: Port for exposing web server metrics (default: 0).
- *   - resolution: Resolution for metrics sampling (default: DEFAULT_RESOLUTION).
- *   - Additional options for pressure detection.
+ * @params appName - The name of the application, formatted as `${string}-${string}` (e.g., "service-order")
+ * @param sampleIntervalInMs - Interval in milliseconds between metric samples. Defaults to `DEFAULT_SAMPLE_INTERVAL`.
+ * @param resolution - The resolution for metric sampling. Defaults to `DEFAULT_RESOLUTION`.
+ * @param webServerMetricsPort - Optional port for exposing web server metrics. Defaults to `0` (disabled).
+ * @param retryAfter - Value (in seconds) for the `Retry-After` header in 503 responses. Defaults to `10`.
+ * @param options - Additional middleware options for pressure detection.
  * @returns A Koa middleware function that checks system pressure and responds accordingly.
  *
  * @remarks
