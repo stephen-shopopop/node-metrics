@@ -255,6 +255,8 @@ export const createWebServer = async ({
 }: WebServerOptions): Promise<{ server: Server; address: AddressInfo }> => {
   const server = http.createServer(getRequestListener(fetchCallback));
 
+  channels.info.publish(`Starting server on port: ${port}`);
+
   return await new Promise((resolve) => {
     server.listen(port, () => {
       const address = server.address() as AddressInfo;
@@ -281,6 +283,8 @@ export const createWebServer = async ({
 export const closeWebServer = async (server: Server | undefined): Promise<void> =>
   await new Promise<void>((resolve) => {
     if (server !== undefined) {
+      channels.info.publish(`Stopping server: ${(server.address() as AddressInfo)?.port}`);
+
       server.close(() => {
         resolve();
       });
