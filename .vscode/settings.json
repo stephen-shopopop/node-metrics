@@ -1,9 +1,42 @@
 {
+  "window.zoomLevel": -1,
   "files.eol": "\n",
   "files.insertFinalNewline": true,
   "git.ignoreRebaseWarning": true,
   "git.replaceTagsWhenPull": true,
   "makefile.configureOnOpen": true,
+  "prettier.enable": false,
+  "editor.codeActionsOnSave": {
+    "source.organizeImports.biome": "explicit",
+    "quickfix.biome": "explicit"
+  },
+  "errorLens.gutterIconsEnabled": true,
+  "errorLens.gutterIconSet": "borderless",
+  "errorLens.followCursor": "activeLine",
+  // -- Editeur
+  "editor.minimap.enabled": false,
+  "breadcrumbs.enabled": false,
+  // -- Sidebar
+  "workbench.tree.indent": 15,
+  "workbench.tree.renderIndentGuides": "always",
+  // -- Code
+  "editor.occurrencesHighlight": "multiFile",
+  "editor.renderWhitespace": "trailing",
+  // Theming
+  "editor.fontFamily": "Jetbrains Mono, Monaco, 'Courier New', monospace",
+  "editor.fontLigatures": true,
+  "editor.fontSize": 13,
+  "editor.lineHeight": 1.4,
+  // Ergonomie
+  "editor.wordWrap": "on",
+  "editor.suggest.insertMode": "replace",
+  "editor.acceptSuggestionOnEnter": "on",
+  "editor.acceptSuggestionOnCommitCharacter": false,
+  "editor.formatOnPaste": false,
+  "editor.linkedEditing": true,
+  "explorer.autoReveal": false,
+  "explorer.confirmDragAndDrop": false,
+  // Languages
   "[javascript][typescript]": {
     "editor.formatOnSave": true,
     "editor.formatOnPaste": false, // work around https://github.com/simonhaenisch/prettier-plugin-organize-imports/issues/53
@@ -28,18 +61,6 @@
     "editor.detectIndentation": false,
     "editor.defaultFormatter": "redhat.vscode-yaml"
   },
-  "prettier.enable": false,
-  "editor.codeActionsOnSave": {
-    "source.organizeImports.biome": "explicit",
-    "quickfix.biome": "explicit"
-  },
-  "editor.fontFamily": "Jetbrains Mono, Monaco, 'Courier New', monospace",
-  "editor.fontSize": 13,
-  "editor.lineHeight": 1.4,
-  "errorLens.gutterIconsEnabled": true,
-  "errorLens.gutterIconSet": "borderless",
-  "errorLens.followCursor": "activeLine",
-  "editor.acceptSuggestionOnEnter": "on",
   "typescript.tsdk": "node_modules/typescript/lib",
   "[json][jsonc]": {
     "editor.defaultFormatter": "vscode.json-language-features",
@@ -48,6 +69,16 @@
     "editor.formatOnSave": true,
     "editor.insertSpaces": true,
     "editor.detectIndentation": true
+  },
+  "html.suggest.html5": true,
+  "html.autoClosingTags": false,
+  "html.validate.scripts": true,
+  "html.validate.styles": true,
+  "html.format.enable": true,
+  "htmlhint.enable": true,
+  "[html]": {
+    "editor.foldingStrategy": "indentation",
+    "editor.defaultFormatter": "vscode.html-language-features"
   },
   "[typescript]": {
     "editor.defaultFormatter": "biomejs.biome"
@@ -59,6 +90,15 @@
         "package.json",
         "tsup.config.json"
       ]
+    },
+    {
+      "fileMatch": [
+        "/.htmlhintrc"
+      ],
+      "url": "https://json.schemastore.org/htmlhint.json"
     }
+  ],
+  "cSpell.words": [
+    "tagname"
   ]
 }

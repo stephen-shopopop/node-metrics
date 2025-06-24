@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <meta name="description" content="Metrics nodejs"/>
+    <meta name="color-scheme" content="light dark"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css"/>
+    <title>Hello world!</title>
+    </head>
+  <body>
+    <main class="container">
+      <head>
+        <h1>Hello world!</h1>
+      </head>
+      <article>
+
+      </article>
+
+      <h1><code>composed</code> and <code>composedPath</code> demo</h1>
+
+      <open-shadow text="I have an open shadow root"></open-shadow>
+
+      <closed-shadow text="I have a closed shadow root"></closed-shadow>
+    </main>
+  </body>
+</html>
+<script type="module">
+  import uplot from 'https://cdn.jsdelivr.net/npm/uplot@1.6.32/+esm'
+
+  console.log(uplot)
+
+  customElements.define('open-shadow',
+    class extends HTMLElement {
+      constructor() {
+        super();
+
+        const pElem = document.createElement('p');
+        pElem.textContent = this.getAttribute('text');
+
+        const shadowRoot = this.attachShadow({mode: 'open'});
+        shadowRoot.appendChild(pElem);
+      }
+    }
+  );
+
+  customElements.define('closed-shadow',
+    class extends HTMLElement {
+      constructor() {
+        super();
+
+        const pElem = document.createElement('p');
+        pElem.textContent = this.getAttribute('text');
+
+        const shadowRoot = this.attachShadow({mode: 'closed'});
+        shadowRoot.appendChild(pElem);
+      }
+    }
+  );
+
+  document.querySelector('html').addEventListener('click', e => {
+    console.log(e.composed);
+    console.log(e.composedPath());
+  });
+
+  const evtSource = new EventSource("http://localhost:8080/metrics-stream");
+  console.log(evtSource.readyState);
+
+  evtSource.onmessage = (e) => {
+    console.log(e)
+  };
+
+  evtSource.addEventListener("error", (e) => {
+    console.log("An error occurred while attempting to connect.",);
+  });
+
+  evtSource.onerror = (e) => {
+    console.log("An error occurred while attempting to connect.", e);
+  };
+
+  evtSource.addEventListener("open", (e) => {
+    console.log("The connection has been established.", e);
+  });
+</script>
