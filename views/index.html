@@ -19,18 +19,11 @@
             </hgroup>
           </li>
         </ul>
-        <ul>
-          <li><a href="#">About</a></li>
-          <li><a href="#">Services</a></li>
-          <li><a href="#">Products</a></li>
-        </ul>
       </nav>
     </header>
 
     <aside class="container">
-      <article>
-        <p><closed-shadow text="Waiting for connection"></closed-shadow></p>
-      </article>
+        <kbd><closed-shadow text="Waiting for connection"></closed-shadow></kbd>
     </aside>
 
     <nav aria-label="breadcrumb" class="container">
@@ -41,15 +34,27 @@
     </nav>
 
     <main class="container-fluid">
-      <article>
+      <section class="grid">
+        <article>
+          <header><strong>Nodejs Version</strong></header>
+          <metrics-card text="-" data-metric ="metadata.nodejs_version_info"></metrics-card>
+        </article>
+        <article>
+          <header><strong>Uptime</strong></header>
+          <metrics-card text="-" data-metric ="process_start_time_seconds"></metrics-card>
+        </article>
+        <article>
+          <header><strong>Event loop utilized</strong></header>
+          <metrics-card text="-" data-metric ="event_loop_utilized"></metrics-card> %
+        </article>
+        <article>
+          <header><strong>Event loop delay</strong></header>
+          <metrics-card text="-" data-metric ="event_loop_delay_milliseconds"></metrics-card> sec
+        </article>
+      </section>
 
-      </article>
-
-      <h1><code>composed</code> and <code>composedPath</code> demo</h1>
-
-      <open-shadow text="I have an open shadow root"></open-shadow>
-
-      <closed-shadow text="Waiting for connection"></closed-shadow>
+      <section>
+      </section>
     </main>
 
     <footer class="container">
@@ -122,22 +127,62 @@
       evtSource.onopen = (e) => channel.publish(channel.eventType.onReady, { message : 'The connection has been established' });
     }
 
-    customElements.define('open-shadow',
-      class extends HTMLElement {
-        constructor() {
-          super();
+    const humanDate = (date, locales = 'default-u-nu-latn') => {
+      let dateObj;
+      if (typeof date === 'string') dateObj = new Date(date);
+      else dateObj = date;
 
-          const pElem = document.createElement('span');
-          pElem.textContent = this.getAttribute('text');
+      const options = { month: 'long', day: 'numeric',hour: 'numeric', minute: 'numeric', second: 'numeric' };
 
-          const shadowRoot = this.attachShadow({mode: 'open'});
-          shadowRoot.appendChild(pElem);
-        }
+      const dateYear = dateObj.toLocaleString(locales, { year: 'numeric' });
+      const dateMonth = dateObj.toLocaleString(locales, { month: 'numeric' });
+      const dateDay = dateObj.toLocaleString(locales, { day: 'numeric' });
+      const dateHour = dateObj.getHours();
+      const dateMinute = dateObj.getMinutes();
+
+      const now = new Date();
+      const nowYear = now.toLocaleString(locales, { year: 'numeric' });
+      const nowMonth = now.toLocaleString(locales, { month: 'numeric' });
+      const nowDay = now.toLocaleString(locales, { day: 'numeric' });
+      const nowHour = now.getHours();
+      const nowMinute = now.getMinutes();
+
+      // set year only if not the same year as now
+      if (dateYear !== nowYear) options.year = 'numeric';
+
+      // if today, display relative time
+      if (dateYear === nowYear && dateMonth === nowMonth && dateDay === nowDay) {
+          const diffHour = nowHour - dateHour;
+          const diffMinute = Math.abs(nowMinute - dateMinute);
+
+          if (diffHour === 0 && diffMinute > 30) return '1 h';
+          else if (diffHour === 0) return `${diffMinute} min`;
+          else if (diffMinute >= 30) return `${diffHour + 1} h`;
+          return `${diffHour} h`;
       }
-    );
+
+      return dateObj.toLocaleString(locales, options);
+  }
+
+    const normalizeMetricPourcent = (metricValue = 0) => Math.round(metricValue * 100);
+    const normalizeMetricInSeconds = (metricValue = 1) => (metricValue / 1e3).toFixed(3);
+    const normalizeMetricUptime = (metricValue) => humanDate(new Date(metricValue * 1e3));
+
+    const normalizeMetrics = (metric = '', value = 0) => {
+      switch (metric){
+        case 'event_loop_utilized':
+          return normalizeMetricPourcent(value);
+        case 'event_loop_delay_milliseconds':
+          return normalizeMetricInSeconds(value);
+        case 'process_start_time_seconds':
+          return normalizeMetricUptime(value);
+        default:
+          return value;
+      }
+    }
 
     class StatusStreamMetricsComponents extends HTMLElement {
-        #item
+        #elem
 
         constructor() {
             super();
@@ -149,33 +194,61 @@
         }
 
         updateDisplay(value){
-          this.#item.textContent = value;
+          this.#elem.textContent = value;
         }
 
         render() {
-          this.#item = document.createElement('span');
-          this.#item.textContent = this.getAttribute('text');
+          this.#elem = document.createElement('span');
+          this.#elem.textContent = this.getAttribute('text');
 
           const shadowRoot = this.attachShadow({mode: 'open'});
-          shadowRoot.appendChild(this.#item);
+          shadowRoot.appendChild(this.#elem);
         }
     }
 
-    document.querySelector('html').addEventListener('click', e => {
-//      console.log(e.composed);
-      console.log(e.composedPath());
-    });
+    class MetricsComponents extends HTMLElement {
+        #elem
+
+        constructor() {
+            super();
+
+            channel.subscribe(channel.eventType.onMessage, (payload) => this.updateDisplay(payload));
+
+            this.render();
+        }
+
+        updateDisplay(payload){
+          const attrMetrics = this.getAttribute('data-metric') ?? '';
+
+          if(Reflect.has(payload, attrMetrics)) {
+            this.#elem.textContent = normalizeMetrics( attrMetrics,payload[attrMetrics]);
+          }
+        }
+
+        render() {
+          this.#elem = document.createElement('span');
+          this.#elem.textContent = this.getAttribute('text');
+
+          const shadowRoot = this.attachShadow({mode: 'open'});
+          shadowRoot.appendChild(this.#elem);
+        }
+    }
+
+
 
     const initializeApplication = () => {
-//      channel.subscribe(channel.eventType.onError, errorHandler);
-//      channel.subscribe(channel.eventType.onReady, console.log);
 //      channel.subscribe(channel.eventType.onMessage, console.log);
       // Register components
       customElements.define('closed-shadow', StatusStreamMetricsComponents);
+      customElements.define('metrics-card', MetricsComponents);
 
       fetchMetricsStream("http://localhost:8080/metrics-stream");
     }
 
+    document.querySelector('html').addEventListener('click', e => {
+      console.log(e.composed);
+      console.log(e.composedPath());
+    });
 
     initializeApplication();
   </script>
