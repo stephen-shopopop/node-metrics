@@ -6,6 +6,7 @@
     <meta name="description" content="nodejs metrics"/>
     <meta name="color-scheme" content="light dark"/>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/uplot@1.6.32/dist/uPlot.min.css">
     <title>Nodejs Metrics</title>
     </head>
   <body>
@@ -19,58 +20,68 @@
             </hgroup>
           </li>
         </ul>
+        <ul>
+          <li>
+            <a  class="contrast" rel="noopener noreferrer" href="https://github.com/stephen-shopopop/node-metrics" title="GitHub repository" aria-label="GitHub repository" target="_blank"><svg xmlns="http://www.w3.org/2000/svg" height="24" width="24.25" viewBox="0 0 496 512" class="icon-github"><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"></path></svg></a>
+          </li>
+          <li>
+            <a class="contrast" aria-label="Turn on dark mode" data-discover="true" id="turn-light-mode" href="/docs/color-schemes"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 32 32" fill="currentColor" class="icon-theme-toggle "><clipPath id="theme-toggle-cutout"><path d="M0-11h25a1 1 0 0017 13v30H0Z"></path></clipPath><g clip-path="url(#theme-toggle-cutout)"><circle cx="16" cy="16" r="8.4"></circle><path d="M18.3 3.2c0 1.3-1 2.3-2.3 2.3s-2.3-1-2.3-2.3S14.7.9 16 .9s2.3 1 2.3 2.3zm-4.6 25.6c0-1.3 1-2.3 2.3-2.3s2.3 1 2.3 2.3-1 2.3-2.3 2.3-2.3-1-2.3-2.3zm15.1-10.5c-1.3 0-2.3-1-2.3-2.3s1-2.3 2.3-2.3 2.3 1 2.3 2.3-1 2.3-2.3 2.3zM3.2 13.7c1.3 0 2.3 1 2.3 2.3s-1 2.3-2.3 2.3S.9 17.3.9 16s1-2.3 2.3-2.3zm5.8-7C9 7.9 7.9 9 6.7 9S4.4 8 4.4 6.7s1-2.3 2.3-2.3S9 5.4 9 6.7zm16.3 21c-1.3 0-2.3-1-2.3-2.3s1-2.3 2.3-2.3 2.3 1 2.3 2.3-1 2.3-2.3 2.3zm2.4-21c0 1.3-1 2.3-2.3 2.3S23 7.9 23 6.7s1-2.3 2.3-2.3 2.4 1 2.4 2.3zM6.7 23C8 23 9 24 9 25.3s-1 2.3-2.3 2.3-2.3-1-2.3-2.3 1-2.3 2.3-2.3z"></path></g></svg></a>
+          </li>
+        </ul>
       </nav>
     </header>
 
     <aside class="container">
-        <kbd><closed-shadow text="Waiting for connection"></closed-shadow></kbd>
+      <kbd><metrics-status text="Waiting for connection"></metrics-status></kbd>
     </aside>
 
-    <nav aria-label="breadcrumb" class="container">
+    <nav class="container" aria-label="breadcrumb">
       <ul>
         <li><a href="#">Home</a></li>
         <li>Measures</li>
       </ul>
     </nav>
 
-    <main class="container-fluid">
+    <main class="container">
       <section class="grid">
-        <article>
+        <article style="text-align: center">
           <header><strong>Nodejs Version</strong></header>
-          <metrics-card text="-" data-metric ="metadata.nodejs_version_info"></metrics-card>
+          <metrics-card text="-" data-metric="metadata.nodejs_version_info"></metrics-card>
         </article>
-        <article>
+        <article style="text-align: center">
           <header><strong>Uptime</strong></header>
-          <metrics-card text="-" data-metric ="process_start_time_seconds"></metrics-card>
+          <metrics-card text="-" data-metric="process_start_time_seconds"></metrics-card>
         </article>
-        <article>
-          <header><strong>Event loop utilized</strong></header>
-          <metrics-card text="-" data-metric ="event_loop_utilized"></metrics-card> %
+        <article style="text-align: center">
+          <header><strong><em data-tooltip="Event loop utilized must be < 98%">Event loop utilized</em></strong></header>
+          <metrics-card text="-" data-metric="event_loop_utilized"></metrics-card> %
         </article>
-        <article>
-          <header><strong>Event loop delay</strong></header>
-          <metrics-card text="-" data-metric ="event_loop_delay_milliseconds"></metrics-card> sec
+        <article style="text-align: center">
+          <header><strong><em data-tooltip="Event loop delay must be < 1sec">Event loop delay</em></strong></header>
+          <metrics-card text="-" data-metric="event_loop_delay_milliseconds"></metrics-card> sec
         </article>
       </section>
 
       <section>
+        <article id="graph-event-loop-utilized"></article>
+        <article id="graph-event-loop-delay"></article>
+        <article id="graph-memory"></article>
+        <article id="graph-cpu"></article>
       </section>
     </main>
 
     <footer class="container">
       <hr/>
       <p>
-        <strong>Nodejs metrics</strong> |
-        <a class="secondary" href="https://github.com/stephen-shopopop/node-metrics" title="github" target="_blank">Github</a>
+        <strong><small>Nodejs metrics</small></strong> |
+        <a  class="contrast" rel="noopener noreferrer" href="https://github.com/stephen-shopopop/node-metrics" title="Github repository" aria-label="GitHub repository" target="_blank"><svg xmlns="http://www.w3.org/2000/svg" height="16" width="16" viewBox="0 0 496 512" class="icon-github"><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"></path></svg></a>
          - <small>Currently v1.0.0</small>
       </p>
-      <cite>— Author: stephen</cite>
+      <small><cite>— Author: stephen</cite></small>
     </footer>
   </body>
   <script type="module">
-//    import uplot from 'https://cdn.jsdelivr.net/npm/uplot@1.6.32/+esm'
-
-    // console.log(uplot)
+    import uplot from 'https://cdn.jsdelivr.net/npm/uplot@1.6.32/+esm'
 
     /** Channel */
     const channel = Object.freeze({
@@ -162,11 +173,12 @@
       }
 
       return dateObj.toLocaleString(locales, options);
-  }
+    }
 
     const normalizeMetricPourcent = (metricValue = 0) => Math.round(metricValue * 100);
-    const normalizeMetricInSeconds = (metricValue = 1) => (metricValue / 1e3).toFixed(3);
+    const normalizeMetricInSeconds = (metricValue = 0) => ((metricValue || 1)/ 1e3).toFixed(3);
     const normalizeMetricUptime = (metricValue) => humanDate(new Date(metricValue * 1e3));
+    const normalizeMetricBytesInMegaBytes = (metricValue = 0) => (metricValue || 1) / (1024 * 1024);
 
     const normalizeMetrics = (metric = '', value = 0) => {
       switch (metric){
@@ -221,7 +233,7 @@
           const attrMetrics = this.getAttribute('data-metric') ?? '';
 
           if(Reflect.has(payload, attrMetrics)) {
-            this.#elem.textContent = normalizeMetrics( attrMetrics,payload[attrMetrics]);
+            this.#elem.textContent = normalizeMetrics(attrMetrics,payload[attrMetrics]);
           }
         }
 
@@ -234,22 +246,92 @@
         }
     }
 
+    let dataEventLoopUtilized = [[Date.now() / 1e3],[0]];
+    let uplotEventLoopUtilized = new uplot({
+      title: "Event Loop Utilized",
+      width: document.getElementById('graph-event-loop-utilized').scrollWidth,
+      height: 300,
+      series: [
+        {},
+        { label: "Delay", stroke: "red", fill: "rgba(255,0,0,0.1)" },
+      ]
+    }, dataEventLoopUtilized, document.getElementById('graph-event-loop-utilized'));
 
+    let dataEventLoopDelay = [[Date.now() / 1e3],[0]];
+    let uplotEventLoopDelay = new uplot({
+      title: "Event Loop Delay",
+      width: document.getElementById('graph-event-loop-delay').scrollWidth,
+      height: 300,
+      series: [
+        {},
+        { label: "Delay", stroke: "red", fill: "rgba(255,0,0,0.1)",  value: (self, rawValue) => rawValue == null ? '' : `${rawValue.toFixed(2)} sec` },
+      ]
+    }, dataEventLoopDelay, document.getElementById('graph-event-loop-delay'));
+
+    let dataMemory = [[Date.now() / 1e3],[0], [0], [0]];
+    let uplotMemory = new uplot({
+      title: "Memory",
+      width: document.getElementById('graph-memory').scrollWidth,
+      height: 300,
+      series: [
+        {},
+        { label: "Heap total", stroke: "red", fill: "rgba(255,0,0,0.1)", value: (self, rawValue) => rawValue == null ? '' : `${rawValue.toFixed(2)} Mb` },
+        { label: "Heap used", stroke: "green", fill: "rgba(0,255,0,0.1)", value: (self, rawValue) => rawValue == null ? '' : `${rawValue.toFixed(2)} Mb` },
+        { label: "Rss", stroke: "blue", fill: "rgba(0,0,255,0.1)", value: (self, rawValue) => rawValue == null ? '' : `${rawValue.toFixed(2)} Mb` }
+      ]
+    }, dataMemory, document.getElementById('graph-memory'));
+
+    let dataCpu = [[Date.now() / 1e3],[0], [0], [0]];
+    let uplotCpu = new uplot({
+      title: "CPU",
+      width: document.getElementById('graph-cpu').scrollWidth,
+      height: 300,
+      series: [
+        {},
+        { label: "CPU total", stroke: "red", fill: "rgba(255,0,0,0.1)", value: (self, rawValue) => rawValue == null ? '' : `${rawValue.toFixed(2)} sec` },
+        { label: "CPU user", stroke: "green", fill: "rgba(0,255,0,0.1)", value: (self, rawValue) => rawValue == null ? '' : `${rawValue.toFixed(2)} sec` },
+        { label: "CPU system", stroke: "blue", fill: "rgba(0,0,255,0.1)", value: (self, rawValue) => rawValue == null ? '' : `${rawValue.toFixed(2)} sec` }
+      ]
+    }, dataMemory, document.getElementById('graph-cpu'));
 
     const initializeApplication = () => {
-//      channel.subscribe(channel.eventType.onMessage, console.log);
       // Register components
-      customElements.define('closed-shadow', StatusStreamMetricsComponents);
+      customElements.define('metrics-status', StatusStreamMetricsComponents);
       customElements.define('metrics-card', MetricsComponents);
 
+      // Register Events listeners
+      document.getElementById('turn-light-mode').addEventListener('click', e => {
+        e.preventDefault();
+        const attr = document.documentElement.getAttribute('data-theme') ?? 'light';
+        document.documentElement.setAttribute('data-theme', attr === 'light' ? 'dark' : 'light');
+      });
+
       fetchMetricsStream("http://localhost:8080/metrics-stream");
+
+      channel.subscribe(channel.eventType.onMessage, (payload) => {
+        dataEventLoopUtilized[0].push(new Date(payload.time).getTime() / 1e3);
+        dataEventLoopUtilized[1].push(payload.event_loop_utilized);
+        uplotEventLoopUtilized.setData(dataEventLoopUtilized);
+
+        dataEventLoopDelay[0].push(new Date(payload.time).getTime() / 1e3);
+        dataEventLoopDelay[1].push(payload.event_loop_delay_milliseconds);
+        uplotEventLoopDelay.setData(dataEventLoopDelay);
+
+        dataMemory[0].push(new Date(payload.time).getTime() / 1e3);
+        dataMemory[1].push(normalizeMetricBytesInMegaBytes(payload.heap_total_bytes));
+        dataMemory[2].push(normalizeMetricBytesInMegaBytes(payload.heap_used_bytes));
+        dataMemory[3].push(normalizeMetricBytesInMegaBytes(payload.rss_bytes));
+        uplotMemory.setData(dataMemory);
+
+        dataCpu[0].push(new Date(payload.time).getTime() / 1e3);
+        dataCpu[1].push(payload.process_cpu_seconds_total);
+        dataCpu[2].push(payload.process_cpu_user_seconds_total);
+        dataCpu[3].push(payload.process_cpu_system_seconds_total);
+        uplotCpu.setData(dataCpu);
+      });
     }
 
-    document.querySelector('html').addEventListener('click', e => {
-      console.log(e.composed);
-      console.log(e.composedPath());
-    });
-
+    // Start apps
     initializeApplication();
   </script>
 </html>
