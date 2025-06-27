@@ -3,16 +3,44 @@
   <head>
     <meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
-    <meta name="description" content="Metrics nodejs"/>
+    <meta name="description" content="nodejs metrics"/>
     <meta name="color-scheme" content="light dark"/>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css"/>
-    <title>Hello world!</title>
+    <title>Nodejs Metrics</title>
     </head>
   <body>
-    <main class="container">
-      <head>
-        <h1>Hello world!</h1>
-      </head>
+    <header class="container">
+      <nav>
+        <ul>
+          <li>
+            <hgroup>
+              <h1>Nodejs Metrics</h1>
+              <p>Process load measuring for NodeJs</p>
+            </hgroup>
+          </li>
+        </ul>
+        <ul>
+          <li><a href="#">About</a></li>
+          <li><a href="#">Services</a></li>
+          <li><a href="#">Products</a></li>
+        </ul>
+      </nav>
+    </header>
+
+    <aside class="container">
+      <article>
+        <p><closed-shadow text="Waiting for connection"></closed-shadow></p>
+      </article>
+    </aside>
+
+    <nav aria-label="breadcrumb" class="container">
+      <ul>
+        <li><a href="#">Home</a></li>
+        <li>Measures</li>
+      </ul>
+    </nav>
+
+    <main class="container-fluid">
       <article>
 
       </article>
@@ -21,64 +49,135 @@
 
       <open-shadow text="I have an open shadow root"></open-shadow>
 
-      <closed-shadow text="I have a closed shadow root"></closed-shadow>
+      <closed-shadow text="Waiting for connection"></closed-shadow>
     </main>
+
+    <footer class="container">
+      <hr/>
+      <p>
+        <strong>Nodejs metrics</strong> |
+        <a class="secondary" href="https://github.com/stephen-shopopop/node-metrics" title="github" target="_blank">Github</a>
+         - <small>Currently v1.0.0</small>
+      </p>
+      <cite>— Author: stephen</cite>
+    </footer>
   </body>
+  <script type="module">
+//    import uplot from 'https://cdn.jsdelivr.net/npm/uplot@1.6.32/+esm'
+
+    // console.log(uplot)
+
+    /** Channel */
+    const channel = Object.freeze({
+      eventType : {
+        onError: 'on-error',
+        onReady: 'on-ready',
+        onMessage: 'on-message'
+      },
+      publish: (eventName, metatdata = {}) => document.dispatchEvent(new CustomEvent(`events:${eventName}`, { detail: metatdata })),
+      subscribe: (eventName, callback = () => {/***/}) => document.addEventListener(`events:${eventName}`, evt => callback(evt.detail))
+    });
+
+    /** Error handling */
+    const errorHandler = (error, metadata = {}) => {
+      console.error('%c %s %s %O', 'background: #E65842; font-weight: bold; color: white; padding: 2px 0px;', '⚠️', error, metadata);
+    }
+
+    /** Parses a JSON string safely */
+    const safeJsonParse = (data, unsecure = false) => {
+      try {
+        return JSON.parse(data);
+      } catch {
+        if(!unsecure) throw new Error('Invalid JSON!');
+        return data;
+      }
+    };
+
+
+    /** Fetch Metrics for service NodeJs and disptach on apps UI */
+    const fetchMetricsStream = (uri = '/metrics-stream') => {
+      const evtSource = new EventSource(uri);
+
+      evtSource.onerror = (e) => {
+        channel.publish(channel.eventType.onError, new Error('An error occurred while attempting to connect'));
+
+        evtSource.close();
+      };
+
+      evtSource.onmessage = (event) => {
+        try {
+          const json = safeJsonParse(event.data);
+
+          channel.publish(channel.eventType.onMessage, {
+            ...json?.payload,
+            time: json?.ts ?? null
+          });
+        } catch (err) {
+          channel.publish(channel.eventType.onError, err);
+
+          evtSource.close();
+        }
+      };
+
+      evtSource.onopen = (e) => channel.publish(channel.eventType.onReady, { message : 'The connection has been established' });
+    }
+
+    customElements.define('open-shadow',
+      class extends HTMLElement {
+        constructor() {
+          super();
+
+          const pElem = document.createElement('span');
+          pElem.textContent = this.getAttribute('text');
+
+          const shadowRoot = this.attachShadow({mode: 'open'});
+          shadowRoot.appendChild(pElem);
+        }
+      }
+    );
+
+    class StatusStreamMetricsComponents extends HTMLElement {
+        #item
+
+        constructor() {
+            super();
+
+            channel.subscribe(channel.eventType.onError, (e) => this.updateDisplay(e.message));
+            channel.subscribe(channel.eventType.onReady, (e) => this.updateDisplay(e.message));
+
+            this.render();
+        }
+
+        updateDisplay(value){
+          this.#item.textContent = value;
+        }
+
+        render() {
+          this.#item = document.createElement('span');
+          this.#item.textContent = this.getAttribute('text');
+
+          const shadowRoot = this.attachShadow({mode: 'open'});
+          shadowRoot.appendChild(this.#item);
+        }
+    }
+
+    document.querySelector('html').addEventListener('click', e => {
+//      console.log(e.composed);
+      console.log(e.composedPath());
+    });
+
+    const initializeApplication = () => {
+//      channel.subscribe(channel.eventType.onError, errorHandler);
+//      channel.subscribe(channel.eventType.onReady, console.log);
+//      channel.subscribe(channel.eventType.onMessage, console.log);
+      // Register components
+      customElements.define('closed-shadow', StatusStreamMetricsComponents);
+
+      fetchMetricsStream("http://localhost:8080/metrics-stream");
+    }
+
+
+    initializeApplication();
+  </script>
 </html>
-<script type="module">
-  import uplot from 'https://cdn.jsdelivr.net/npm/uplot@1.6.32/+esm'
 
-  console.log(uplot)
-
-  customElements.define('open-shadow',
-    class extends HTMLElement {
-      constructor() {
-        super();
-
-        const pElem = document.createElement('p');
-        pElem.textContent = this.getAttribute('text');
-
-        const shadowRoot = this.attachShadow({mode: 'open'});
-        shadowRoot.appendChild(pElem);
-      }
-    }
-  );
-
-  customElements.define('closed-shadow',
-    class extends HTMLElement {
-      constructor() {
-        super();
-
-        const pElem = document.createElement('p');
-        pElem.textContent = this.getAttribute('text');
-
-        const shadowRoot = this.attachShadow({mode: 'closed'});
-        shadowRoot.appendChild(pElem);
-      }
-    }
-  );
-
-  document.querySelector('html').addEventListener('click', e => {
-    console.log(e.composed);
-    console.log(e.composedPath());
-  });
-
-  const evtSource = new EventSource("http://localhost:8080/metrics-stream");
-  console.log(evtSource.readyState);
-
-  evtSource.onmessage = (e) => {
-    console.log(e)
-  };
-
-  evtSource.addEventListener("error", (e) => {
-    console.log("An error occurred while attempting to connect.",);
-  });
-
-  evtSource.onerror = (e) => {
-    console.log("An error occurred while attempting to connect.", e);
-  };
-
-  evtSource.addEventListener("open", (e) => {
-    console.log("The connection has been established.", e);
-  });
-</script>

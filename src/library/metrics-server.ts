@@ -141,7 +141,8 @@ export class MetricsServer {
           'Transfer-Encoding': 'chunked',
           connection: 'keep-alive',
           'cache-control': 'no-cache',
-          'content-type': 'text/event-stream'
+          'content-type': 'text/event-stream',
+          'Access-Control-Allow-Origin': '*'
         }
       });
     }
