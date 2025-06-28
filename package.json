@@ -19,23 +19,20 @@
   },
   "private": false,
   "tsup": {
-    "entry": [
-      "src/index.ts"
-    ],
+    "entry": ["src/index.ts"],
     "splitting": false,
     "sourcemap": false,
     "clean": true,
     "platform": "node",
-    "format": [
-      "cjs",
-      "esm"
-    ],
+    "shims": true,
+    "format": ["cjs", "esm"],
     "dts": true,
     "minify": false
   },
   "scripts": {
     "test": "tsc --pretty --noEmit && npx tsx ./bin/test-runner.js **/*.test.ts -C",
     "build": "tsup-node",
+    "postbuild": "cp -r views dist",
     "lint": "biome lint .",
     "format": "biome lint --write . && biome format --write .",
     "check": "tsc --pretty --noEmit && npm run lint && npx htmlhint src/**/*.html",

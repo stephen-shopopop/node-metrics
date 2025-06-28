@@ -1,9 +1,11 @@
+import path from 'node:path';
 import {
   CHANNEL_TOPIC_METRICS,
   DEFAULT_RESOLUTION,
   DEFAULT_SAMPLE_INTERVAL,
   MAX_EVENT_LOOP_DELAY,
-  MAX_EVENT_LOOP_UTILIZATION
+  MAX_EVENT_LOOP_UTILIZATION,
+  PATH_VIEW_TEMPLATE
 } from '../src/library/constants.js';
 import it, { describe, type TestContext } from 'node:test';
 
@@ -60,5 +62,15 @@ describe('constants', () => {
   it('should have BROADCAST_CHANNEL_TOPIC_METRICS as a string', (t: TestContext) => {
     t.plan(1);
     t.assert.strictEqual(typeof CHANNEL_TOPIC_METRICS, 'string');
+  });
+
+  it('should export PATH_VIEW_TEMPLATE as an absolute path ending with "views/index.html"', (t: TestContext) => {
+    t.plan(2);
+    // Import path module for assertions
+    t.assert.strictEqual(typeof PATH_VIEW_TEMPLATE, 'string');
+    t.assert.ok(
+      PATH_VIEW_TEMPLATE.endsWith(`${path.sep}views${path.sep}index.html`) ||
+        PATH_VIEW_TEMPLATE.endsWith('/views/index.html')
+    );
   });
 });

@@ -1,3 +1,6 @@
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+
 /**
  * The default resolution value used for metrics calculations.
  *
@@ -46,3 +49,15 @@ export const MAX_EVENT_LOOP_UTILIZATION = 0.98;
  * between different parts of the application or between different browser contexts.
  */
 export const CHANNEL_TOPIC_METRICS = 'channel:metrics';
+
+/**
+ * Absolute path to the main HTML view template used by the application.
+ *
+ * This constant resolves the path to the `index.html` file located in the `views` directory,
+ * relative to the current module's directory. It is typically used to serve the main frontend
+ * template in server-side rendering or static file serving scenarios.
+ */
+export const PATH_VIEW_TEMPLATE = path.join(
+  path.dirname(fileURLToPath(import.meta.url)),
+  './views/index.html'
+);

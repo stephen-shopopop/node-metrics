@@ -8,8 +8,10 @@ import { isUnderPressure } from './middleware/under-pressure.js';
 import {
   CHANNEL_TOPIC_METRICS,
   MAX_EVENT_LOOP_DELAY,
-  MAX_EVENT_LOOP_UTILIZATION
+  MAX_EVENT_LOOP_UTILIZATION,
+  PATH_VIEW_TEMPLATE
 } from './constants.js';
+import { existsSync, lstatSync, readFileSync } from 'node:fs';
 
 /**
  * Provides a metrics server for exposing application and process metrics.
@@ -70,6 +72,18 @@ export class MetricsServer {
       });
     }
 
+    if (context.method === 'GET' && context.path === '/') {
+      if (!existsSync(PATH_VIEW_TEMPLATE) || !lstatSync(PATH_VIEW_TEMPLATE).isFile()) {
+        return new Response();
+      }
+
+      return new Response(readFileSync(PATH_VIEW_TEMPLATE, 'utf8'), {
+        headers: {
+          'content-type': 'text/html'
+        }
+      });
+    }
+
     if (context.method === 'GET' && context.path === '/metrics') {
       return new PrometheusBuild(this.#appName)
         .setGauge(
@@ -123,7 +137,7 @@ export class MetricsServer {
             const event = message as MessageEvent;
 
             controller.enqueue(
-                `data: ${JSON.stringify({
+              `data: ${JSON.stringify({
                 ts: Date.now(),
                 type: event.type,
                 payload: event.data
