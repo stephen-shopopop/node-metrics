@@ -3,6 +3,9 @@ import { MetricsServer } from '../src/library/metrics-server.js';
 import { StoreBuilder } from '../src/library/store-builder.js';
 import type { MetricsValues } from '../src/index.js';
 import { MetricsObservable } from '../src/library/metrics-observer.js';
+const fs = await import('node:fs');
+import { PATH_VIEW_TEMPLATE } from '../src/library/constants.js';
+import path from 'node:path';
 
 const template = `# HELP nodejs_event_loop_delay_milliseconds The mean of the recorded event loop delays
 # TYPE nodejs_event_loop_delay_milliseconds gauge
@@ -180,7 +183,7 @@ describe('MetricsServer', () => {
   });
 
   test('should return default response if view html is not found', async (t: TestContext) => {
-    t.plan(2);
+    t.plan(3);
 
     // Arrange
     await metricsServer.start(3000);
@@ -189,10 +192,61 @@ describe('MetricsServer', () => {
     const response = await fetch(`http://localhost:${metricsServer.getAddressInfo()?.port}`, {
       signal: AbortSignal.timeout(100)
     });
+    const text = await response.text();
 
     // Assert
     t.assert.strictEqual(response.status, 200);
     t.assert.strictEqual(response.headers.get('content-type'), 'text/plain; charset=UTF-8');
+    t.assert.strictEqual(text, '');
+  });
+
+  test('should notify observer on server start and stop', async (t: TestContext) => {
+    t.plan(2);
+
+    // Arrange
+    let startNotified = false;
+    let stopNotified = false;
+
+    const observer = {
+      notify: (msg: string) => {
+        if (msg.startsWith('Starting metrics server')) startNotified = true;
+        if (msg === 'Stopping metrics server') stopNotified = true;
+      }
+    } as unknown as MetricsObservable;
+
+    const server = new MetricsServer(metricsContext, observer);
+
+    // Act
+    await server.start(3000);
+    await server.destroy();
+
+    // Assert
+    t.assert.strictEqual(startNotified, true);
+    t.assert.strictEqual(stopNotified, true);
+  });
+
+  test('should serve HTML if view template exists', async (t: TestContext) => {
+    t.plan(2);
+
+    // Arrange
+
+    const htmlContent = '<html><body>Metrics</body></html>';
+    fs.mkdirSync(path.dirname(PATH_VIEW_TEMPLATE));
+    fs.writeFileSync(PATH_VIEW_TEMPLATE, htmlContent);
+
+    await metricsServer.start(3002);
+
+    // Act
+    const response = await fetch(`http://localhost:${metricsServer.getAddressInfo()?.port}/`);
+    const text = await response.text();
+
+    // Assert
+    t.assert.strictEqual(response.headers.get('content-type'), 'text/html');
+    t.assert.strictEqual(text, htmlContent);
+
+    // Cleanup
+    fs.unlinkSync(PATH_VIEW_TEMPLATE);
+    fs.rmdirSync(path.dirname(PATH_VIEW_TEMPLATE));
   });
 
   test('should return 503 when system is under pressure', async (t: TestContext) => {

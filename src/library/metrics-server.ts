@@ -72,11 +72,12 @@ export class MetricsServer {
       });
     }
 
-    if (context.method === 'GET' && context.path === '/') {
-      if (!existsSync(PATH_VIEW_TEMPLATE) || !lstatSync(PATH_VIEW_TEMPLATE).isFile()) {
-        return new Response();
-      }
-
+    if (
+      context.method === 'GET' &&
+      context.path === '/' &&
+      existsSync(PATH_VIEW_TEMPLATE) &&
+      lstatSync(PATH_VIEW_TEMPLATE).isFile()
+    ) {
       return new Response(readFileSync(PATH_VIEW_TEMPLATE, 'utf8'), {
         headers: {
           'content-type': 'text/html'
