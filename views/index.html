@@ -176,7 +176,7 @@
     }
 
     const normalizeMetricPourcent = (metricValue = 0) => Math.round(metricValue * 100);
-    const normalizeMetricInSeconds = (metricValue = 0) => ((metricValue || 1)/ 1e3).toFixed(3);
+    const normalizeMetricInSeconds = (metricValue = 0) => (metricValue || 1)/ 1e3;
     const normalizeMetricUptime = (metricValue) => humanDate(new Date(metricValue * 1e3));
     const normalizeMetricBytesInMegaBytes = (metricValue = 0) => (metricValue || 1) / (1024 * 1024);
 
@@ -185,11 +185,42 @@
         case 'event_loop_utilized':
           return normalizeMetricPourcent(value);
         case 'event_loop_delay_milliseconds':
-          return normalizeMetricInSeconds(value);
+          return normalizeMetricInSeconds(value).toFixed(3);
         case 'process_start_time_seconds':
           return normalizeMetricUptime(value);
+        case 'time':
+          return normalizeMetricInSeconds(value);
+        case 'heap_total_bytes':
+        case 'heap_used_bytes':
+        case 'rss_bytes':
+          return normalizeMetricBytesInMegaBytes(value);
         default:
           return value;
+      }
+    }
+
+    /** Store dataSet metrics */
+    const storeInMemory = (nbr_points = 10000) => {
+      let storeMemory = {};
+
+      return function consume (metrics = {}) {
+        for(const metric in metrics){
+          if(typeof metrics[metric] !=="number"){
+            continue;
+          }
+
+          if(!Reflect.has(storeMemory, metric)){
+            storeMemory[metric] = [];
+          }
+
+          const count = storeMemory[metric].push(normalizeMetrics(metric, metrics[metric]));
+
+          if(count > nbr_points){
+            storeMemory[metric].shift();
+          }
+        }
+
+        return storeMemory;
       }
     }
 
@@ -246,53 +277,35 @@
         }
     }
 
-    let dataEventLoopUtilized = [[Date.now() / 1e3],[0]];
-    let uplotEventLoopUtilized = new uplot({
-      title: "Event Loop Utilized",
-      width: document.getElementById('graph-event-loop-utilized').scrollWidth,
-      height: 300,
-      series: [
-        {},
-        { label: "Delay", stroke: "red", fill: "rgba(255,0,0,0.1)" },
-      ]
-    }, dataEventLoopUtilized, document.getElementById('graph-event-loop-utilized'));
+    class GraphTimeSeries {
+      #uplotInstance
 
-    let dataEventLoopDelay = [[Date.now() / 1e3],[0]];
-    let uplotEventLoopDelay = new uplot({
-      title: "Event Loop Delay",
-      width: document.getElementById('graph-event-loop-delay').scrollWidth,
-      height: 300,
-      series: [
-        {},
-        { label: "Delay", stroke: "red", fill: "rgba(255,0,0,0.1)",  value: (self, rawValue) => rawValue == null ? '' : `${rawValue.toFixed(2)} sec` },
-      ]
-    }, dataEventLoopDelay, document.getElementById('graph-event-loop-delay'));
+      constructor(
+        title = 'graph',
+        series = [{ label: "unknown", stroke: "red", fill: "rgba(255,0,0,0.1)" }],
+        htmlElement = document.body
+      ) {
+        if(!Array.isArray(series)) {
+          throw new Error('Incorrect series definitions');
+        }
 
-    let dataMemory = [[Date.now() / 1e3],[0], [0], [0]];
-    let uplotMemory = new uplot({
-      title: "Memory",
-      width: document.getElementById('graph-memory').scrollWidth,
-      height: 300,
-      series: [
-        {},
-        { label: "Heap total", stroke: "red", fill: "rgba(255,0,0,0.1)", value: (self, rawValue) => rawValue == null ? '' : `${rawValue.toFixed(2)} Mb` },
-        { label: "Heap used", stroke: "green", fill: "rgba(0,255,0,0.1)", value: (self, rawValue) => rawValue == null ? '' : `${rawValue.toFixed(2)} Mb` },
-        { label: "Rss", stroke: "blue", fill: "rgba(0,0,255,0.1)", value: (self, rawValue) => rawValue == null ? '' : `${rawValue.toFixed(2)} Mb` }
-      ]
-    }, dataMemory, document.getElementById('graph-memory'));
+        const initData = [[Date.now() / 1e3],...Array(series.length).fill([0])];
 
-    let dataCpu = [[Date.now() / 1e3],[0], [0], [0]];
-    let uplotCpu = new uplot({
-      title: "CPU",
-      width: document.getElementById('graph-cpu').scrollWidth,
-      height: 300,
-      series: [
-        {},
-        { label: "CPU total", stroke: "red", fill: "rgba(255,0,0,0.1)", value: (self, rawValue) => rawValue == null ? '' : `${rawValue.toFixed(2)} sec` },
-        { label: "CPU user", stroke: "green", fill: "rgba(0,255,0,0.1)", value: (self, rawValue) => rawValue == null ? '' : `${rawValue.toFixed(2)} sec` },
-        { label: "CPU system", stroke: "blue", fill: "rgba(0,0,255,0.1)", value: (self, rawValue) => rawValue == null ? '' : `${rawValue.toFixed(2)} sec` }
-      ]
-    }, dataMemory, document.getElementById('graph-cpu'));
+        this.#uplotInstance = new uplot({
+          title,
+          width: htmlElement.scrollWidth,
+          height: htmlElement.scrollWidth / 4,
+          series: [
+            {},
+            ...series
+          ]
+        }, initData, htmlElement);
+      }
+
+      setData(data= []) {
+        this.#uplotInstance.setData(data);
+      }
+    }
 
     const initializeApplication = () => {
       // Register components
@@ -306,33 +319,89 @@
         document.documentElement.setAttribute('data-theme', attr === 'light' ? 'dark' : 'light');
       });
 
-      fetchMetricsStream("http://localhost:8080/metrics-stream");
+      // Init dataSet consumer
+      const dataSetConsumer = storeInMemory();
 
+      const eluUtilizedGraph = new GraphTimeSeries(
+        'Event Loop Utilized (%)',
+        [
+          { label: "Utilized", stroke: "red", fill: "rgba(255,0,0,0.1)", value: (self, rawValue) => rawValue == null ? '' : `${rawValue} %` }
+        ],
+        document.getElementById('graph-event-loop-utilized')
+      );
+
+      const eluDelayGraph = new GraphTimeSeries(
+        'Event Loop Delay (sec)',
+        [
+          { label: "Delay", stroke: "red", fill: "rgba(255,0,0,0.1)", value: (self, rawValue) => rawValue == null ? '' : `${rawValue} sec` }
+        ],
+        document.getElementById('graph-event-loop-delay')
+      );
+
+      const memoryGraph = new GraphTimeSeries(
+        'Memory (Mb)',
+        [
+          { label: "Heap total", stroke: "red", fill: "rgba(255,0,0,0.1)", value: (self, rawValue) => rawValue == null ? '' : `${rawValue.toFixed(2)} MB` },
+          { label: "Heap used", stroke: "green", fill: "rgba(0,255,0,0.1)", value: (self, rawValue) => rawValue == null ? '' : `${rawValue.toFixed(2)} MB` },
+          { label: "Rss", stroke: "blue", fill: "rgba(0,0,255,0.1)", value: (self, rawValue) => rawValue == null ? '' : `${rawValue.toFixed(2)} MB` }
+        ],
+        document.getElementById('graph-memory')
+      );
+
+      const cpuGraph = new GraphTimeSeries(
+        'CPU (sec)',
+        [
+          { label: "CPU total", stroke: "red", fill: "rgba(255,0,0,0.1)", value: (self, rawValue) => rawValue == null ? '' : `${rawValue.toFixed(2)} sec` },
+          { label: "CPU user", stroke: "green", fill: "rgba(0,255,0,0.1)", value: (self, rawValue) => rawValue == null ? '' : `${rawValue.toFixed(2)} sec` },
+          { label: "CPU system", stroke: "blue", fill: "rgba(0,0,255,0.1)", value: (self, rawValue) => rawValue == null ? '' : `${rawValue.toFixed(2)} sec` }
+        ],
+        document.getElementById('graph-cpu')
+      );
+
+      // Listener event payload
       channel.subscribe(channel.eventType.onMessage, (payload) => {
-        dataEventLoopUtilized[0].push(new Date(payload.time).getTime() / 1e3);
-        dataEventLoopUtilized[1].push(payload.event_loop_utilized);
-        uplotEventLoopUtilized.setData(dataEventLoopUtilized);
+        const {
+          event_loop_delay_milliseconds,
+          event_loop_utilized,
+          heap_total_bytes,
+          heap_used_bytes,
+          process_cpu_seconds_total,
+          process_cpu_user_seconds_total,
+          process_cpu_system_seconds_total,
+          rss_bytes,
+          time
+        } = dataSetConsumer(payload);
 
-        dataEventLoopDelay[0].push(new Date(payload.time).getTime() / 1e3);
-        dataEventLoopDelay[1].push(payload.event_loop_delay_milliseconds);
-        uplotEventLoopDelay.setData(dataEventLoopDelay);
+        eluUtilizedGraph.setData([
+          time,
+          event_loop_utilized
+        ]);
 
-        dataMemory[0].push(new Date(payload.time).getTime() / 1e3);
-        dataMemory[1].push(normalizeMetricBytesInMegaBytes(payload.heap_total_bytes));
-        dataMemory[2].push(normalizeMetricBytesInMegaBytes(payload.heap_used_bytes));
-        dataMemory[3].push(normalizeMetricBytesInMegaBytes(payload.rss_bytes));
-        uplotMemory.setData(dataMemory);
+        eluDelayGraph.setData([
+          time,
+          event_loop_delay_milliseconds
+        ]);
 
-        dataCpu[0].push(new Date(payload.time).getTime() / 1e3);
-        dataCpu[1].push(payload.process_cpu_seconds_total);
-        dataCpu[2].push(payload.process_cpu_user_seconds_total);
-        dataCpu[3].push(payload.process_cpu_system_seconds_total);
-        uplotCpu.setData(dataCpu);
+        memoryGraph.setData([
+          time,
+          heap_total_bytes,
+          heap_used_bytes,
+          rss_bytes
+        ]);
+
+        cpuGraph.setData([
+          time,
+          process_cpu_seconds_total,
+          process_cpu_user_seconds_total,
+          process_cpu_system_seconds_total
+        ]);
       });
+
+      // Start stream
+      fetchMetricsStream("http://localhost:8080/metrics-stream");
     }
 
     // Start apps
     initializeApplication();
   </script>
 </html>
-

@@ -123,8 +123,8 @@ export class MetricsServer {
             const event = message as MessageEvent;
 
             controller.enqueue(
-              `data: ${JSON.stringify({
-                ts: new Date().toISOString(),
+                `data: ${JSON.stringify({
+                ts: Date.now(),
                 type: event.type,
                 payload: event.data
               })}\n\n`
