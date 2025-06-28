@@ -114,11 +114,7 @@
     const fetchMetricsStream = (uri = '/metrics-stream') => {
       const evtSource = new EventSource(uri);
 
-      evtSource.onerror = (e) => {
-        channel.publish(channel.eventType.onError, new Error('An error occurred while attempting to connect'));
-
-        evtSource.close();
-      };
+      evtSource.onerror = (e) => channel.publish(channel.eventType.onError, new Error('An error occurred while attempting to connect'));
 
       evtSource.onmessage = (event) => {
         try {
