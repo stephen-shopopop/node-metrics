@@ -138,6 +138,7 @@
       evtSource.onopen = (e) => channel.publish(channel.eventType.onReady, { message : 'The connection has been established' });
     }
 
+    /** humanDate formats a JavaScript Date object into a human-readable string. */
     const humanDate = (date, locales = 'default-u-nu-latn') => {
       let dateObj;
       if (typeof date === 'string') dateObj = new Date(date);
@@ -175,17 +176,18 @@
       return dateObj.toLocaleString(locales, options);
     }
 
-    const normalizeMetricPourcent = (metricValue = 0) => Math.round(metricValue * 100);
+    const normalizeMetricPercent = (metricValue = 0) => Math.round(metricValue * 100);
     const normalizeMetricInSeconds = (metricValue = 0) => (metricValue || 1)/ 1e3;
     const normalizeMetricUptime = (metricValue) => humanDate(new Date(metricValue * 1e3));
     const normalizeMetricBytesInMegaBytes = (metricValue = 0) => (metricValue || 1) / (1024 * 1024);
+    const normalizeFraction = (metricValue = 0, fraction = 3) => Number(metricValue.toFixed(fraction));
 
     const normalizeMetrics = (metric = '', value = 0) => {
       switch (metric){
         case 'event_loop_utilized':
-          return normalizeMetricPourcent(value);
+          return normalizeMetricPercent(value);
         case 'event_loop_delay_milliseconds':
-          return normalizeMetricInSeconds(value).toFixed(3);
+          return normalizeFraction(normalizeMetricInSeconds(value));
         case 'process_start_time_seconds':
           return normalizeMetricUptime(value);
         case 'time':
@@ -224,6 +226,10 @@
       }
     }
 
+    /**
+     * StatusStreamMetricsComponents is a custom HTML element that provides
+     * metrics and status streaming functionality for the node-metrics service.
+     */
     class StatusStreamMetricsComponents extends HTMLElement {
         #elem
 
@@ -249,6 +255,10 @@
         }
     }
 
+    /**
+     * MetricsComponents is a custom HTML element that encapsulates the logic and presentation
+     * for displaying various metrics within the application.
+     */
     class MetricsComponents extends HTMLElement {
         #elem
 
@@ -277,6 +287,9 @@
         }
     }
 
+    /**
+     * GraphTimeSeries is a class designed to handle the creation, management, and rendering of time series graphs.
+     */
     class GraphTimeSeries {
       #uplotInstance
 
@@ -307,21 +320,18 @@
       }
     }
 
+    /**
+     * Initializes the main application logic.
+     */
     const initializeApplication = () => {
+    // Init dataSet consumer
+      const dataSetConsumer = storeInMemory();
+
       // Register components
       customElements.define('metrics-status', StatusStreamMetricsComponents);
       customElements.define('metrics-card', MetricsComponents);
 
-      // Register Events listeners
-      document.getElementById('turn-light-mode').addEventListener('click', e => {
-        e.preventDefault();
-        const attr = document.documentElement.getAttribute('data-theme') ?? 'light';
-        document.documentElement.setAttribute('data-theme', attr === 'light' ? 'dark' : 'light');
-      });
-
-      // Init dataSet consumer
-      const dataSetConsumer = storeInMemory();
-
+      // Register graphs
       const eluUtilizedGraph = new GraphTimeSeries(
         'Event Loop Utilized (%)',
         [
@@ -358,7 +368,14 @@
         document.getElementById('graph-cpu')
       );
 
-      // Listener event payload
+      // Register Events listeners on click
+      document.getElementById('turn-light-mode').addEventListener('click', e => {
+        e.preventDefault();
+        const attr = document.documentElement.getAttribute('data-theme') ?? 'light';
+        document.documentElement.setAttribute('data-theme', attr === 'light' ? 'dark' : 'light');
+      });
+
+      // Listener event payload and update graphs
       channel.subscribe(channel.eventType.onMessage, (payload) => {
         const {
           event_loop_delay_milliseconds,
