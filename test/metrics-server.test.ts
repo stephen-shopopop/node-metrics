@@ -179,6 +179,22 @@ describe('MetricsServer', () => {
     t.assert.match(text, /Welcome to #/);
   });
 
+  test('should return default response if view html is not found', async (t: TestContext) => {
+    t.plan(2);
+
+    // Arrange
+    await metricsServer.start(3000);
+
+    // Act
+    const response = await fetch(`http://localhost:${metricsServer.getAddressInfo()?.port}`, {
+      signal: AbortSignal.timeout(100)
+    });
+
+    // Assert
+    t.assert.strictEqual(response.status, 200);
+    t.assert.strictEqual(response.headers.get('content-type'), 'text/plain; charset=UTF-8');
+  });
+
   test('should return 503 when system is under pressure', async (t: TestContext) => {
     t.plan(3);
 
