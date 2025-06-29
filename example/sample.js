@@ -1,8 +1,7 @@
 import { Metrics } from '../dist/index.js';
 import { setTimeout } from 'node:timers/promises';
 
-// Use port 8080 for testing with prometheus (docker)
-Metrics.start({ webServerMetricsPort: 8080, appName: 'service-test' });
+Metrics.start({ webServerMetricsPort: 9090, appName: 'service-test' });
 
 const smartMemoryLeak = new WeakMap();
 

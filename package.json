@@ -19,18 +19,13 @@
   },
   "private": false,
   "tsup": {
-    "entry": [
-      "src/index.ts"
-    ],
+    "entry": ["src/index.ts"],
     "splitting": false,
     "sourcemap": false,
     "clean": true,
     "platform": "node",
     "shims": true,
-    "format": [
-      "cjs",
-      "esm"
-    ],
+    "format": ["cjs", "esm"],
     "dts": true,
     "minify": false
   },
@@ -43,7 +38,7 @@
     "check": "tsc --pretty --noEmit && npm run lint && npx htmlhint src/**/*.html",
     "clean": "rm -rf ./dist",
     "maintenance": "npm run clean & rm -rf ./node_modules && npm cache clean --force",
-    "bench": "node example/sample.js & sleep 2 ; echo \"Run bench!!\" & autocannon -c 100 -d 40 -t 10 --renderStatusCodes http://127.0.0.1:8080/metrics && killall node",
+    "bench": "node example/sample.js & sleep 2 ; echo \"Run bench!!\" & autocannon -c 100 -d 40 -t 10 --renderStatusCodes http://127.0.0.1:9090/metrics && killall node",
     "deps:update": "npx taze",
     "deps:unused": "npx knip",
     "tarball:check": "npm pack --dry-run",

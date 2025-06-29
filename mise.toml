@@ -60,7 +60,7 @@ run = 'node example/sample-hono.js -m & sleep 2 ; echo \"Run bench!!\" & npx aut
 
 [tasks.docker-compose-up]
 description = 'Docker compose UP && run app sample'
-run = 'docker compose -f compose.yml up -d & sleep 2 ; echo \"Run App!!\" & node example/sample.js'
+run = 'docker compose -f compose.yml up -d & sleep 2 ; echo \"Run App!!\" & node -r ./bin/metrics.js example/sample.js'
 
 [tasks.docker-compose-down]
 description = 'Docker compose DOWN & Clean'

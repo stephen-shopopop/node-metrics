@@ -128,6 +128,29 @@ server.listen(port, hostname, () => {
 });
 ```
 
+### Set up metrics
+
+```ts
+// file metrics.js
+import { Metrics } from '@stephen-shopopop/node-metrics';
+
+const metrics = Metrics.start({ webServerMetricsPort: 9090, appName: 'service-test' });
+
+process.on('SIGTERM', () => {
+  metrics
+    .closeWebServerMetrics()
+    .then(() => console.log('Metrics terminated'))
+    .catch((error) => console.error('Error terminating metrics', error))
+    .finally(() => process.exit(0));
+});
+```
+
+### Run your application
+
+```shell
+node -r ./metrics.js apps.js
+```
+
 ## Documentation
 
 - [see documentation](https://stephen-shopopop.github.io/node-metrics/)
@@ -143,6 +166,13 @@ server.listen(port, hostname, () => {
 - `maxHeapUsedBytes`, Maximum allowed heap memory usage in bytes.
 - `maxRssBytes`, Maximum allowed Resident Set Size (RSS) in bytes.
 - `retryAfter`, The number of seconds to wait before retrying a request.
+
+## Dashboard UI
+
+ `GET http://127.0.0.1:9090`
+
+![Dashboard UI](./assets/nodejs-metrics-dashboard.png)
+
 
 ## Prometheus metrics
 
