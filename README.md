@@ -23,7 +23,7 @@ app.use(underPressureKoaMiddleware({
   maxEventLoopDelay: 1000,
   maxHeapUsedBytes: 100000000,
   maxRssBytes: 100000000,
-  maxEventLoopUtilization:0.98
+  maxEventLoopUtilization:0.98,
   retryAfter: 10,
   webServerMetricsPort: 9090
 }));
@@ -49,7 +49,7 @@ app.use(underPressureExpressMiddleware({
   maxEventLoopDelay: 1000,
   maxHeapUsedBytes: 100000000,
   maxRssBytes: 100000000,
-  maxEventLoopUtilization:0.98
+  maxEventLoopUtilization:0.98,
   retryAfter: 10,
   webServerMetricsPort: 9090
 }))
@@ -66,7 +66,7 @@ app.listen(port, () => {
 ### Hono
 
 ```js
-import { Hono } from 'hono"
+import { Hono } from 'hono'
 import { underPressureHonoMiddleware } from '@shopopop/node-metrics'
 
 const app = new Hono()
@@ -76,12 +76,12 @@ app.use('*', underPressureHonoMiddleware({
   maxEventLoopDelay: 1000,
   maxHeapUsedBytes: 100000000,
   maxRssBytes: 100000000,
-  maxEventLoopUtilization:0.98
+  maxEventLoopUtilization:0.98,
   retryAfter: 10,
   webServerMetricsPort: 9090
 }))
 
-app get('/', (c) => c. text( 'Hello Hono!'))
+app.get('/', (c) => c. text( 'Hello Hono!'))
 
 export default app
 ```

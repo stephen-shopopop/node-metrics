@@ -8,7 +8,7 @@ import { isUnderPressure } from './under-pressure.js';
  * Creates a Hono middleware that monitors system metrics and returns a 503 Service Unavailable response
  * when the system is under pressure, as determined by the provided options and current metrics.
  *
- * @params appName - The name of the application, formatted as `${string}-${string}` (e.g., "service-order")
+ * @param appName - The name of the application, formatted as `${string}-${string}` (e.g., "service-order")
  * @param sampleIntervalInMs - Interval in milliseconds between metric samples. Defaults to `DEFAULT_SAMPLE_INTERVAL`.
  * @param resolution - The resolution for metric sampling. Defaults to `DEFAULT_RESOLUTION`.
  * @param webServerMetricsPort - Optional port for exposing web server metrics. Defaults to `0` (disabled).

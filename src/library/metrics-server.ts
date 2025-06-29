@@ -23,6 +23,7 @@ import { existsSync, lstatSync, readFileSync } from 'node:fs';
  * and CPU statistics.
  *
  * @remarks
+ * - The `/` endpoint returns dashboard UI
  * - The `/metrics` endpoint returns Prometheus-formatted metrics.
  * - The `/metrics-stream` endpoint provides a real-time event stream of metrics updates. `curl -H Accept:text/event-stream http://localhost:9090/metrics-stream`
  * - Observers are notified of server lifecycle events and incoming requests.
