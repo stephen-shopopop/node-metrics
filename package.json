@@ -19,18 +19,13 @@
   },
   "private": false,
   "tsup": {
-    "entry": [
-      "src/index.ts"
-    ],
+    "entry": ["src/index.ts"],
     "splitting": false,
     "sourcemap": false,
     "clean": true,
     "platform": "node",
     "shims": true,
-    "format": [
-      "cjs",
-      "esm"
-    ],
+    "format": ["cjs", "esm"],
     "dts": true,
     "minify": false
   },
