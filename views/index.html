@@ -114,7 +114,7 @@
     const fetchMetricsStream = (uri = '/metrics-stream') => {
       const evtSource = new EventSource(uri);
 
-      evtSource.onerror = (e) => channel.publish(channel.eventType.onError, new Error('An error occurred while attempting to connect'));
+      evtSource.onerror = () => channel.publish(channel.eventType.onError, new Error('An error occurred while attempting to connect'));
 
       evtSource.onmessage = (event) => {
         try {
@@ -131,7 +131,7 @@
         }
       };
 
-      evtSource.onopen = (e) => channel.publish(channel.eventType.onReady, { message : 'The connection has been established' });
+      evtSource.onopen = () => channel.publish(channel.eventType.onReady, { message : 'The connection has been established' });
     }
 
     /** humanDate formats a JavaScript Date object into a human-readable string. */
@@ -238,7 +238,7 @@
             this.render();
         }
 
-        updateDisplay(value){
+        updateDisplay(value) {
           this.#elem.textContent = value;
         }
 
