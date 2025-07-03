@@ -176,7 +176,7 @@ describe('MetricsServer', () => {
     t.assert.strictEqual(response.headers.get('content-type'), 'text/event-stream');
 
     const reader = response.body?.getReader();
-    // biome-ignore lint/style/noNonNullAssertion: <explanation>
+    // biome-ignore lint/style/noNonNullAssertion: Use for testing
     const { value } = await reader!.read();
     const text = new TextDecoder().decode(value);
     t.assert.match(text, /Welcome to #/);

@@ -316,7 +316,7 @@ describe('web-server', () => {
         const outgoing = {
           headersSent: false,
           writeHead: (status: number, headers: unknown) => {
-            // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+            // biome-ignore lint/suspicious/noExplicitAny: use for testing
             writeHeadCalled = status === 500 && (headers as any)['Content-Type'] === 'text/plain';
           },
           end: (msg?: unknown) => {

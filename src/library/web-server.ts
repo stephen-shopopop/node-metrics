@@ -152,8 +152,8 @@ export function writeFromReadableStream(stream: ReadableStream<Uint8Array>, writ
     writable.off('error', cancel);
   });
 
-  // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-  function cancel(error?: any) {
+  // @ts-ignore
+  function cancel(error) {
     reader.cancel(error).catch(() => {});
     if (error) {
       writable.destroy(error);

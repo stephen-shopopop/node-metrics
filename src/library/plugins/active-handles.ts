@@ -25,7 +25,7 @@ const aggregateByObjectName = (handles: object[]) => {
 
     const { name: handleName } = handle.constructor;
 
-    if (Object.hasOwnProperty.call(data, handleName) && typeof data[handleName] === 'number') {
+    if (Object.hasOwn(data, handleName) && typeof data[handleName] === 'number') {
       data[handleName] += 1;
     } else {
       data[handleName] = 1;
