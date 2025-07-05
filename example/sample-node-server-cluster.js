@@ -20,6 +20,9 @@ let numCPUs = Math.max(1, availableParallelism() - 1);
 if (cluster.isPrimary) {
   console.log(`Primary ${process.pid} is running`);
 
+  // Metrics for process master
+  Metrics.start({ webServerMetricsPort: 9091 });
+
   // Fork workers.
   for (; numCPUs > 0; numCPUs--) {
     cluster.fork();
@@ -38,6 +41,7 @@ if (cluster.isPrimary) {
     // const channel = new BroadcastChannel('channel:metrics');
     // channel.onmessage = (msg) => console.log(msg.data);
 
+    // Metrics for workers
     Metrics.start({ webServerMetricsPort: 9090 });
   }
 
