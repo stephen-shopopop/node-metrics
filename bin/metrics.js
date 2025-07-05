@@ -1,6 +1,8 @@
-import { Metrics } from '../dist/index.js';
+import { Metrics, ActiveResourcesInfoPlugin, ActiveHandlesPlugin } from '../dist/index.js';
 
 const metrics = Metrics.start({ webServerMetricsPort: 8080, appName: 'service-with-prometheus' });
+metrics.register(new ActiveResourcesInfoPlugin());
+metrics.register(new ActiveHandlesPlugin());
 
 for (const signal of ['SIGTERM', 'SIGINT']) {
   process.on(signal, () => {

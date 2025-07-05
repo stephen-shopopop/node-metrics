@@ -1,7 +1,4 @@
-import { Metrics } from '../dist/index.js';
 import { setTimeout } from 'node:timers/promises';
-
-Metrics.start({ webServerMetricsPort: 9090, appName: 'service-test' });
 
 const smartMemoryLeak = new WeakMap();
 
