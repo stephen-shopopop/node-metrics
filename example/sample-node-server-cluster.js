@@ -18,10 +18,14 @@ const args = parseArgs({
 let numCPUs = Math.max(1, availableParallelism() - 1);
 
 if (cluster.isPrimary) {
-  console.log(`Primary ${process.pid} is running`);
-
   // Metrics for process master
   Metrics.start({ webServerMetricsPort: 9091 });
+
+  console.log(`Primary ${process.pid} is running - go to http://127.0.0.1:9091`);
+
+  // Listener master
+  // const channel = new BroadcastChannel('channel:metrics');
+  // channel.onmessage = (msg) => console.log(msg.data);
 
   // Fork workers.
   for (; numCPUs > 0; numCPUs--) {
@@ -33,7 +37,7 @@ if (cluster.isPrimary) {
   });
 
   cluster.on('online', (worker) => {
-    console.info(`ℹ Worker ${String(worker.process.pid)} is online`);
+    console.info(`ℹ Worker ${String(worker.process.pid)} is online - go to http://127.0.0.1:9090`);
   });
 } else {
   if (args.values.metrics) {
