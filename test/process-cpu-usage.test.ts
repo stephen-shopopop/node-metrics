@@ -20,7 +20,7 @@ describe('ProcessCpuUsagePlugin', () => {
   });
 
   it('should capture CPU metrics', (t: TestContext) => {
-    t.plan(4);
+    t.plan(5);
 
     // Arrange
     const fakeCpuUsage = {
@@ -45,5 +45,6 @@ describe('ProcessCpuUsagePlugin', () => {
       2
     ]);
     t.assert.deepStrictEqual(call.mock.calls.at(2)?.arguments, ['process_cpu_seconds_total', 3]);
+    t.assert.deepStrictEqual(call.mock.calls.at(3)?.arguments, ['process_pid', process.pid]);
   });
 });

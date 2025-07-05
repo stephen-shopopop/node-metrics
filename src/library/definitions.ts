@@ -45,17 +45,18 @@ export type MiddlewareOptions = {
   UnderPressureOptions;
 
 /**
- * Represents the set of supported metric property names for Node.js process and event loop monitoring.
+ * Represents the set of supported metric property names for Node.js process and system monitoring.
  *
- * - `'event_loop_delay_milliseconds'`: The delay in the Node.js event loop, measured in milliseconds.
- * - `'event_loop_utilized'`: The proportion of time the event loop is actively processing events.
- * - `'heap_used_bytes'`: The number of bytes used by the V8 heap.
- * - `'heap_total_bytes'`: The total number of bytes allocated for the V8 heap.
- * - `'rss_bytes'`: The resident set size, or the amount of memory allocated for the process.
- * - `'process_start_time_seconds'`: The process start time, represented in seconds since the Unix epoch.
- * - `'process_cpu_user_seconds_total'`: The total user CPU time consumed by the process, in seconds.
- * - `'process_cpu_system_seconds_total'`: The total system CPU time consumed by the process, in seconds.
- * - `'process_cpu_seconds_total'`: The total CPU time (user + system) consumed by the process, in seconds.
+ * - `event_loop_delay_milliseconds`: Measures the delay in the Node.js event loop in milliseconds.
+ * - `event_loop_utilized`: Indicates the percentage of event loop utilization.
+ * - `heap_used_bytes`: The number of bytes used from the V8 heap.
+ * - `heap_total_bytes`: The total size of the V8 heap in bytes.
+ * - `rss_bytes`: Resident Set Size, the total memory allocated for the process execution.
+ * - `process_start_time_seconds`: The process start time in seconds since the Unix epoch.
+ * - `process_cpu_user_seconds_total`: Total user CPU time spent by the process in seconds.
+ * - `process_cpu_system_seconds_total`: Total system CPU time spent by the process in seconds.
+ * - `process_cpu_seconds_total`: Total CPU time (user + system) spent by the process in seconds.
+ * - `process_pid`: The process identifier (PID).
  */
 export type MetricProperties =
   | 'event_loop_delay_milliseconds'
@@ -66,7 +67,8 @@ export type MetricProperties =
   | 'process_start_time_seconds'
   | 'process_cpu_user_seconds_total'
   | 'process_cpu_system_seconds_total'
-  | 'process_cpu_seconds_total';
+  | 'process_cpu_seconds_total'
+  | 'process_pid';
 
 /**
  * Represents a mapping of metric property names to their corresponding numeric values.
