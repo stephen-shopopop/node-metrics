@@ -195,6 +195,8 @@
         case 'heap_total_bytes':
         case 'heap_used_bytes':
         case 'rss_bytes':
+        case 'external_bytes':
+        case 'array_buffers_bytes':
           return normalizeMetricBytesInMegaBytes(value);
         default:
           return value;
@@ -353,7 +355,9 @@
         [
           { label: "Heap total", stroke: "red", fill: "rgba(255,0,0,0.1)", value: (self, rawValue) => rawValue == null ? '' : `${rawValue.toFixed(2)} MB` },
           { label: "Heap used", stroke: "green", fill: "rgba(0,255,0,0.1)", value: (self, rawValue) => rawValue == null ? '' : `${rawValue.toFixed(2)} MB` },
-          { label: "Rss", stroke: "blue", fill: "rgba(0,0,255,0.1)", value: (self, rawValue) => rawValue == null ? '' : `${rawValue.toFixed(2)} MB` }
+          { label: "Rss", stroke: "blue", fill: "rgba(0,0,255,0.1)", value: (self, rawValue) => rawValue == null ? '' : `${rawValue.toFixed(2)} MB` },
+          { label: "ArrayBuffers", stroke: "#BA43A9", fill: "rgba(186, 67, 169, 0.1)", value: (self, rawValue) => rawValue == null ? '' : `${rawValue.toFixed(2)} MB` },
+          { label: "External", stroke: "#EAB839", fill: "rgba(234, 184, 57, 0.1)", value: (self, rawValue) => rawValue == null ? '' : `${rawValue.toFixed(2)} MB` }
         ],
         document.getElementById('graph-memory')
       );
@@ -386,6 +390,8 @@
           process_cpu_user_seconds_total,
           process_cpu_system_seconds_total,
           rss_bytes,
+          array_buffers_bytes,
+          external_bytes,
           time
         } = dataSetConsumer(payload);
 
@@ -403,7 +409,9 @@
           time,
           heap_total_bytes,
           heap_used_bytes,
-          rss_bytes
+          rss_bytes,
+          array_buffers_bytes,
+          external_bytes
         ]);
 
         cpuGraph.setData([
