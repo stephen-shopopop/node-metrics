@@ -53,6 +53,8 @@ export class MetricsServer {
       heap_used_bytes = 0,
       heap_total_bytes = 0,
       rss_bytes = 0,
+      array_buffers_bytes = 0,
+      external_bytes = 0,
       process_start_time_seconds = 0,
       process_cpu_user_seconds_total = 0,
       process_cpu_system_seconds_total = 0,
@@ -104,6 +106,16 @@ export class MetricsServer {
           'rss_bytes',
           rss_bytes,
           'The resident set size, or total memory allocated for the process'
+        )
+        .setGauge(
+          'array_buffers_bytes',
+          array_buffers_bytes,
+          'Memory allocated for ArrayBuffers and SharedArrayBuffers'
+        )
+        .setGauge(
+          'external_bytes',
+          external_bytes,
+          'Memory used by C++ objects bound to JavaScript objects managed by V8'
         )
         .setGauge(
           'process_start_time_seconds',

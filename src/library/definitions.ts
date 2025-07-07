@@ -45,13 +45,16 @@ export type MiddlewareOptions = {
   UnderPressureOptions;
 
 /**
- * Represents the set of supported metric property names for Node.js process and system monitoring.
+ * Represents the set of supported metric property names for Node.js process and runtime monitoring.
  *
- * - `event_loop_delay_milliseconds`: Measures the delay in the Node.js event loop in milliseconds.
- * - `event_loop_utilized`: Indicates the percentage of event loop utilization.
- * - `heap_used_bytes`: The number of bytes used from the V8 heap.
+ * Each property corresponds to a specific metric:
+ * - `event_loop_delay_milliseconds`: Measures the event loop delay in milliseconds.
+ * - `event_loop_utilized`: Indicates the proportion of time the event loop is active.
+ * - `heap_used_bytes`: The number of bytes used in the V8 heap.
  * - `heap_total_bytes`: The total size of the V8 heap in bytes.
- * - `rss_bytes`: Resident Set Size, the total memory allocated for the process execution.
+ * - `rss_bytes`: Resident Set Size, the total memory allocated for the process.
+ * - `external_bytes`: Memory used by C++ objects bound to JavaScript objects managed by V8.
+ * - `array_buffers_bytes`: Memory allocated for ArrayBuffers and SharedArrayBuffers.
  * - `process_start_time_seconds`: The process start time in seconds since the Unix epoch.
  * - `process_cpu_user_seconds_total`: Total user CPU time spent by the process in seconds.
  * - `process_cpu_system_seconds_total`: Total system CPU time spent by the process in seconds.
@@ -64,6 +67,8 @@ export type MetricProperties =
   | 'heap_used_bytes'
   | 'heap_total_bytes'
   | 'rss_bytes'
+  | 'external_bytes'
+  | 'array_buffers_bytes'
   | 'process_start_time_seconds'
   | 'process_cpu_user_seconds_total'
   | 'process_cpu_system_seconds_total'

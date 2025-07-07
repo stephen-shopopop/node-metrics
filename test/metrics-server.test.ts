@@ -22,6 +22,12 @@ nodejs_heap_total_bytes{service="unknown"} 0
 # HELP nodejs_rss_bytes The resident set size, or total memory allocated for the process
 # TYPE nodejs_rss_bytes gauge
 nodejs_rss_bytes{service="unknown"} 0
+# HELP nodejs_array_buffers_bytes Memory allocated for ArrayBuffers and SharedArrayBuffers
+# TYPE nodejs_array_buffers_bytes gauge
+nodejs_array_buffers_bytes{service="unknown"} 0
+# HELP nodejs_external_bytes Memory used by C++ objects bound to JavaScript objects managed by V8
+# TYPE nodejs_external_bytes gauge
+nodejs_external_bytes{service="unknown"} 0
 # HELP nodejs_process_start_time_seconds The process start time, represented in seconds since the Unix epoch
 # TYPE nodejs_process_start_time_seconds gauge
 nodejs_process_start_time_seconds{service="unknown"} 0
@@ -50,6 +56,12 @@ nodejs_heap_total_bytes{service="service-order"} 0
 # HELP nodejs_rss_bytes The resident set size, or total memory allocated for the process
 # TYPE nodejs_rss_bytes gauge
 nodejs_rss_bytes{service="service-order"} 0
+# HELP nodejs_array_buffers_bytes Memory allocated for ArrayBuffers and SharedArrayBuffers
+# TYPE nodejs_array_buffers_bytes gauge
+nodejs_array_buffers_bytes{service="service-order"} 0
+# HELP nodejs_external_bytes Memory used by C++ objects bound to JavaScript objects managed by V8
+# TYPE nodejs_external_bytes gauge
+nodejs_external_bytes{service="service-order"} 0
 # HELP nodejs_process_start_time_seconds The process start time, represented in seconds since the Unix epoch
 # TYPE nodejs_process_start_time_seconds gauge
 nodejs_process_start_time_seconds{service="service-order"} 0

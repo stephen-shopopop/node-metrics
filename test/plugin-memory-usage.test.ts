@@ -21,13 +21,15 @@ describe('MemoryUsagePlugin', () => {
   });
 
   it('should capture and set memory usage metrics in the context', (t: TestContext) => {
-    t.plan(5);
+    t.plan(7);
 
     // Arrange
     const fakeMemoryUsage = {
       heapUsed: 12345,
       heapTotal: 23456,
-      rss: 34567
+      rss: 34567,
+      external: 45678,
+      arrayBuffers: 56789
     };
 
     const memoryUsageMock = t.mock.method(process, 'memoryUsage', () => fakeMemoryUsage);
@@ -38,7 +40,7 @@ describe('MemoryUsagePlugin', () => {
     plugin.capture(ctx);
 
     // Assert
-    t.assert.strictEqual(call.mock.callCount(), 3);
+    t.assert.strictEqual(call.mock.callCount(), 5);
     t.assert.strictEqual(memoryUsageMock.mock.callCount(), 1);
     t.assert.deepStrictEqual(call.mock.calls.at(0)?.arguments, [
       'heap_used_bytes',
@@ -49,5 +51,13 @@ describe('MemoryUsagePlugin', () => {
       fakeMemoryUsage.heapTotal
     ]);
     t.assert.deepStrictEqual(call.mock.calls.at(2)?.arguments, ['rss_bytes', fakeMemoryUsage.rss]);
+    t.assert.deepStrictEqual(call.mock.calls.at(3)?.arguments, [
+      'array_buffers_bytes',
+      fakeMemoryUsage.arrayBuffers
+    ]);
+    t.assert.deepStrictEqual(call.mock.calls.at(4)?.arguments, [
+      'external_bytes',
+      fakeMemoryUsage.external
+    ]);
   });
 });
