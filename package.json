@@ -54,7 +54,7 @@
   "author": "Stephen Deletang <stephen-shopopop@shopopop.com>",
   "license": "ISC",
   "devDependencies": {
-    "@biomejs/biome": "2.0.6",
+    "@biomejs/biome": "2.1.1",
     "@hono/node-server": "^1.14.4",
     "@reporters/github": "^1.7.2",
     "@types/koa": "^2.15.0",
