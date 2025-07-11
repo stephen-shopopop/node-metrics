@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" xmlns="http://www.w3.org/1999/html">
   <head>
     <meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
@@ -71,6 +71,11 @@
         <article id="graph-event-loop-delay"></article>
         <article id="graph-memory"></article>
         <article id="graph-cpu"></article>
+      </section>
+
+      <section>
+        <metrics-tags data-metric="metadata.nodejs_active_handles" color="rgba(255,0,0,0.1)"></metrics-tags>
+        <metrics-tags data-metric="metadata.nodejs_active_resources" color="rgba(0,255,0,0.1)"></metrics-tags>
       </section>
     </main>
 
@@ -290,6 +295,67 @@
     }
 
     /**
+     * TagsComponents is a custom HTML element that encapsulates the logic and presentation
+     * for displaying various metrics within the application.
+     */
+    class TagsComponents extends HTMLElement {
+        #elem
+
+        constructor() {
+            super();
+
+            channel.subscribe(channel.eventType.onMessage, (payload) => this.updateDisplay(payload));
+
+            this.render();
+        }
+
+        updateDisplay(payload){
+          const attrMetrics = this.getAttribute('data-metric') ?? '';
+
+          if(Reflect.has(payload, attrMetrics) && typeof payload[attrMetrics] === 'object') {
+            this.#elem.innerHTML = '';
+
+            for (const [key, value] of Object.entries(payload[attrMetrics])) {
+              this.#elem.innerHTML += `<li><span>${key}</span> <span class="counter">${value}</span></li>`;
+            }
+          }
+        }
+
+        render() {
+          this.#elem = document.createElement('ul');
+          const style = document.createElement('style');
+          style.textContent = `
+ul {
+  margin-top: 2rem;
+  margin-bottom: 1rem;
+}
+li {
+  display: inline-block;
+  margin: 0.75rem;
+  overflow: visible;
+  font-family: inherit;
+  background-color: ${this.getAttribute('color')};
+  border-radius: 0.25rem;
+}
+span {
+  display: inline-block;
+  padding: 0.75rem;
+}
+.counter {
+  color: #fff;
+  background-color: rgb(26, 30.5, 40.25);
+  padding: 0.75rem 1rem 0.75rem 1rem;
+  border-radius: 0 0.25rem 0.25rem 0;
+}
+`;
+
+          const shadowRoot = this.attachShadow({mode: 'open'});
+          shadowRoot.appendChild(this.#elem);
+          shadowRoot.appendChild(style);
+        }
+    }
+
+    /**
      * GraphTimeSeries is a class designed to handle the creation, management, and rendering of time series graphs.
      */
     class GraphTimeSeries {
@@ -332,6 +398,7 @@
       // Register components
       customElements.define('metrics-status', StatusStreamMetricsComponents);
       customElements.define('metrics-card', MetricsComponents);
+      customElements.define('metrics-tags', TagsComponents);
 
       // Register graphs
       const eluUtilizedGraph = new GraphTimeSeries(
