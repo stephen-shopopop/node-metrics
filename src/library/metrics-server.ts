@@ -58,7 +58,9 @@ export class MetricsServer {
       process_start_time_seconds = 0,
       process_cpu_user_seconds_total = 0,
       process_cpu_system_seconds_total = 0,
-      process_cpu_seconds_total = 0
+      process_cpu_seconds_total = 0,
+      nodejs_active_handles = {},
+      nodejs_active_resources = {}
     } = this.metricsContext.toJson();
 
     if (
@@ -136,6 +138,16 @@ export class MetricsServer {
           'process_cpu_seconds_total',
           process_cpu_seconds_total,
           'The total CPU time (user + system) consumed by the process, in seconds'
+        )
+        .setGauge(
+          'nodejs_active_handles',
+          nodejs_active_handles,
+          'Number of active libuv handles grouped by handle type. Every handle type is C++ class name'
+        )
+        .setGauge(
+          'nodejs_active_resources',
+          nodejs_active_resources,
+          'Number of active resources that are currently keeping the event loop grouped by resource type'
         )
         .printRegistries();
     }

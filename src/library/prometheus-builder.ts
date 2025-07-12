@@ -131,7 +131,7 @@ export class PrometheusBuild {
    * @param value - The numeric value to set for the gauge.
    * @param label - (Optional) A label to associate with the gauge metric.
    */
-  setGauge(name: string, value: number, label?: string) {
+  setGauge(name: string, value: number | { [key: string]: number }, label?: string) {
     const gauge = new Gauge(name, value, label, this.serviceName);
 
     this.#registries.push(gauge.registry());

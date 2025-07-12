@@ -93,7 +93,7 @@ import { createServer } from 'node:http';
 import { Metrics, isUnderPressure } from '@shopopop/node-metrics';
 
 const metrics = Metrics.start({
-   appName: 'service-order',
+  appName: 'service-order',
   sampleIntervalInMs: 1000,
   resolution: 10,
   webServerMetricsPort: 9090
@@ -198,14 +198,20 @@ nodejs_rss_bytes{service="unknown"} 179077120
 # TYPE nodejs_process_start_time_seconds gauge
 nodejs_process_start_time_seconds{service="unknown"} 1750345329
 # HELP nodejs_process_cpu_user_seconds_total The total user CPU time consumed by the process, in seconds
-# TYPE nodejs_process_cpu_user_seconds_total gauge
+# TYPE nodejs_process_cpu_user_seconds_total counter
 nodejs_process_cpu_user_seconds_total{service="unknown"} 1.494779
 # HELP nodejs_process_cpu_system_seconds_total The total system CPU time consumed by the process, in seconds
-# TYPE nodejs_process_cpu_system_seconds_total gauge
+# TYPE nodejs_process_cpu_system_seconds_total counter
 nodejs_process_cpu_system_seconds_total{service="unknown"} 0.120983
 # HELP nodejs_process_cpu_seconds_total The total CPU time (user + system) consumed by the process, in seconds
-# TYPE nodejs_process_cpu_seconds_total gauge
+# TYPE nodejs_process_cpu_seconds_total counter
 nodejs_process_cpu_seconds_total{service="unknown"} 1.615762
+# HELP nodejs_active_handles Number of active libuv handles grouped by handle type. Every handle type is C++ class name.
+# TYPE nodejs_active_handles gauge
+nodejs_active_handles{service="unknown",type="WriteStream"} 2
+nodejs_active_handles{service="unknown",type="ReadStream"} 1
+nodejs_active_handles{service="unknown",type="Server"} 1
+nodejs_active_handles{service="unknown",type="Socket"} 1
 ```
 
 ## Additional information

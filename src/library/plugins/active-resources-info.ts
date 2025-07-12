@@ -37,7 +37,7 @@ export class ActiveResourcesInfoPlugin implements Plugin {
    * the aggregated data in the provided metrics context.
    *
    * @param ctx - The metrics context where the aggregated active resources information
-   *              will be set under the key 'metadata.nodejs_active_resources'.
+   *              will be set under the key 'nodejs_active_resources'.
    */
   capture(ctx: MetricsContext): void {
     const resources = process.getActiveResourcesInfo();

@@ -39,7 +39,13 @@ nodejs_process_cpu_user_seconds_total{service="unknown"} 0
 nodejs_process_cpu_system_seconds_total{service="unknown"} 0
 # HELP nodejs_process_cpu_seconds_total The total CPU time (user + system) consumed by the process, in seconds
 # TYPE nodejs_process_cpu_seconds_total counter
-nodejs_process_cpu_seconds_total{service="unknown"} 0`;
+nodejs_process_cpu_seconds_total{service="unknown"} 0
+# HELP nodejs_nodejs_active_handles Number of active libuv handles grouped by handle type. Every handle type is C++ class name
+# TYPE nodejs_nodejs_active_handles gauge
+
+# HELP nodejs_nodejs_active_resources Number of active resources that are currently keeping the event loop grouped by resource type
+# TYPE nodejs_nodejs_active_resources gauge
+`;
 
 const templateWithAppName = `# HELP nodejs_event_loop_delay_milliseconds The mean of the recorded event loop delays
 # TYPE nodejs_event_loop_delay_milliseconds gauge
@@ -73,7 +79,13 @@ nodejs_process_cpu_user_seconds_total{service="service-order"} 0
 nodejs_process_cpu_system_seconds_total{service="service-order"} 0
 # HELP nodejs_process_cpu_seconds_total The total CPU time (user + system) consumed by the process, in seconds
 # TYPE nodejs_process_cpu_seconds_total counter
-nodejs_process_cpu_seconds_total{service="service-order"} 0`;
+nodejs_process_cpu_seconds_total{service="service-order"} 0
+# HELP nodejs_nodejs_active_handles Number of active libuv handles grouped by handle type. Every handle type is C++ class name
+# TYPE nodejs_nodejs_active_handles gauge
+
+# HELP nodejs_nodejs_active_resources Number of active resources that are currently keeping the event loop grouped by resource type
+# TYPE nodejs_nodejs_active_resources gauge
+`;
 
 describe('MetricsServer', () => {
   let metricsServer: MetricsServer;
