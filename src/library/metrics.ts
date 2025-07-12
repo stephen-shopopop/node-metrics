@@ -9,6 +9,8 @@ import { ProcessUpTimePlugin } from './plugins/process-uptime.js';
 import { ProcessCpuUsagePlugin } from './plugins/process-cpu-usage.js';
 import { MetricsObservable } from './metrics-observer.js';
 import { MetricsServer } from './metrics-server.js';
+import { ActiveHandlesPlugin } from './plugins/active-handles.js';
+import { ActiveResourcesInfoPlugin } from './plugins/active-resources-info.js';
 
 /**
  * Singleton class for collecting and managing application metrics.
@@ -61,6 +63,8 @@ export class Metrics<T extends object = MetricsValues> {
     this.register(new EventLoopUtilizationPlugin());
     this.register(new ProcessUpTimePlugin());
     this.register(new ProcessCpuUsagePlugin());
+    this.register(new ActiveHandlesPlugin());
+    this.register(new ActiveResourcesInfoPlugin());
 
     this.#timer = setTimeout(this.#begin, this.#sampleInterval);
     this.#timer.unref();

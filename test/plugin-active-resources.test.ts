@@ -1,10 +1,7 @@
 import it, { beforeEach, describe, type TestContext } from 'node:test';
 import { StoreBuilder } from '../src/library/store-builder.js';
-import {
-  ActiveResourcesInfoPlugin,
-  type MetricsContext,
-  type MetricsValues
-} from '../src/index.js';
+import type { MetricsContext, MetricsValues } from '../src/index.js';
+import { ActiveResourcesInfoPlugin } from '../src/library/plugins/active-resources-info.js';
 
 describe('ActiveResourcesInfoPlugin', () => {
   let plugin: ActiveResourcesInfoPlugin;
@@ -39,7 +36,7 @@ describe('ActiveResourcesInfoPlugin', () => {
     // Assert
     t.assert.strictEqual(call.mock.callCount(), 1);
     t.assert.deepStrictEqual(call.mock.calls.at(0)?.arguments, [
-      'metadata.nodejs_active_resources',
+      'nodejs_active_resources',
       { FSReqCallback: 2, TCP: 1, Pipe: 2 }
     ]);
 
@@ -59,10 +56,7 @@ describe('ActiveResourcesInfoPlugin', () => {
     plugin.capture(ctx);
 
     // Assert
-    t.assert.deepStrictEqual(call.mock.calls.at(0)?.arguments, [
-      'metadata.nodejs_active_resources',
-      {}
-    ]);
+    t.assert.deepStrictEqual(call.mock.calls.at(0)?.arguments, ['nodejs_active_resources', {}]);
 
     process.getActiveResourcesInfo = originalGetActiveResourcesInfo;
   });

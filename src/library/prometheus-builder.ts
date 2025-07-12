@@ -13,7 +13,7 @@
 type StandardMetric = {
   help: `# HELP ${string} ${string}`;
   type: `# TYPE ${string} ${'gauge' | 'counter'}`;
-  value: `${string} ${string}`;
+  value: string;
 };
 
 /**
@@ -38,7 +38,7 @@ type StandardMetric = {
 export class Gauge {
   constructor(
     readonly name: string,
-    readonly value: number,
+    readonly value: number | { [key: string]: number },
     readonly label = '',
     readonly service = 'unknown',
     readonly prefix = 'nodejs_'
@@ -50,7 +50,15 @@ export class Gauge {
     return {
       help: `# HELP ${this.prefix}${this.name} ${this.label}`,
       type: `# TYPE ${this.prefix}${this.name} gauge`,
-      value: `${this.prefix}${this.name}{service="${this.service}"} ${this.value}`
+      value:
+        typeof this.value === 'number'
+          ? `${this.prefix}${this.name}{service="${this.service}"} ${this.value}`
+          : Object.entries(this.value)
+              .map(
+                ([type, value]) =>
+                  `${this.prefix}${this.name}{service="${this.service}",type="${type}"} ${value}`
+              )
+              .join('\n')
     };
   }
 }

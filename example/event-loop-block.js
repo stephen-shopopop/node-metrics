@@ -1,9 +1,4 @@
-import {
-  Metrics,
-  DebugPlugin,
-  ActiveResourcesInfoPlugin,
-  ActiveHandlesPlugin
-} from '../dist/index.js';
+import { Metrics, DebugPlugin } from '../dist/index.js';
 import { setTimeout } from 'node:timers/promises';
 
 const maxEventLoopDelay = 1e3;
@@ -17,8 +12,6 @@ const block = (msec) => {
 };
 
 const metrics = Metrics.start({});
-metrics.register(new ActiveResourcesInfoPlugin());
-metrics.register(new ActiveHandlesPlugin());
 metrics.register(new DebugPlugin());
 metrics.observer.attach(console.debug);
 

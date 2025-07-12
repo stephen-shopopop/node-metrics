@@ -79,6 +79,49 @@ describe('Gauge', () => {
       'nodejs_negative_metric{service="unknown"} -5'
     );
   });
+
+  it('should handle Gauge.registry() with object value (multiple types)', (t: TestContext) => {
+    t.plan(4);
+
+    // Arrange
+    const gauge = new Gauge('disk_usage', { ssd: 100, hdd: 200 }, 'Disk usage in GB', 'infra');
+
+    // Act
+    const metric = gauge.registry();
+
+    // Assert
+    t.assert.strictEqual(metric.help, '# HELP nodejs_disk_usage Disk usage in GB');
+    t.assert.strictEqual(metric.type, '# TYPE nodejs_disk_usage gauge');
+    t.assert.match(metric.value, /nodejs_disk_usage{service="infra",type="ssd"} 100/);
+    t.assert.match(metric.value, /nodejs_disk_usage{service="infra",type="hdd"} 200/);
+  });
+
+  it('should handle Gauge.registry() with object value and custom prefix', (t: TestContext) => {
+    t.plan(2);
+
+    // Arrange
+    const gauge = new Gauge('connections', { http: 10, https: 20 }, '', 'api', 'svc_');
+
+    // Act
+    const metric = gauge.registry();
+
+    // Assert
+    t.assert.match(metric.value, /svc_connections{service="api",type="http"} 10/);
+    t.assert.match(metric.value, /svc_connections{service="api",type="https"} 20/);
+  });
+
+  it('should handle Gauge.registry() with empty object value', (t: TestContext) => {
+    t.plan(1);
+
+    // Arrange
+    const gauge = new Gauge('empty_metric', {}, 'Empty metric', 'test');
+
+    // Act
+    const metric = gauge.registry();
+
+    // Assert
+    t.assert.strictEqual(metric.value, '');
+  });
 });
 
 describe('Counter', () => {

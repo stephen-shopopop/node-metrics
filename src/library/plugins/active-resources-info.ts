@@ -42,6 +42,6 @@ export class ActiveResourcesInfoPlugin implements Plugin {
   capture(ctx: MetricsContext): void {
     const resources = process.getActiveResourcesInfo();
 
-    ctx.set('metadata.nodejs_active_resources', aggregateResources(resources));
+    ctx.set('nodejs_active_resources', aggregateResources(resources));
   }
 }

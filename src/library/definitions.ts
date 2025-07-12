@@ -76,24 +76,20 @@ export type MetricProperties =
   | 'process_pid';
 
 /**
- * Represents a mapping of metric property names to their corresponding numeric values.
- * Each key is a property from `MetricProperties`, and the value is a number representing the metric's value.
+ * Represents the values for various metrics collected in the system.
  *
- * ## Example
- *
- * ```ts
- * const metrics: MetricsValues = {
- *   event_loop_delay_milliseconds: 120,
- *   'metric.delay': 5,
- *   'metadata.health_check': 'OK'
- * };
- * ```
+ * - Each property defined in `MetricProperties` maps to a numeric value.
+ * - Additional metrics can be added dynamically using keys prefixed with `metric.`.
+ * - Metadata entries can be added dynamically using keys prefixed with `metadata.`, with values as either objects or strings.
+ * - Includes detailed information about Node.js active resources and handles, each represented as a mapping from string keys to numeric values.
  */
 export type MetricsValues = {
   [key in MetricProperties]: number;
 } & {
   [key: `metric.${string}`]: number;
   [key: `metadata.${string}`]: object | string;
+  nodejs_active_resources: { [key: string]: number };
+  nodejs_active_handles: { [key: string]: number };
 };
 
 /**

@@ -52,6 +52,6 @@ export class ActiveHandlesPlugin implements Plugin {
    * @param ctx - The MetricsContext instance where the aggregated active handle data will be stored.
    */
   capture(ctx: MetricsContext): void {
-    ctx.set('metadata.nodejs_active_handles', aggregateByObjectName(process._getActiveHandles()));
+    ctx.set('nodejs_active_handles', aggregateByObjectName(process._getActiveHandles()));
   }
 }

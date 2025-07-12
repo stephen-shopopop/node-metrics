@@ -1,6 +1,7 @@
 import it, { beforeEach, describe, type TestContext } from 'node:test';
 import { StoreBuilder } from '../src/library/store-builder.js';
-import { ActiveHandlesPlugin, type MetricsContext, type MetricsValues } from '../src/index.js';
+import type { MetricsContext, MetricsValues } from '../src/index.js';
+import { ActiveHandlesPlugin } from '../src/library/plugins/active-handles.js';
 
 describe('ActiveHandlesPlugin', () => {
   let plugin: ActiveHandlesPlugin;
@@ -39,7 +40,7 @@ describe('ActiveHandlesPlugin', () => {
     // Assert
     t.assert.strictEqual(call.mock.callCount(), 1);
     t.assert.deepStrictEqual(call.mock.calls.at(0)?.arguments, [
-      'metadata.nodejs_active_handles',
+      'nodejs_active_handles',
       { Socket: 1, Timeout: 2 }
     ]);
 
@@ -61,7 +62,7 @@ describe('ActiveHandlesPlugin', () => {
 
     // Assert
     t.assert.deepStrictEqual(call.mock.calls.at(0)?.arguments, [
-      'metadata.nodejs_active_handles',
+      'nodejs_active_handles',
       { Timeout: 1 }
     ]);
 
