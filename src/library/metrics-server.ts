@@ -43,10 +43,6 @@ export class MetricsServer {
   }
 
   async #fetchCallback(context: Context): Promise<Response> {
-    this.observer.notify(
-      `${context.method} http://${context.headers['host']}${context.path}?${new URLSearchParams(Object.entries(context.query)).toString()}`
-    );
-
     const {
       event_loop_delay_milliseconds = 0,
       event_loop_utilized = 0,

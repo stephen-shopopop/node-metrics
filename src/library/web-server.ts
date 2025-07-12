@@ -5,6 +5,7 @@ import { Readable, type Writable } from 'node:stream';
 import type { Context, FetchCallback, WebServerOptions } from './definitions.js';
 import type { ReadableStreamReadResult } from 'node:stream/web';
 import { channels } from './channels.js';
+import { types } from 'node:util';
 
 /**
  * Safely parses a JSON string, returning the parsed object if successful,
@@ -184,7 +185,7 @@ const getRequestListener = (fetchCallback: FetchCallback) => {
     incoming: Readonly<http.IncomingMessage>,
     outgoing: Readonly<http.ServerResponse>
   ) => {
-    channels.info.publish(`${incoming.method} http://${incoming.headers.host}${incoming.url}`);
+    const start = performance.now();
 
     let body: ReadableStream<Uint8Array<ArrayBufferLike>> | null = null;
 
@@ -202,9 +203,12 @@ const getRequestListener = (fetchCallback: FetchCallback) => {
     try {
       const res = await fetchCallback(await buildContext(request));
 
-      channels.info.publish(
-        `${incoming.method} http://${incoming.headers.host}${incoming.url} ${res.status}`
-      );
+      channels.info.publish({
+        duration: performance.now() - start,
+        operation: `${incoming.method} http://${incoming.headers.host}${incoming.url}`,
+        params: { status: res.status },
+        success: true
+      });
 
       if (res.headers.get('Transfer-Encoding')) {
         outgoing.writeHead(res.status, buildOutgoingHttpHeaders(res.headers));
@@ -221,6 +225,13 @@ const getRequestListener = (fetchCallback: FetchCallback) => {
         outgoing.end();
       }
     } catch (e) {
+      channels.info.publish({
+        duration: performance.now() - start,
+        error: types.isNativeError(e) ? e.message : undefined,
+        operation: `${incoming.method} http://${incoming.headers.host}${incoming.url}`,
+        success: false
+      });
+
       return handleResponseError(e, outgoing);
     }
   };
@@ -255,11 +266,14 @@ export const createWebServer = async ({
 }: WebServerOptions): Promise<{ server: Server; address: AddressInfo }> => {
   const server = http.createServer(getRequestListener(fetchCallback));
 
-  channels.info.publish(`Starting server on port: ${port}`);
-
   return await new Promise((resolve) => {
     server.listen(port, () => {
       const address = server.address() as AddressInfo;
+
+      channels.info.publish({
+        operation: `Starting server on port: ${address.port}`,
+        success: true
+      });
 
       resolve({ server, address });
     });
@@ -283,7 +297,10 @@ export const createWebServer = async ({
 export const closeWebServer = async (server: Server | undefined): Promise<void> =>
   await new Promise<void>((resolve) => {
     if (server !== undefined) {
-      channels.info.publish(`Stopping server: ${(server.address() as AddressInfo)?.port}`);
+      channels.info.publish({
+        operation: `Stopping server: ${(server.address() as AddressInfo)?.port}`,
+        success: true
+      });
 
       server.close(() => {
         resolve();
