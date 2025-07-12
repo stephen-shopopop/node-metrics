@@ -122,17 +122,17 @@ export class MetricsServer {
           process_start_time_seconds,
           'The process start time, represented in seconds since the Unix epoch'
         )
-        .setGauge(
+        .setCounter(
           'process_cpu_user_seconds_total',
           process_cpu_user_seconds_total,
           'The total user CPU time consumed by the process, in seconds'
         )
-        .setGauge(
+        .setCounter(
           'process_cpu_system_seconds_total',
           process_cpu_system_seconds_total,
           'The total system CPU time consumed by the process, in seconds'
         )
-        .setGauge(
+        .setCounter(
           'process_cpu_seconds_total',
           process_cpu_seconds_total,
           'The total CPU time (user + system) consumed by the process, in seconds'

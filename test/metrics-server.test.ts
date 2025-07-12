@@ -32,13 +32,13 @@ nodejs_external_bytes{service="unknown"} 0
 # TYPE nodejs_process_start_time_seconds gauge
 nodejs_process_start_time_seconds{service="unknown"} 0
 # HELP nodejs_process_cpu_user_seconds_total The total user CPU time consumed by the process, in seconds
-# TYPE nodejs_process_cpu_user_seconds_total gauge
+# TYPE nodejs_process_cpu_user_seconds_total counter
 nodejs_process_cpu_user_seconds_total{service="unknown"} 0
 # HELP nodejs_process_cpu_system_seconds_total The total system CPU time consumed by the process, in seconds
-# TYPE nodejs_process_cpu_system_seconds_total gauge
+# TYPE nodejs_process_cpu_system_seconds_total counter
 nodejs_process_cpu_system_seconds_total{service="unknown"} 0
 # HELP nodejs_process_cpu_seconds_total The total CPU time (user + system) consumed by the process, in seconds
-# TYPE nodejs_process_cpu_seconds_total gauge
+# TYPE nodejs_process_cpu_seconds_total counter
 nodejs_process_cpu_seconds_total{service="unknown"} 0`;
 
 const templateWithAppName = `# HELP nodejs_event_loop_delay_milliseconds The mean of the recorded event loop delays
@@ -66,13 +66,13 @@ nodejs_external_bytes{service="service-order"} 0
 # TYPE nodejs_process_start_time_seconds gauge
 nodejs_process_start_time_seconds{service="service-order"} 0
 # HELP nodejs_process_cpu_user_seconds_total The total user CPU time consumed by the process, in seconds
-# TYPE nodejs_process_cpu_user_seconds_total gauge
+# TYPE nodejs_process_cpu_user_seconds_total counter
 nodejs_process_cpu_user_seconds_total{service="service-order"} 0
 # HELP nodejs_process_cpu_system_seconds_total The total system CPU time consumed by the process, in seconds
-# TYPE nodejs_process_cpu_system_seconds_total gauge
+# TYPE nodejs_process_cpu_system_seconds_total counter
 nodejs_process_cpu_system_seconds_total{service="service-order"} 0
 # HELP nodejs_process_cpu_seconds_total The total CPU time (user + system) consumed by the process, in seconds
-# TYPE nodejs_process_cpu_seconds_total gauge
+# TYPE nodejs_process_cpu_seconds_total counter
 nodejs_process_cpu_seconds_total{service="service-order"} 0`;
 
 describe('MetricsServer', () => {
