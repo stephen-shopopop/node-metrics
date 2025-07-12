@@ -12,7 +12,7 @@
  */
 type StandardMetric = {
   help: `# HELP ${string} ${string}`;
-  type: `# TYPE ${string} ${'gauge'}`;
+  type: `# TYPE ${string} ${'gauge' | 'counter'}`;
   value: `${string} ${string}`;
 };
 
@@ -56,6 +56,45 @@ export class Gauge {
 }
 
 /**
+ * Represents a Prometheus counter metric.
+ *
+ * @remarks
+ * This class is used to build and register counter metrics in Prometheus format.
+ *
+ * ## Example
+ *
+ * ```typescript
+ * const counter = new Counter('requests_total', 5, 'Total number of requests', 'my-service');
+ * const metric = counter.registry();
+ * ```
+ *
+ * @param name - The name of the metric.
+ * @param value - The value of the counter.
+ * @param label - An optional description or label for the metric. Defaults to an empty string.
+ * @param service - The name of the service reporting the metric. Defaults to 'unknown'.
+ * @param prefix - The prefix for the metric name. Defaults to 'nodejs_'.
+ */
+export class Counter {
+  constructor(
+    readonly name: string,
+    readonly value: number,
+    readonly label = '',
+    readonly service = 'unknown',
+    readonly prefix = 'nodejs_'
+  ) {
+    /** */
+  }
+
+  registry(): StandardMetric {
+    return {
+      help: `# HELP ${this.prefix}${this.name} ${this.label}`,
+      type: `# TYPE ${this.prefix}${this.name} counter`,
+      value: `${this.prefix}${this.name}{service="${this.service}"} ${this.value}`
+    };
+  }
+}
+
+/**
  * A builder class for constructing and managing Prometheus metrics.
  *
  * The `PrometheusBuild` class allows you to create and register custom metrics,
@@ -88,6 +127,22 @@ export class PrometheusBuild {
     const gauge = new Gauge(name, value, label, this.serviceName);
 
     this.#registries.push(gauge.registry());
+
+    return this;
+  }
+
+  /**
+   * Sets a counter metric with the specified name and value, optionally with a label.
+   * The counter is created with the provided parameters and registered with the current prefix.
+   *
+   * @param name - The name of the counter metric.
+   * @param value - The numeric value to set for the counter.
+   * @param label - (Optional) A label to associate with the counter metric.
+   */
+  setCounter(name: string, value: number, label?: string) {
+    const counter = new Counter(name, value, label, this.serviceName);
+
+    this.#registries.push(counter.registry());
 
     return this;
   }
