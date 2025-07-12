@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css"/>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/uplot@1.6.32/dist/uPlot.min.css">
     <title>Nodejs Metrics</title>
-    </head>
+  </head>
   <body>
     <header class="container">
       <nav>
@@ -336,6 +336,9 @@ li {
   font-family: inherit;
   background-color: ${this.getAttribute('color')};
   border-radius: 0.25rem;
+}
+li > span:first-child::before {
+  content: '#';
 }
 span {
   display: inline-block;
