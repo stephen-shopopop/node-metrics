@@ -5,3 +5,4 @@ export { underPressureKoaMiddleware } from './library/middleware/koa-under-press
 export { underPressureExpressMiddleware } from './library/middleware/express-under-pressure.js';
 export { isUnderPressure } from './library/middleware/under-pressure.js';
 export * from './library/definitions.js';
+export { createWebServer, closeWebServer } from './library/web-server.js';
