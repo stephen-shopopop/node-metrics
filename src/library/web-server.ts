@@ -248,7 +248,7 @@ const getRequestListener = (fetchCallback: FetchCallback) => {
  *  ## Example
  *
  * ```ts
- * const server = await createWebServer({
+ * const { server } = await createWebServer({
  *   port: 9000,
  *   fetchCallback: (ctx) => {
  *      if (ctx.method === 'GET' && ctx.path('/')) {
@@ -289,10 +289,12 @@ export const createWebServer = async ({
  * ## Example
  *
  * ```ts
- * const server = await createWebServer({
+ * const { server } = await createWebServer({
  *   port: 9000,
  *   fetchCallback: () => new Response()
  * });
+ *
+ * await closeWebServer(server);
  */
 export const closeWebServer = async (server: Server | undefined): Promise<void> =>
   await new Promise<void>((resolve) => {

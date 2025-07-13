@@ -43,6 +43,8 @@
     // Toml
     "amasfe.even-better-toml",
     // Html
-    "htmlhint.vscode-htmlhint"
+    "htmlhint.vscode-htmlhint",
+    // Node test
+    "connor4312.nodejs-testing"
   ]
 }

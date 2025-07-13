@@ -35,6 +35,7 @@
     "minify": false
   },
   "scripts": {
+    "pretest": "node ./test/setup.js",
     "test": "tsc --pretty --noEmit && npx tsx ./bin/test-runner.js **/*.test.ts -C",
     "build": "tsup-node",
     "postbuild": "cp -r views dist",

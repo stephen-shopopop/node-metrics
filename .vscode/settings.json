@@ -100,5 +100,34 @@
   ],
   "cSpell.words": [
     "tagname"
+  ],
+  "nodejs-testing.extensions": [
+    {
+      "extensions": [
+        "mjs",
+        "cjs",
+        "js"
+      ],
+      "parameters": []
+    },
+    {
+      "extensions": [
+        "mts",
+        "cts",
+        "ts"
+      ],
+      "parameters": [
+        "--import",
+        "tsx"
+      ]
+    }
+  ],
+  "nodejs-testing.include": [
+    "./test"
+  ],
+  "nodejs-testing.pretest": [
+    "npm",
+    "run",
+    "pretest"
   ]
 }
