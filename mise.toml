@@ -1,4 +1,4 @@
-min_version = "2025.5.16"
+min_version = "2025.7.7"
 
 [env]
 NODE_ENV = "{{ env.NODE_ENV | default(value='development') }}"
@@ -8,15 +8,22 @@ PROJECT_NAME = "{{ config_root | basename }}"
 
 [hooks]
 enter = 'mise i -q'
+postinstall = 'npx simple-git-hooks'
 
-[tools] # Use > mise use
+[settings]
+# This must be enabled to make the hooks work
+experimental = true
+
+[tools] # Use "mise i" to install & use "mise use" to add tools
 actionlint = "latest"
-node = '24.3.0'
+node = "24.4.0"
+
+"npm:@antfu/ni" = "latest"
 
 [tasks.install]
 description = 'Install the project dependencies'
 alias = 'i'
-run = 'npm i @antfu/ni -g && npx simple-git-hooks && npm install'
+run = 'npm install'
 
 [tasks.check]
 description = "Linter for GithubAction files"
