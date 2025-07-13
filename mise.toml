@@ -16,7 +16,7 @@ node = '24.3.0'
 [tasks.install]
 description = 'Install the project dependencies'
 alias = 'i'
-run = 'npx simple-git-hooks && npm install'
+run = 'npm i @antfu/ni -g && npx simple-git-hooks && npm install'
 
 [tasks.check]
 description = "Linter for GithubAction files"

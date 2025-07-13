@@ -10,9 +10,7 @@ SHELL := $(shell which bash)
 NPM := $(shell command -v npm)
 
 ## Versions
-APP_NAME = $(shell node -p "require('./package.json').name")
 NODE ?= $(shell cat $(PWD)/.nvmrc 2> /dev/null || echo v24)
-NVM = v0.39.5
 
 .PHONY: help
 help: ## Show this help
@@ -29,30 +27,11 @@ ifndef NPM
 endif
 	@echo "🆗 The necessary dependencies are already installed!"
 
-.PHONY: run
-run:
-	@. $(NVM_DIR)/nvm.sh && nvm use $(NODE) && $(CMD)
-
-.PHONY: task
-task: requirements ## Run node task with good version ex: make task link
-	@make run CMD="npm run $(filter-out $@,$(MAKECMDGOALS))"
-
-.PHONY: install/nvm
-install/nvm: ## Install nvm: restart your terminal after nvm install
-	curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/${NVM}/install.sh | bash
-
-.PHONY: install/globals
-install/globals: requirements ## Install global dependencies (ex: yarn)
-	@echo "📦 Installing globals dependencies..."
-	@make run CMD="npm i @antfu/ni -g"
+.PHONY: install
+install: ## 📦 Installing globals dependencies... (mise)
 	@echo "🍿 Installing dependencies for mac with homebrew (https://brew.sh)... "
 	@brew install mise
 	@echo "🔰 ......................."
 	@echo "echo 'eval "$(mise activate zsh)"' >> ~/.zshrc"
+	@echo "echo 'alias mr="mise run"' >> ~/.zshrc"
 	@echo "🔰 ......................."
-
-.PHONY: install
-install: requirements ## Install the project
-	@echo "🍿 Installing dependencies..."
-	@make run CMD="npx simple-git-hooks"
-	@make run CMD="npm install"
