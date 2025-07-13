@@ -45,6 +45,8 @@
     // Html
     "htmlhint.vscode-htmlhint",
     // Node test
-    "connor4312.nodejs-testing"
+    "connor4312.nodejs-testing",
+    // Mise
+    "hverlin.mise-vscode"
   ]
 }
