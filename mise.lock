@@ -1,0 +1,11 @@
+[tools.actionlint]
+version = "1.7.7"
+backend = "aqua:rhysd/actionlint"
+
+[tools.node]
+version = "24.4.0"
+backend = "core:node"
+
+[tools."npm:@antfu/ni"]
+version = "25.0.0"
+backend = "npm:@antfu/ni"
