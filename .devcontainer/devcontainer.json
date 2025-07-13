@@ -1,8 +1,18 @@
 {
   "$schema": "https://raw.githubusercontent.com/devcontainers/spec/main/schemas/devContainer.schema.json",
-  "name": "node 24",
-  "image": "mcr.microsoft.com/devcontainers/typescript-node:1-24-bullseye",
+  "name": "mise",
+  "image": "mcr.microsoft.com/devcontainers/base:ubuntu",
   "features": {
     "ghcr.io/devcontainers-extra/features/mise:1": {}
-  }
+  },
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "hverlin.mise-vscode"
+      ]
+    }
+  },
+  "mounts": [],
+  "containerEnv": {},
+  "remoteEnv": {}
 }
