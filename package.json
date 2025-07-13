@@ -47,6 +47,7 @@
     "bench": "node -r ./bin/metrics.js example/sample.js & sleep 2 ; echo \"Run bench!!\" & autocannon -c 100 -d 40 -t 10 --renderStatusCodes http://127.0.0.1:8080/metrics && killall node",
     "deps:update": "npx taze",
     "deps:unused": "npx knip",
+    "biome:migrate": "npx @biomejs/biome migrate --write",
     "tarball:check": "npm pack --dry-run",
     "publish:dry-run": "npm publish --dry-run",
     "prepack": "npm run build",
