@@ -53,7 +53,21 @@
     "prepack": "npm run build",
     "docs": "npx typedoc --tsconfig tsconfig.json --excludePrivate --excludeProtected --excludeExternals --entryPointStrategy expand ./src"
   },
+  "keywords": [
+    "hono",
+    "koa",
+    "express",
+    "prometheus",
+    "service unavailable",
+    "metrics"
+  ],
   "author": "Stephen Deletang <stephen-shopopop@shopopop.com>",
+  "contributors": [
+    {
+      "name": "Stephen Deletang",
+      "email": "stephen-shopopop@shopopop.com"
+    }
+  ],
   "license": "ISC",
   "devDependencies": {
     "@biomejs/biome": "2.1.1",
@@ -79,8 +93,14 @@
     "type": "git",
     "url": "https://github.com/stephen-shopopop/node-metrics"
   },
+  "bugs": {
+    "url": "https://github.com/stephen-shopopop/node-metrics/issues"
+  },
   "publishConfig": {
     "registry": "https://registry.npmjs.org",
     "access": "public"
+  },
+  "engines": {
+    "node": ">=20.17.0"
   }
 }
