@@ -2,6 +2,7 @@ min_version = "2025.7.7"
 
 [env]
 NODE_ENV = "{{ env.NODE_ENV | default(value='development') }}"
+TZ = 'UTC'
 
 # Use the project name derived from the current directory
 PROJECT_NAME = "{{ config_root | basename }}"
