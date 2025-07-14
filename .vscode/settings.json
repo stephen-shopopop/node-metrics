@@ -118,6 +118,8 @@
       ],
       "parameters": [
         "--import",
+        "./test/setup.js", // Load env tests setup
+        "--import",
         "tsx"
       ]
     }
@@ -126,8 +128,8 @@
     "./test"
   ],
   "nodejs-testing.pretest": [
-    "npm",
-    "run",
-    "pretest"
+    "node",
+    "-e",
+    "import('./test/setup.js').then(fn=>fn.default())"
   ]
 }
