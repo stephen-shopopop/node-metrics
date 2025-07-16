@@ -35,7 +35,7 @@
     "minify": false
   },
   "scripts": {
-    "test": "tsc --pretty --noEmit && npx tsx ./bin/test-runner.js -C",
+    "test": "tsc --pretty --noEmit && npx tsx ./bin/test-runner.js **/*.test.ts -C",
     "build": "tsup-node",
     "postbuild": "cp -r views dist",
     "lint": "biome lint .",
