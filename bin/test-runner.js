@@ -32,7 +32,7 @@ const args = parseArgs({
       type: 'string',
       multiple: true,
       default:
-        process.env.npm_lifecycle_script === 'tsx'
+        process.env.npm_lifecycle_script === '"tsx"'
           ? [
               '**/**/*.test.ts',
               '**/*.test.{cjs,mjs,js}',
