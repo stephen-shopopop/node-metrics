@@ -16,6 +16,10 @@ const metrics = Metrics.start({ webServerMetricsPort: 9090 });
 metrics.register(new DebugPlugin());
 metrics.observer.attach(console.debug);
 
+console.log(`Process ${process.pid} is running - go to http://127.0.0.1:9090`);
+
+await setTimeout(5000);
+
 while (true) {
   await setTimeout(1000);
 

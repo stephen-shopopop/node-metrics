@@ -11,16 +11,19 @@ const block = (msec) => {
   while (Date.now() - start < msec) {}
 };
 
-const metrics = Metrics.start({});
+const metrics = Metrics.start({ webServerMetricsPort: 9090 });
 metrics.register(new DebugPlugin());
 metrics.observer.attach(console.debug);
+
+console.log(`Process ${process.pid} is running - go to http://127.0.0.1:9090`);
+await setTimeout(5000);
 
 let i = 0;
 
 while (true) {
   await setTimeout(10);
 
-  process.nextTick(() => block(i > 10 ? blockEventLoopDelayInMs : blockEventLoopUtilizationInMs));
+  process.nextTick(() => block(i > 20 ? blockEventLoopDelayInMs : blockEventLoopUtilizationInMs));
 
   const { event_loop_delay_milliseconds, event_loop_utilized } = metrics.measures();
 
@@ -32,7 +35,7 @@ while (true) {
     console.error('event loop utilization blocked!');
   }
 
-  if (i > 20) {
+  if (i > 40) {
     process.exit(0);
   }
 
