@@ -44,7 +44,12 @@ export const underPressureExpressMiddleware = ({
   res: express.Response,
   next: express.NextFunction
 ) => void) => {
-  const metrics = Metrics.start({ appName, sampleIntervalInMs, resolution, webServerMetricsPort });
+  const metrics = Metrics.start({
+    appName,
+    sampleIntervalInMs,
+    resolution,
+    webServerMetricsPort
+  });
 
   return (_req: express.Request, res: express.Response, next: express.NextFunction) => {
     if (isUnderPressure({ ...options, ...metrics.measures() })) {

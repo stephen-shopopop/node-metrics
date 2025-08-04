@@ -2,9 +2,19 @@
 version = "1.7.7"
 backend = "aqua:rhysd/actionlint"
 
+[tools.actionlint.platforms.macos-arm64]
+checksum = "sha256:2693315b9093aeacb4ebd91a993fea54fc215057bf0da2659056b4bc033873db"
+size = 1962532
+url = "https://github.com/rhysd/actionlint/releases/download/v1.7.7/actionlint_1.7.7_darwin_arm64.tar.gz"
+
 [tools.node]
-version = "24.4.0"
+version = "24.5.0"
 backend = "core:node"
+
+[tools.node.platforms.macos-arm64]
+checksum = "sha256:2a4172474565ecb8f0c87a1520590e00d6b28a78594c220d38eef991763dc276"
+size = 50983559
+url = "https://nodejs.org/dist/v24.5.0/node-v24.5.0-darwin-arm64.tar.gz"
 
 [tools."npm:@antfu/ni"]
 version = "25.0.0"
