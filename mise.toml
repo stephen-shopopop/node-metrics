@@ -73,6 +73,14 @@ run = 'node example/sample-hono.js & sleep 2 ; echo \"Run bench!!\" & npx autoca
 description = 'Bench hono server with metrics'
 run = 'node example/sample-hono.js -m & sleep 2 ; echo \"Run bench!!\" & npx autocannon -c 100 -d 40 -t 10 --renderStatusCodes http://127.0.0.1:3000 && killall node'
 
+[tasks.bench-fastify]
+description = 'Bench Fastify server'
+run = 'node example/sample-fastify.js & sleep 2 ; echo \"Run bench!!\" & npx autocannon -c 100 -d 40 -t 10 --renderStatusCodes http://127.0.0.1:3000 && killall node'
+
+[tasks.bench-fastify-with-metrics]
+description = 'Bench Fastify server with metrics'
+run = 'node example/sample-fastify.js -m & sleep 2 ; echo \"Run bench!!\" & npx autocannon -c 100 -d 40 -t 10 --renderStatusCodes http://127.0.0.1:3000 && killall node'
+
 [tasks.docker-compose-up]
 description = 'Docker compose UP && run app sample'
 run = 'docker compose -f compose.yml up -d & sleep 2 ; echo \"Run App!!\" & node -r ./bin/metrics.js example/sample.js'

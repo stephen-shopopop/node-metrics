@@ -3,7 +3,7 @@
 import { parseArgs } from 'node:util';
 import { Metrics } from '../dist/index.js';
 import { argv } from 'node:process';
-import Koa from 'koa';
+import Fastify from 'fastify';
 
 const args = parseArgs({
   args: argv.slice(2),
@@ -17,14 +17,10 @@ if (args.values.metrics) {
   Metrics.start({ webServerMetricsPort: 9090 });
 }
 
-const app = new Koa();
+const fastify = Fastify();
 
-app.use((ctx) => {
-  ctx.body = { hello: 'world' };
+fastify.get('/', (_request, reply) => {
+  reply.send({ hello: 'world' });
 });
 
-const server = app.listen(3000);
-
-process.on('SIGINT', () => {
-  server.close();
-});
+fastify.listen({ port: 3000 });

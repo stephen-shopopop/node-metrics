@@ -131,5 +131,8 @@
     "node",
     "-e",
     "import('./test/setup.js').then(fn=>fn.default())"
-  ]
+  ],
+  "debug.javascript.defaultRuntimeExecutable": {
+    "pwa-node": "/Users/stephen-shopopop/.local/share/mise/shims/node"
+  }
 }
