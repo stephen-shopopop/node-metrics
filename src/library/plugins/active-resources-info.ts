@@ -40,8 +40,6 @@ export class ActiveResourcesInfoPlugin implements Plugin {
    *              will be set under the key 'nodejs_active_resources'.
    */
   capture(ctx: MetricsContext): void {
-    const resources = process.getActiveResourcesInfo();
-
-    ctx.set('nodejs_active_resources', aggregateResources(resources));
+    ctx.set('nodejs_active_resources', aggregateResources(process.getActiveResourcesInfo()));
   }
 }
