@@ -41,6 +41,10 @@ run = 'node example/sample-node-server.js & sleep 2 ; echo \"Run bench!!\" & npx
 description = 'Bench node server with metrics'
 run = 'node example/sample-node-server.js -m & sleep 2 ; echo \"Run bench!!\" & npx autocannon -c 100 -d 40 -t 10 --renderStatusCodes http://127.0.0.1:3000 && killall node'
 
+[tasks.bench-node-server-wih-context-and-metrics]
+description = 'Bench node server with metrics'
+run = 'node example/sample-node-server-with-context.js -m & sleep 2 ; echo \"Run bench!!\" & npx autocannon -c 100 -p 10 -d 40 -W [ -c 100 -d 5] --renderStatusCodes http://127.0.0.1:3000 && killall node'
+
 [tasks.bench-node-server-cluster]
 description = 'Bench node server'
 run = 'node example/sample-node-server-cluster.js & sleep 2 ; echo \"Run bench!!\" & npx autocannon -c 100 -d 40 -t 10 --renderStatusCodes http://127.0.0.1:3000 && killall node'
