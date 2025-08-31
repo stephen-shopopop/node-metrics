@@ -8,13 +8,13 @@ size = 1962532
 url = "https://github.com/rhysd/actionlint/releases/download/v1.7.7/actionlint_1.7.7_darwin_arm64.tar.gz"
 
 [tools.node]
-version = "24.5.0"
+version = "24.7.0"
 backend = "core:node"
 
 [tools.node.platforms.macos-arm64]
-checksum = "sha256:2a4172474565ecb8f0c87a1520590e00d6b28a78594c220d38eef991763dc276"
-size = 50983559
-url = "https://nodejs.org/dist/v24.5.0/node-v24.5.0-darwin-arm64.tar.gz"
+checksum = "sha256:ff8298faaf82c85444aad7f1e12a4882496286ea9008702029b359d7fac7f8b3"
+size = 51078653
+url = "https://nodejs.org/dist/v24.7.0/node-v24.7.0-darwin-arm64.tar.gz"
 
 [tools."npm:@antfu/ni"]
 version = "25.0.0"

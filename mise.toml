@@ -16,7 +16,7 @@ experimental = true
 
 [tools] # Use "mise i" to install & use "mise use" to add tools
 actionlint = "latest"
-node = "24.5.0"
+node = "24.7.0"
 
 "npm:@antfu/ni" = "latest"
 
