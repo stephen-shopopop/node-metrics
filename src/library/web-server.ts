@@ -153,7 +153,7 @@ export function writeFromReadableStream(stream: ReadableStream<Uint8Array>, writ
     writable.off('error', cancel);
   });
 
-  // @ts-ignore
+  // @ts-expect-error -- ignore.
   function cancel(error) {
     reader.cancel(error).catch(() => {});
     if (error) {
