@@ -4,10 +4,8 @@
     // Code quality
     "aaron-bond.better-comments",
     "kisstkondoros.vscode-codemetrics",
-    "SonarSource.sonarlint-vscode",
     "streetsidesoftware.code-spell-checker",
     // Docker
-    "ms-vscode-remote.remote-containers",
     "ms-azuretools.vscode-docker",
     // Markdown
     "DavidAnson.vscode-markdownlint",
