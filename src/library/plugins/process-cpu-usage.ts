@@ -9,7 +9,7 @@ import type { MetricsContext, Plugin } from '../definitions.js';
  * @implements {Plugin}
  */
 export class ProcessCpuUsagePlugin implements Plugin {
-  private cpuUsage: NodeJS.CpuUsage;
+  private readonly cpuUsage: NodeJS.CpuUsage;
 
   name = ProcessCpuUsagePlugin.name;
 

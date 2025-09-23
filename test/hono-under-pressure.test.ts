@@ -1,5 +1,5 @@
 import { Hono } from 'hono';
-import { Metrics, underPressureHonoMiddleware, type MiddlewareOptions } from '../src/index.js';
+import { Metrics, underPressureHonoMiddleware, type MiddlewareOptions } from '../src';
 import it, { afterEach, describe, type TestContext } from 'node:test';
 import { DEFAULT_SAMPLE_INTERVAL } from '../src/library/constants.js';
 

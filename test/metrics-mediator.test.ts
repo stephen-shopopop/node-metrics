@@ -1,6 +1,6 @@
 import test, { beforeEach, describe, mock, type TestContext } from 'node:test';
 import { MetricsMediator } from '../src/library/metrics-mediator.js';
-import type { MetricsContext, MetricsValues, Plugin } from '../src/index.js';
+import type { MetricsContext, MetricsValues, Plugin } from '../src';
 import { StoreBuilder } from '../src/library/store-builder.js';
 
 describe('MetricsMediator', () => {

@@ -1,5 +1,5 @@
 import it, { describe, type TestContext } from 'node:test';
-import { isUnderPressure } from '../src/library/middleware/under-pressure.js';
+import { isUnderPressure } from '../src';
 
 describe('isUnderPressure', () => {
   it('should return true when event loop delay exceeds maximum', (t: TestContext) => {

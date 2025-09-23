@@ -1,4 +1,4 @@
-import { Metrics, underPressureKoaMiddleware, type MiddlewareOptions } from '../src/index.js';
+import { Metrics, underPressureKoaMiddleware, type MiddlewareOptions } from '../src';
 import it, { afterEach, describe, type TestContext } from 'node:test';
 import { DEFAULT_SAMPLE_INTERVAL } from '../src/library/constants.js';
 import type { Server } from 'node:http';

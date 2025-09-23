@@ -1,6 +1,6 @@
 import it, { beforeEach, describe, type TestContext } from 'node:test';
 import { ProcessUpTimePlugin } from '../src/library/plugins/process-uptime.js';
-import type { MetricsContext, MetricsValues } from '../src/library/definitions.js';
+import type { MetricsContext, MetricsValues } from '../src';
 import { StoreBuilder } from '../src/library/store-builder.js';
 
 describe('ProcessUpTimePlugin', () => {

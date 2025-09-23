@@ -1,6 +1,6 @@
 import test, { afterEach, describe, type TestContext } from 'node:test';
-import { Metrics } from '../src/library/metrics.js';
-import type { Plugin } from '../src/index.js';
+import { Metrics } from '../src';
+import type { Plugin } from '../src';
 import { DEFAULT_SAMPLE_INTERVAL } from '../src/library/constants.js';
 import { MetricsServer } from '../src/library/metrics-server.js';
 

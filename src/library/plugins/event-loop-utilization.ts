@@ -10,7 +10,7 @@ import type { MetricsContext, Plugin } from '../definitions.js';
  *
  */
 export class EventLoopUtilizationPlugin implements Plugin {
-  private elu: EventLoopUtilization;
+  private readonly elu: EventLoopUtilization;
   name = EventLoopUtilizationPlugin.name;
 
   constructor() {

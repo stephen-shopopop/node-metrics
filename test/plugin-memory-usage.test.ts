@@ -1,6 +1,6 @@
 import it, { beforeEach, describe, type TestContext } from 'node:test';
 import { MemoryUsagePlugin } from '../src/library/plugins/memory-usage.js';
-import type { MetricsContext, MetricsValues } from '../src/index.js';
+import type { MetricsContext, MetricsValues } from '../src';
 import { StoreBuilder } from '../src/library/store-builder.js';
 
 describe('MemoryUsagePlugin', () => {

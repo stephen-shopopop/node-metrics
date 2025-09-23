@@ -1,7 +1,7 @@
 import { test, beforeEach, describe, type TestContext, afterEach } from 'node:test';
 import { MetricsServer } from '../src/library/metrics-server.js';
 import { StoreBuilder } from '../src/library/store-builder.js';
-import type { MetricsValues } from '../src/index.js';
+import type { MetricsValues } from '../src';
 import { MetricsObservable } from '../src/library/metrics-observer.js';
 const fs = await import('node:fs');
 import { PATH_VIEW_TEMPLATE } from '../src/library/constants.js';

@@ -1,6 +1,6 @@
 import it, { beforeEach, describe, type TestContext } from 'node:test';
 import { DebugPlugin, logger } from '../src/library/plugins/debug.js';
-import type { MetricsValues } from '../src/library/definitions.js';
+import type { MetricsValues } from '../src';
 import { StoreBuilder } from '../src/library/store-builder.js';
 
 describe('DebugPlugin', () => {

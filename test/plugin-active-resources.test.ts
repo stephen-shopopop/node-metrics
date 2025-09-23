@@ -1,6 +1,6 @@
 import it, { beforeEach, describe, type TestContext } from 'node:test';
 import { StoreBuilder } from '../src/library/store-builder.js';
-import type { MetricsContext, MetricsValues } from '../src/index.js';
+import type { MetricsContext, MetricsValues } from '../src';
 import { ActiveResourcesInfoPlugin } from '../src/library/plugins/active-resources-info.js';
 
 describe('ActiveResourcesInfoPlugin', () => {
