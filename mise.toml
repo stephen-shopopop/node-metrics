@@ -16,9 +16,12 @@ experimental = true
 
 [tools] # Use "mise i" to install & use "mise use" to add tools
 actionlint = "latest"
-node = "24.7.0"
+lazygit = "latest"
+neovim = "latest"
+node = "24.8.0"
 
 "npm:@antfu/ni" = "latest"
+ripgrep = "latest"
 
 [tasks.install]
 description = 'Install the project dependencies'

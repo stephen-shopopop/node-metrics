@@ -7,20 +7,22 @@ checksum = "sha256:2693315b9093aeacb4ebd91a993fea54fc215057bf0da2659056b4bc03387
 size = 1962532
 url = "https://github.com/rhysd/actionlint/releases/download/v1.7.7/actionlint_1.7.7_darwin_arm64.tar.gz"
 
+[[tools.lazygit]]
+version = "0.55.1"
+backend = "aqua:jesseduffield/lazygit"
+
+[[tools.neovim]]
+version = "0.11.4"
+backend = "aqua:neovim/neovim"
+
 [[tools.node]]
-version = "24.7.0"
+version = "24.8.0"
 backend = "core:node"
 
-[tools.node.platforms.macos-arm64]
-checksum = "sha256:ff8298faaf82c85444aad7f1e12a4882496286ea9008702029b359d7fac7f8b3"
-size = 51078653
-url = "https://nodejs.org/dist/v24.7.0/node-v24.7.0-darwin-arm64.tar.gz"
-
-[tools.node.platforms.macos-x64]
-checksum = "sha256:b99548ef56ec86da2ce50eff041d97e14077b77b517c4bcce0925d14c26cbee3"
-size = 52241955
-url = "https://nodejs.org/dist/v24.7.0/node-v24.7.0-darwin-x64.tar.gz"
-
 [[tools."npm:@antfu/ni"]]
-version = "25.0.0"
+version = "26.1.0"
 backend = "npm:@antfu/ni"
+
+[[tools.ripgrep]]
+version = "14.1.1"
+backend = "aqua:BurntSushi/ripgrep"
