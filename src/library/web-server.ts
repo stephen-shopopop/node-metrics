@@ -104,14 +104,14 @@ export const handleResponseError = (e: unknown, outgoing: Readonly<http.ServerRe
  * Builds a context object from the incoming HTTP request.
  *
  * @param request - The incoming HTTP request object.
- * @returns A promise that resolves to a `Context` object containing:
+ * @returns A `Context` object containing:
  *   - `method`: The HTTP method of the request.
  *   - `headers`: An object representing the request headers.
  *   - `path`: The pathname of the request URL.
  *   - `query`: An object representing the query parameters.
  *   - `body`: An async function that parses and returns the JSON body of the request.
  */
-export const buildContext = async (request: Request): Promise<Context> => ({
+export const buildContext = (request: Request): Context => ({
   method: request.method,
   headers: Object.fromEntries(request.headers),
   path: new URL(request.url).pathname,
@@ -201,7 +201,7 @@ const getRequestListener = (fetchCallback: FetchCallback) => {
     });
 
     try {
-      const res = await fetchCallback(await buildContext(request));
+      const res = await fetchCallback(buildContext(request));
 
       channels.info.publish({
         duration: performance.now() - start,

@@ -30,7 +30,7 @@ run = 'npm install'
 
 [tasks.check]
 description = "Linter for GithubAction files"
-run = 'actionlint && npm run check'
+run = 'actionlint && npm run check && npm test'
 
 [tasks.maintenance]
 description = 'Maintenance project'
