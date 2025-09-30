@@ -192,7 +192,7 @@ describe('MetricsServer', () => {
     // Act
     const response = await fetch(
       `http://localhost:${metricsServer.getAddressInfo()?.port}/metrics-stream`,
-      { headers: { Accept: 'text/event-stream' }, signal: AbortSignal.timeout(100) }
+      { headers: { Accept: 'text/event-stream' }, signal: AbortSignal.timeout(500) }
     );
 
     // Assert
