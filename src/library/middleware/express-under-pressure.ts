@@ -1,8 +1,8 @@
-import type express from "express";
-import type { MiddlewareOptions } from "../definitions.js";
-import { Metrics } from "../metrics.js";
-import { DEFAULT_RESOLUTION, DEFAULT_SAMPLE_INTERVAL } from "../constants.js";
-import { isUnderPressure } from "./under-pressure.js";
+import type express from 'express';
+import type { MiddlewareOptions } from '../definitions.js';
+import { Metrics } from '../metrics.js';
+import { DEFAULT_RESOLUTION, DEFAULT_SAMPLE_INTERVAL } from '../constants.js';
+import { isUnderPressure } from './under-pressure.js';
 
 /**
  * Express middleware to monitor system metrics and respond with HTTP 503 when the system is under pressure.
@@ -42,24 +42,20 @@ export const underPressureExpressMiddleware = ({
 }: Readonly<Partial<MiddlewareOptions>>): ((
   req: express.Request,
   res: express.Response,
-  next: express.NextFunction,
+  next: express.NextFunction
 ) => void) => {
   const metrics = Metrics.start({
     appName,
     sampleIntervalInMs,
     resolution,
-    webServerMetricsPort,
+    webServerMetricsPort
   });
 
-  return (
-    _req: express.Request,
-    res: express.Response,
-    next: express.NextFunction,
-  ) => {
+  return (_req: express.Request, res: express.Response, next: express.NextFunction) => {
     if (isUnderPressure({ ...options, ...metrics.measures() })) {
-      metrics.observer.notify("System under pressure", metrics.measures());
+      metrics.observer.notify('System under pressure', metrics.measures());
 
-      res.setHeader("Retry-After", `${retryAfter}`);
+      res.setHeader('Retry-After', `${retryAfter}`);
       res.status(503).end();
       return;
     }
