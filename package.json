@@ -80,14 +80,14 @@
     "hono": "^4.9.9",
     "htmlhint": "^1.7.1",
     "koa": "^3.0.1",
+    "simple-git-hooks": "^2.13.1",
     "tsup": "^8.5.0",
     "tsx": "^4.20.6",
     "typedoc": "^0.28.13",
     "typescript": "^5.9.2"
   },
   "simple-git-hooks": {
-    "pre-commit": "npm run check",
-    "commit-msg": "npx commitlint --edit $1"
+    "pre-commit": "npm run check"
   },
   "repository": {
     "type": "git",
