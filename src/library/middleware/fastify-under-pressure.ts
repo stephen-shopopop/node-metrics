@@ -61,11 +61,17 @@ export const underPressureFastifyPlugin = ({
       }
     });
 
+    // Cleanup on close
+    fastify.addHook('onClose', async (_instance) => {
+      await metrics.closeWebServerMetrics();
+      metrics.destroy();
+    });
+
     done();
   };
-  
+
   // Make the plugin non-encapsulated (like fastify-plugin)
   (plugin as unknown as Record<symbol, boolean>)[Symbol.for('skip-override')] = true;
-  
+
   return plugin;
 };

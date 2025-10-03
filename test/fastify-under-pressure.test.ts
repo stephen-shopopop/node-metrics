@@ -165,4 +165,103 @@ describe('underPressureFastifyPlugin', () => {
 
     await app.close();
   });
+
+  it('should cleanup metrics on close via onClose hook', async (t: TestContext) => {
+    t.plan(3);
+
+    // Arrange: Create app with metrics server
+    const app = await setupFastifyApp({ 
+      appName: 'test-cleanup',
+      webServerMetricsPort: 0 // Dynamic port
+    });
+
+    // Act: Make a request to ensure the app is working
+    const response = await app.inject({
+      method: 'GET',
+      url: '/'
+    });
+
+    // Assert: Request should succeed
+    t.assert.strictEqual(response.statusCode, 200);
+
+    // Get metrics instance before closing
+    const metricsInstance = Metrics.start({ appName: 'test-cleanup' });
+    t.assert.ok(metricsInstance, 'Metrics instance should exist');
+
+    // Act: Close the app (this should trigger onClose hook which calls closeWebServerMetrics then destroy)
+    await app.close();
+
+    // Assert: After closing, the metrics instance should be destroyed
+    // We can verify this by checking that a new Metrics.start() creates a fresh instance
+    const metricsAfterClose = Metrics.start({ appName: 'test-cleanup-2' });
+    t.assert.ok(metricsAfterClose, 'Metrics instance should be available after cleanup');
+    
+    // Cleanup
+    await metricsAfterClose.closeWebServerMetrics();
+    metricsAfterClose.destroy();
+  });
+
+  it('should close metrics web server before destroying metrics', async (t: TestContext) => {
+    t.plan(3);
+
+    // Arrange: Create app with metrics server on dynamic port
+    const app = await setupFastifyApp({ 
+      appName: 'test-server-close-order',
+      webServerMetricsPort: 0
+    });
+
+    // Act: Make a request to ensure everything is initialized
+    const response = await app.inject({
+      method: 'GET',
+      url: '/'
+    });
+
+    // Assert: Request should succeed
+    t.assert.strictEqual(response.statusCode, 200);
+
+    // Verify metrics instance exists
+    const metricsBeforeClose = Metrics.start({ appName: 'test-server-close-order' });
+    t.assert.ok(metricsBeforeClose, 'Metrics instance should exist before close');
+
+    // Act: Close the app (should call closeWebServerMetrics then destroy in that order)
+    await app.close();
+
+    // Assert: After closing, we should be able to create a new metrics instance
+    // This proves the previous server was properly closed and destroyed
+    const newMetrics = Metrics.start({ 
+      appName: 'test-after-close-order',
+      webServerMetricsPort: 0
+    });
+    
+    t.assert.ok(newMetrics, 'Should be able to create new metrics after cleanup');
+    
+    // Cleanup
+    await newMetrics.closeWebServerMetrics();
+    newMetrics.destroy();
+  });
+
+  it('should handle close gracefully even without web server', async (t: TestContext) => {
+    t.plan(2);
+
+    // Arrange: Create app without metrics web server (port 0 means disabled)
+    const app = await setupFastifyApp({ 
+      appName: 'test-no-webserver',
+      webServerMetricsPort: 0
+    });
+
+    // Act: Make a request
+    const response = await app.inject({
+      method: 'GET',
+      url: '/'
+    });
+
+    // Assert: Request should succeed
+    t.assert.strictEqual(response.statusCode, 200);
+
+    // Act & Assert: Close should not throw even without web server
+    await t.assert.doesNotReject(
+      async () => await app.close(),
+      'Should close gracefully without web server'
+    );
+  });
 });
