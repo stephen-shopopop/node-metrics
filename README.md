@@ -6,13 +6,13 @@
 
 > 🚀 Process load measuring plugin for Node.js with automatic "Service Unavailable" handling
 
-A lightweight, production-ready middleware for monitoring Node.js application health and automatically handling server overload situations. Integrates seamlessly with popular frameworks (Koa, Express, Hono) and provides Prometheus-compatible metrics.
+A lightweight, production-ready middleware for monitoring Node.js application health and automatically handling server overload situations. Integrates seamlessly with popular frameworks (Koa, Express, Hono, Fastify) and provides Prometheus-compatible metrics.
 
 ## ✨ Features
 
 - 🎯 **Automatic Overload Protection** - Returns HTTP 503 when system is under pressure
 - 📊 **Real-time Metrics** - Monitor event loop delay, heap usage, RSS, and event loop utilization
-- 🔌 **Framework Support** - Works with Koa, Express, Hono, and vanilla Node.js
+- 🔌 **Framework Support** - Works with Koa, Express, Hono, Fastify, and vanilla Node.js
 - 📈 **Prometheus Integration** - Built-in metrics endpoint and dashboard
 - ⚡ **Low Overhead** - Uses `setTimeout` instead of `setInterval` to minimize system pressure
 - 🎨 **Web Dashboard** - Beautiful UI to visualize metrics in real-time
@@ -101,6 +101,31 @@ app.get('/', (c) => c.text('Hello Hono!'));
 export default app;
 ```
 
+### Fastify
+
+```js
+import Fastify from 'fastify';
+import { underPressureFastifyPlugin } from '@stephen-shopopop/node-metrics';
+
+const fastify = Fastify();
+
+fastify.register(underPressureFastifyPlugin({
+  appName: 'service-order',
+  maxEventLoopDelay: 1000,
+  maxHeapUsedBytes: 100000000,
+  maxRssBytes: 100000000,
+  maxEventLoopUtilization: 0.98,
+  retryAfter: 10,
+  webServerMetricsPort: 9090
+}));
+
+fastify.get('/', async (request, reply) => {
+  return { hello: 'world' };
+});
+
+fastify.listen({ port: 3000 });
+```
+
 ### Manual Integration (Vanilla Node.js)
 
 ```js
@@ -150,9 +175,9 @@ You can set up metrics separately and preload them when starting your applicatio
 // file: metrics.js
 import { Metrics } from '@stephen-shopopop/node-metrics';
 
-const metrics = Metrics.start({ 
-  webServerMetricsPort: 9090, 
-  appName: 'service-test' 
+const metrics = Metrics.start({
+  webServerMetricsPort: 9090,
+  appName: 'service-test'
 });
 
 process.on('SIGTERM', () => {
@@ -285,63 +310,63 @@ Under the hood, `node-metrics` uses `setTimeout` to perform polling checks inste
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────┐
-│                          APPLICATION LAYER                               │
-│  ┌──────────────┐    ┌──────────────┐    ┌──────────────┐              │
-│  │     Koa      │    │   Express    │    │     Hono     │              │
-│  │  Application │    │  Application │    │  Application │              │
-│  └──────┬───────┘    └──────┬───────┘    └──────┬───────┘              │
-│         │                   │                   │                       │
-│         └───────────────────┴───────────────────┘                       │
-│                             │                                           │
-│              ┌──────────────▼──────────────┐                            │
-│              │   Middleware Integration    │                            │
-│              │  underPressure*Middleware() │                            │
-│              └──────────────┬──────────────┘                            │
-└─────────────────────────────┼──────────────────────────────────────────┘
+│                          APPLICATION LAYER                              │
+│  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐ │
+│  │     Koa      │  │   Express    │  │     Hono     │  │   Fastify    │ │
+│  │  Application │  │  Application │  │  Application │  │  Application │ │
+│  └──────┬───────┘  └──────┬───────┘  └──────┬───────┘  └──────┬───────┘ │
+│         │                 │                 │                 │         │
+│         └─────────────────┴─────────────────┴─────────────────┘         │
+│                                     │                                   │
+│                      ┌──────────────▼──────────────┐                    │
+│                      │   Middleware Integration    │                    │
+│                      │  underPressure*Middleware() │                    │
+│                      └──────────────┬──────────────┘                    │
+└─────────────────────────────────────┼──────────────────────────────────┘
                               │
 ┌─────────────────────────────▼──────────────────────────────────────────┐
-│                           CORE LAYER                                    │
-│                                                                         │
+│                           CORE LAYER                                   │
+│                                                                        │
 │  ┌──────────────────────────────────────────────────────────┐          │
-│  │              Metrics (Singleton)                          │          │
+│  │              Metrics (Singleton)                         │          │
 │  │  ┌────────────────────────────────────────────────────┐  │          │
 │  │  │  start()  │  register()  │  measures()  │ destroy()│  │          │
 │  │  └────────────────────────────────────────────────────┘  │          │
-│  │                                                            │          │
+│  │                                                          │          │
 │  │  ┌─────────────┐      ┌──────────────┐                   │          │
 │  │  │   Timer     │──────▶│   Mediator   │                  │          │
 │  │  │(setTimeout) │      │  (Plugins)   │                   │          │
 │  │  └─────────────┘      └──────┬───────┘                   │          │
-│  │                              │                            │          │
+│  │                              │                           │          │
 │  │  ┌───────────────────────────▼────────────────────────┐  │          │
 │  │  │            StoreBuilder (Metrics Storage)          │  │          │
 │  │  └───────────────────────────┬────────────────────────┘  │          │
-│  │                              │                            │          │
+│  │                              │                           │          │
 │  │  ┌───────────────────────────▼────────────────────────┐  │          │
 │  │  │         BroadcastChannel (Pub/Sub)                 │  │          │
 │  │  └────────────────────────────────────────────────────┘  │          │
 │  └──────────────────────────────────────────────────────────┘          │
-│                              │                                          │
+│                              │                                         │
 │  ┌───────────────────────────▼──────────────────────────────────────┐  │
-│  │                    Metrics Server                                 │  │
-│  │  ┌──────────────┐  ┌──────────────┐  ┌──────────────────────┐   │  │
-│  │  │  GET /       │  │ GET /metrics │  │ GET /metrics-stream  │   │  │
-│  │  │  Dashboard   │  │  Prometheus  │  │    SSE Stream        │   │  │
-│  │  └──────────────┘  └──────────────┘  └──────────────────────┘   │  │
-│  └───────────────────────────────────────────────────────────────────┘  │
-└─────────────────────────────────────────────────────────────────────────┘
+│  │                    Metrics Server                                │  │
+│  │  ┌──────────────┐  ┌──────────────┐  ┌──────────────────────┐    │  │
+│  │  │  GET /       │  │ GET /metrics │  │ GET /metrics-stream  │    │  │
+│  │  │  Dashboard   │  │  Prometheus  │  │    SSE Stream        │    │  │
+│  │  └──────────────┘  └──────────────┘  └──────────────────────┘    │  │
+│  └──────────────────────────────────────────────────────────────────┘  │
+└────────────────────────────────────────────────────────────────────────┘
                               │
 ┌─────────────────────────────▼──────────────────────────────────────────┐
-│                         PLUGIN LAYER                                    │
-│  ┌──────────────┐  ┌──────────────┐  ┌──────────────────────────┐     │
-│  │   Memory     │  │  Event Loop  │  │   Event Loop             │     │
-│  │   Usage      │  │    Delay     │  │   Utilization            │     │
-│  └──────────────┘  └──────────────┘  └──────────────────────────┘     │
-│  ┌──────────────┐  ┌──────────────┐  ┌──────────────────────────┐     │
-│  │  Process CPU │  │   Process    │  │   Active Handles/        │     │
-│  │    Usage     │  │   Uptime     │  │   Resources              │     │
-│  └──────────────┘  └──────────────┘  └──────────────────────────┘     │
-└─────────────────────────────────────────────────────────────────────────┘
+│                         PLUGIN LAYER                                   │
+│  ┌──────────────┐  ┌──────────────┐  ┌──────────────────────────┐      │
+│  │   Memory     │  │  Event Loop  │  │   Event Loop             │      │
+│  │   Usage      │  │    Delay     │  │   Utilization            │      │
+│  └──────────────┘  └──────────────┘  └──────────────────────────┘      │
+│  ┌──────────────┐  ┌──────────────┐  ┌──────────────────────────┐      │
+│  │  Process CPU │  │   Process    │  │   Active Handles/        │      │
+│  │    Usage     │  │   Uptime     │  │   Resources              │      │
+│  └──────────────┘  └──────────────┘  └──────────────────────────┘      │
+└────────────────────────────────────────────────────────────────────────┘
 
 
 📊 Request Flow with Pressure Detection:
