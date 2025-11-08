@@ -1,330 +1,358 @@
 <!doctype html>
 <html lang="en" xmlns="http://www.w3.org/1999/html">
-  <head>
-    <meta charset="utf-8"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1"/>
-    <meta name="description" content="nodejs metrics"/>
-    <meta name="color-scheme" content="light dark"/>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css"/>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/uplot@1.6.32/dist/uPlot.min.css">
-    <title>Nodejs Metrics</title>
-  </head>
-  <body>
-    <header class="container">
-      <nav>
-        <ul>
-          <li>
-            <hgroup>
-              <h1>Nodejs Metrics</h1>
-              <p>Process load measuring for NodeJs</p>
-            </hgroup>
-          </li>
-        </ul>
-        <ul>
-          <li>
-            <a  class="contrast" rel="noopener noreferrer" href="https://github.com/stephen-shopopop/node-metrics" title="GitHub repository" aria-label="GitHub repository" target="_blank"><svg xmlns="http://www.w3.org/2000/svg" height="24" width="24.25" viewBox="0 0 496 512" class="icon-github"><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"></path></svg></a>
-          </li>
-          <li>
-            <a class="contrast" aria-label="Turn on dark mode" data-discover="true" id="turn-light-mode" href="/docs/color-schemes"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 32 32" fill="currentColor" class="icon-theme-toggle "><clipPath id="theme-toggle-cutout"><path d="M0-11h25a1 1 0 0017 13v30H0Z"></path></clipPath><g clip-path="url(#theme-toggle-cutout)"><circle cx="16" cy="16" r="8.4"></circle><path d="M18.3 3.2c0 1.3-1 2.3-2.3 2.3s-2.3-1-2.3-2.3S14.7.9 16 .9s2.3 1 2.3 2.3zm-4.6 25.6c0-1.3 1-2.3 2.3-2.3s2.3 1 2.3 2.3-1 2.3-2.3 2.3-2.3-1-2.3-2.3zm15.1-10.5c-1.3 0-2.3-1-2.3-2.3s1-2.3 2.3-2.3 2.3 1 2.3 2.3-1 2.3-2.3 2.3zM3.2 13.7c1.3 0 2.3 1 2.3 2.3s-1 2.3-2.3 2.3S.9 17.3.9 16s1-2.3 2.3-2.3zm5.8-7C9 7.9 7.9 9 6.7 9S4.4 8 4.4 6.7s1-2.3 2.3-2.3S9 5.4 9 6.7zm16.3 21c-1.3 0-2.3-1-2.3-2.3s1-2.3 2.3-2.3 2.3 1 2.3 2.3-1 2.3-2.3 2.3zm2.4-21c0 1.3-1 2.3-2.3 2.3S23 7.9 23 6.7s1-2.3 2.3-2.3 2.4 1 2.4 2.3zM6.7 23C8 23 9 24 9 25.3s-1 2.3-2.3 2.3-2.3-1-2.3-2.3 1-2.3 2.3-2.3z"></path></g></svg></a>
-          </li>
-        </ul>
-      </nav>
-    </header>
 
-    <aside class="container">
-      <kbd><metrics-status text="Waiting for connection"></metrics-status></kbd>
-    </aside>
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="nodejs metrics" />
+  <meta name="color-scheme" content="light dark" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/uplot@1.6.32/dist/uPlot.min.css">
+  <title>Nodejs Metrics</title>
+</head>
 
-    <nav class="container" aria-label="breadcrumb">
+<body>
+  <header class="container">
+    <nav>
       <ul>
-        <li><a href="#">Home</a></li>
-        <li>Measures</li>
+        <li>
+          <hgroup>
+            <h1>Nodejs Metrics</h1>
+            <p>Process load measuring for NodeJs</p>
+          </hgroup>
+        </li>
+      </ul>
+      <ul>
+        <li>
+          <a class="contrast" rel="noopener noreferrer" href="https://github.com/stephen-shopopop/node-metrics"
+            title="GitHub repository" aria-label="GitHub repository" target="_blank"><svg
+              xmlns="http://www.w3.org/2000/svg" height="24" width="24.25" viewBox="0 0 496 512" class="icon-github">
+              <path
+                d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z">
+              </path>
+            </svg></a>
+        </li>
+        <li>
+          <a class="contrast" aria-label="Turn on dark mode" data-discover="true" id="turn-light-mode"
+            href="/docs/color-schemes"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+              viewBox="0 0 32 32" fill="currentColor" class="icon-theme-toggle ">
+              <clipPath id="theme-toggle-cutout">
+                <path d="M0-11h25a1 1 0 0017 13v30H0Z"></path>
+              </clipPath>
+              <g clip-path="url(#theme-toggle-cutout)">
+                <circle cx="16" cy="16" r="8.4"></circle>
+                <path
+                  d="M18.3 3.2c0 1.3-1 2.3-2.3 2.3s-2.3-1-2.3-2.3S14.7.9 16 .9s2.3 1 2.3 2.3zm-4.6 25.6c0-1.3 1-2.3 2.3-2.3s2.3 1 2.3 2.3-1 2.3-2.3 2.3-2.3-1-2.3-2.3zm15.1-10.5c-1.3 0-2.3-1-2.3-2.3s1-2.3 2.3-2.3 2.3 1 2.3 2.3-1 2.3-2.3 2.3zM3.2 13.7c1.3 0 2.3 1 2.3 2.3s-1 2.3-2.3 2.3S.9 17.3.9 16s1-2.3 2.3-2.3zm5.8-7C9 7.9 7.9 9 6.7 9S4.4 8 4.4 6.7s1-2.3 2.3-2.3S9 5.4 9 6.7zm16.3 21c-1.3 0-2.3-1-2.3-2.3s1-2.3 2.3-2.3 2.3 1 2.3 2.3-1 2.3-2.3 2.3zm2.4-21c0 1.3-1 2.3-2.3 2.3S23 7.9 23 6.7s1-2.3 2.3-2.3 2.4 1 2.4 2.3zM6.7 23C8 23 9 24 9 25.3s-1 2.3-2.3 2.3-2.3-1-2.3-2.3 1-2.3 2.3-2.3z">
+                </path>
+              </g>
+            </svg></a>
+        </li>
       </ul>
     </nav>
+  </header>
 
-    <main class="container">
-      <section class="grid">
-        <article style="text-align: center">
-          <header><strong>Nodejs Version</strong></header>
-          <metrics-card text="-" data-metric="metadata.nodejs_version_info"></metrics-card>
-        </article>
-        <article style="text-align: center">
-          <header><strong>Uptime</strong></header>
-          <metrics-card text="-" data-metric="process_start_time_seconds"></metrics-card>
-        </article>
-        <article style="text-align: center">
-          <header><strong><em data-tooltip="Event loop utilized must be < 98%">Event loop utilized</em></strong></header>
-          <metrics-card text="-" data-metric="event_loop_utilized"></metrics-card> %
-        </article>
-        <article style="text-align: center">
-          <header><strong><em data-tooltip="Event loop delay must be < 1sec">Event loop delay</em></strong></header>
-          <metrics-card text="-" data-metric="event_loop_delay_milliseconds"></metrics-card> sec
-        </article>
-        <article style="text-align: center">
-          <header><strong><em data-tooltip="Process IDentifier">PID</em></strong></header>
-          <metrics-card text="-" data-metric="process_pid"></metrics-card>
-        </article>
-      </section>
+  <aside class="container">
+    <kbd><metrics-status text="Waiting for connection"></metrics-status></kbd>
+  </aside>
 
-      <section>
-        <article id="graph-event-loop-utilized"></article>
-        <article id="graph-event-loop-delay"></article>
-        <article id="graph-memory"></article>
-        <article id="graph-cpu"></article>
-      </section>
+  <nav class="container" aria-label="breadcrumb">
+    <ul>
+      <li><a href="#">Home</a></li>
+      <li>Measures</li>
+    </ul>
+  </nav>
 
-      <section>
-        <metrics-tags data-metric="nodejs_active_handles" color="rgba(255,0,0,0.1)"></metrics-tags>
-        <metrics-tags data-metric="nodejs_active_resources" color="rgba(0,255,0,0.1)"></metrics-tags>
-      </section>
-    </main>
+  <main class="container">
+    <section class="grid">
+      <article style="text-align: center">
+        <header><strong>Nodejs Version</strong></header>
+        <metrics-card text="-" data-metric="metadata.nodejs_version_info"></metrics-card>
+      </article>
+      <article style="text-align: center">
+        <header><strong>Uptime</strong></header>
+        <metrics-card text="-" data-metric="process_start_time_seconds"></metrics-card>
+      </article>
+      <article style="text-align: center">
+        <header><strong><em data-tooltip="Event loop utilized must be < 98%">Event loop utilized</em></strong></header>
+        <metrics-card text="-" data-metric="event_loop_utilized"></metrics-card> %
+      </article>
+      <article style="text-align: center">
+        <header><strong><em data-tooltip="Event loop delay must be < 1sec">Event loop delay</em></strong></header>
+        <metrics-card text="-" data-metric="event_loop_delay_milliseconds"></metrics-card> sec
+      </article>
+      <article style="text-align: center">
+        <header><strong><em data-tooltip="Process IDentifier">PID</em></strong></header>
+        <metrics-card text="-" data-metric="process_pid"></metrics-card>
+      </article>
+    </section>
 
-    <footer class="container">
-      <hr/>
-      <p>
-        <strong><small>Nodejs metrics</small></strong> |
-        <a  class="contrast" rel="noopener noreferrer" href="https://github.com/stephen-shopopop/node-metrics" title="Github repository" aria-label="GitHub repository" target="_blank"><svg xmlns="http://www.w3.org/2000/svg" height="16" width="16" viewBox="0 0 496 512" class="icon-github"><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"></path></svg></a>
-         - <small>Currently v1.0.0</small>
-      </p>
-      <small><cite>— Author: stephen</cite></small>
-    </footer>
-  </body>
-  <script type="module">
-    import uplot from 'https://cdn.jsdelivr.net/npm/uplot@1.6.32/+esm'
+    <section>
+      <article id="graph-event-loop-utilized"></article>
+      <article id="graph-event-loop-delay"></article>
+      <article id="graph-memory"></article>
+      <article id="graph-cpu"></article>
+    </section>
 
-    /** Channel */
-    const channel = Object.freeze({
-      eventType : {
-        onError: 'on-error',
-        onReady: 'on-ready',
-        onMessage: 'on-message'
-      },
-      publish: (eventName, metatdata = {}) => document.dispatchEvent(new CustomEvent(`events:${eventName}`, { detail: metatdata })),
-      subscribe: (eventName, callback = () => {/***/}) => document.addEventListener(`events:${eventName}`, evt => callback(evt.detail))
-    });
+    <section>
+      <metrics-tags data-metric="nodejs_active_handles" color="rgba(255,0,0,0.1)"></metrics-tags>
+      <metrics-tags data-metric="nodejs_active_resources" color="rgba(0,255,0,0.1)"></metrics-tags>
+    </section>
+  </main>
 
-    /** Error handling */
-    const errorHandler = (error, metadata = {}) => {
-      console.error('%c %s %s %O', 'background: #E65842; font-weight: bold; color: white; padding: 2px 0px;', '⚠️', error, metadata);
+  <footer class="container">
+    <hr />
+    <p>
+      <strong><small>Nodejs metrics</small></strong> |
+      <a class="contrast" rel="noopener noreferrer" href="https://github.com/stephen-shopopop/node-metrics"
+        title="Github repository" aria-label="GitHub repository" target="_blank"><svg xmlns="http://www.w3.org/2000/svg"
+          height="16" width="16" viewBox="0 0 496 512" class="icon-github">
+          <path
+            d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z">
+          </path>
+        </svg></a>
+      - <small>Currently v1.0.0</small>
+    </p>
+    <small><cite>— Author: stephen</cite></small>
+  </footer>
+</body>
+<script type="module">
+  import uplot from 'https://cdn.jsdelivr.net/npm/uplot@1.6.32/+esm'
+
+  /** Channel */
+  const channel = Object.freeze({
+    eventType: {
+      onError: 'on-error',
+      onReady: 'on-ready',
+      onMessage: 'on-message'
+    },
+    publish: (eventName, metatdata = {}) => document.dispatchEvent(new CustomEvent(`events:${eventName}`, {detail: metatdata})),
+    subscribe: (eventName, callback = () => {/***/}) => document.addEventListener(`events:${eventName}`, evt => callback(evt.detail))
+  });
+
+  /** Error handling */
+  const errorHandler = (error, metadata = {}) => {
+    console.error('%c %s %s %O', 'background: #E65842; font-weight: bold; color: white; padding: 2px 0px;', '⚠️', error, metadata);
+  }
+
+  /** Parses a JSON string safely */
+  const safeJsonParse = (data, unsecure = false) => {
+    try {
+      return JSON.parse(data);
+    } catch {
+      if (!unsecure) throw new Error('Invalid JSON!');
+      return data;
     }
+  };
 
-    /** Parses a JSON string safely */
-    const safeJsonParse = (data, unsecure = false) => {
+
+  /** Fetch Metrics for service NodeJs and disptach on apps UI */
+  const fetchMetricsStream = (uri = '/metrics-stream') => {
+    const evtSource = new EventSource(uri);
+
+    evtSource.onerror = () => channel.publish(channel.eventType.onError, new Error('An error occurred while attempting to connect'));
+
+    evtSource.onmessage = (event) => {
       try {
-        return JSON.parse(data);
-      } catch {
-        if(!unsecure) throw new Error('Invalid JSON!');
-        return data;
+        const json = safeJsonParse(event.data);
+
+        channel.publish(channel.eventType.onMessage, {
+          ...json?.payload,
+          time: json?.ts ?? null
+        });
+      } catch (err) {
+        channel.publish(channel.eventType.onError, err);
+
+        errorHandler(err, {eventData: event.data});
+
+        evtSource.close();
       }
     };
 
+    evtSource.onopen = () => channel.publish(channel.eventType.onReady, {message: 'The connection has been established'});
+  }
 
-    /** Fetch Metrics for service NodeJs and disptach on apps UI */
-    const fetchMetricsStream = (uri = '/metrics-stream') => {
-      const evtSource = new EventSource(uri);
+  /** humanDate formats a JavaScript Date object into a human-readable string. */
+  const humanDate = (date, locales = 'default-u-nu-latn') => {
+    let dateObj;
+    if (typeof date === 'string') dateObj = new Date(date);
+    else dateObj = date;
 
-      evtSource.onerror = () => channel.publish(channel.eventType.onError, new Error('An error occurred while attempting to connect'));
+    const options = {month: 'long', day: 'numeric', hour: 'numeric', minute: 'numeric', second: 'numeric'};
 
-      evtSource.onmessage = (event) => {
-        try {
-          const json = safeJsonParse(event.data);
+    const dateYear = dateObj.toLocaleString(locales, {year: 'numeric'});
+    const dateMonth = dateObj.toLocaleString(locales, {month: 'numeric'});
+    const dateDay = dateObj.toLocaleString(locales, {day: 'numeric'});
+    const dateHour = dateObj.getHours();
+    const dateMinute = dateObj.getMinutes();
 
-          channel.publish(channel.eventType.onMessage, {
-            ...json?.payload,
-            time: json?.ts ?? null
-          });
-        } catch (err) {
-          channel.publish(channel.eventType.onError, err);
+    const now = new Date();
+    const nowYear = now.toLocaleString(locales, {year: 'numeric'});
+    const nowMonth = now.toLocaleString(locales, {month: 'numeric'});
+    const nowDay = now.toLocaleString(locales, {day: 'numeric'});
+    const nowHour = now.getHours();
+    const nowMinute = now.getMinutes();
 
-          evtSource.close();
-        }
-      };
+    // set year only if not the same year as now
+    if (dateYear !== nowYear) options.year = 'numeric';
 
-      evtSource.onopen = () => channel.publish(channel.eventType.onReady, { message : 'The connection has been established' });
+    // if today, display relative time
+    if (dateYear === nowYear && dateMonth === nowMonth && dateDay === nowDay) {
+      const diffHour = nowHour - dateHour;
+      const diffMinute = Math.abs(nowMinute - dateMinute);
+
+      if (diffHour === 0 && diffMinute > 30) return '1 h';
+      if (diffHour === 0) return `${diffMinute} min`;
+      if (diffMinute >= 30) return `${diffHour + 1} h`;
+      return `${diffHour} h`;
     }
 
-    /** humanDate formats a JavaScript Date object into a human-readable string. */
-    const humanDate = (date, locales = 'default-u-nu-latn') => {
-      let dateObj;
-      if (typeof date === 'string') dateObj = new Date(date);
-      else dateObj = date;
+    return dateObj.toLocaleString(locales, options);
+  }
 
-      const options = { month: 'long', day: 'numeric',hour: 'numeric', minute: 'numeric', second: 'numeric' };
+  const normalizeMetricPercent = (metricValue = 0) => Math.round(metricValue * 100);
+  const normalizeMetricInSeconds = (metricValue = 0) => (metricValue || 1) / 1e3;
+  const normalizeMetricUptime = (metricValue) => humanDate(new Date(metricValue * 1e3));
+  const normalizeMetricBytesInMegaBytes = (metricValue = 0) => (metricValue || 1) / (1024 * 1024);
+  const normalizeFraction = (metricValue = 0, fraction = 3) => Number(metricValue.toFixed(fraction));
 
-      const dateYear = dateObj.toLocaleString(locales, { year: 'numeric' });
-      const dateMonth = dateObj.toLocaleString(locales, { month: 'numeric' });
-      const dateDay = dateObj.toLocaleString(locales, { day: 'numeric' });
-      const dateHour = dateObj.getHours();
-      const dateMinute = dateObj.getMinutes();
+  const normalizeMetrics = (metric = '', value = 0) => {
+    switch (metric) {
+      case 'event_loop_utilized':
+        return normalizeMetricPercent(value);
+      case 'event_loop_delay_milliseconds':
+        return normalizeFraction(normalizeMetricInSeconds(value));
+      case 'process_start_time_seconds':
+        return normalizeMetricUptime(value);
+      case 'time':
+        return normalizeMetricInSeconds(value);
+      case 'heap_total_bytes':
+      case 'heap_used_bytes':
+      case 'rss_bytes':
+      case 'external_bytes':
+      case 'array_buffers_bytes':
+        return normalizeMetricBytesInMegaBytes(value);
+      default:
+        return value;
+    }
+  }
 
-      const now = new Date();
-      const nowYear = now.toLocaleString(locales, { year: 'numeric' });
-      const nowMonth = now.toLocaleString(locales, { month: 'numeric' });
-      const nowDay = now.toLocaleString(locales, { day: 'numeric' });
-      const nowHour = now.getHours();
-      const nowMinute = now.getMinutes();
+  /** Store dataSet metrics */
+  const storeInMemory = (nbr_points = 10000) => {
+    const storeMemory = {};
 
-      // set year only if not the same year as now
-      if (dateYear !== nowYear) options.year = 'numeric';
+    return function consume(metrics = {}) {
+      for (const metric in metrics) {
+        if (typeof metrics[metric] !== "number") {
+          continue;
+        }
 
-      // if today, display relative time
-      if (dateYear === nowYear && dateMonth === nowMonth && dateDay === nowDay) {
-          const diffHour = nowHour - dateHour;
-          const diffMinute = Math.abs(nowMinute - dateMinute);
+        if (!Reflect.has(storeMemory, metric)) {
+          storeMemory[metric] = [];
+        }
 
-          if (diffHour === 0 && diffMinute > 30) return '1 h';
-          else if (diffHour === 0) return `${diffMinute} min`;
-          else if (diffMinute >= 30) return `${diffHour + 1} h`;
-          return `${diffHour} h`;
+        const count = storeMemory[metric].push(normalizeMetrics(metric, metrics[metric]));
+
+        if (count > nbr_points) {
+          storeMemory[metric].shift();
+        }
       }
 
-      return dateObj.toLocaleString(locales, options);
+      return storeMemory;
+    }
+  }
+
+  /**
+   * StatusStreamMetricsComponents is a custom HTML element that provides
+   * metrics and status streaming functionality for the node-metrics service.
+   */
+  class StatusStreamMetricsComponents extends HTMLElement {
+    #elem
+
+    constructor() {
+      super();
+
+      channel.subscribe(channel.eventType.onError, (e) => this.updateDisplay(e.message));
+      channel.subscribe(channel.eventType.onReady, (e) => this.updateDisplay(e.message));
+
+      this.render();
     }
 
-    const normalizeMetricPercent = (metricValue = 0) => Math.round(metricValue * 100);
-    const normalizeMetricInSeconds = (metricValue = 0) => (metricValue || 1)/ 1e3;
-    const normalizeMetricUptime = (metricValue) => humanDate(new Date(metricValue * 1e3));
-    const normalizeMetricBytesInMegaBytes = (metricValue = 0) => (metricValue || 1) / (1024 * 1024);
-    const normalizeFraction = (metricValue = 0, fraction = 3) => Number(metricValue.toFixed(fraction));
+    updateDisplay(value) {
+      this.#elem.textContent = value;
+    }
 
-    const normalizeMetrics = (metric = '', value = 0) => {
-      switch (metric){
-        case 'event_loop_utilized':
-          return normalizeMetricPercent(value);
-        case 'event_loop_delay_milliseconds':
-          return normalizeFraction(normalizeMetricInSeconds(value));
-        case 'process_start_time_seconds':
-          return normalizeMetricUptime(value);
-        case 'time':
-          return normalizeMetricInSeconds(value);
-        case 'heap_total_bytes':
-        case 'heap_used_bytes':
-        case 'rss_bytes':
-        case 'external_bytes':
-        case 'array_buffers_bytes':
-          return normalizeMetricBytesInMegaBytes(value);
-        default:
-          return value;
+    render() {
+      this.#elem = document.createElement('span');
+      this.#elem.textContent = this.getAttribute('text');
+
+      const shadowRoot = this.attachShadow({mode: 'open'});
+      shadowRoot.appendChild(this.#elem);
+    }
+  }
+
+  /**
+   * MetricsComponents is a custom HTML element that encapsulates the logic and presentation
+   * for displaying various metrics within the application.
+   */
+  class MetricsComponents extends HTMLElement {
+    #elem
+
+    constructor() {
+      super();
+
+      channel.subscribe(channel.eventType.onMessage, (payload) => this.updateDisplay(payload));
+
+      this.render();
+    }
+
+    updateDisplay(payload) {
+      const attrMetrics = this.getAttribute('data-metric') ?? '';
+
+      if (Reflect.has(payload, attrMetrics)) {
+        this.#elem.textContent = normalizeMetrics(attrMetrics, payload[attrMetrics]);
       }
     }
 
-    /** Store dataSet metrics */
-    const storeInMemory = (nbr_points = 10000) => {
-      let storeMemory = {};
+    render() {
+      this.#elem = document.createElement('span');
+      this.#elem.textContent = this.getAttribute('text');
 
-      return function consume (metrics = {}) {
-        for(const metric in metrics){
-          if(typeof metrics[metric] !=="number"){
-            continue;
-          }
+      const shadowRoot = this.attachShadow({mode: 'open'});
+      shadowRoot.appendChild(this.#elem);
+    }
+  }
 
-          if(!Reflect.has(storeMemory, metric)){
-            storeMemory[metric] = [];
-          }
+  /**
+   * TagsComponents is a custom HTML element that encapsulates the logic and presentation
+   * for displaying various metrics within the application.
+   */
+  class TagsComponents extends HTMLElement {
+    #elem
 
-          const count = storeMemory[metric].push(normalizeMetrics(metric, metrics[metric]));
+    constructor() {
+      super();
 
-          if(count > nbr_points){
-            storeMemory[metric].shift();
-          }
+      channel.subscribe(channel.eventType.onMessage, (payload) => this.updateDisplay(payload));
+
+      this.render();
+    }
+
+    updateDisplay(payload) {
+      const attrMetrics = this.getAttribute('data-metric') ?? '';
+
+      if (Reflect.has(payload, attrMetrics) && typeof payload[attrMetrics] === 'object') {
+        this.#elem.innerHTML = '';
+
+        for (const [key, value] of Object.entries(payload[attrMetrics])) {
+          this.#elem.innerHTML += `<li><span>${key}</span> <span class="counter">${value}</span></li>`;
         }
-
-        return storeMemory;
       }
     }
 
-    /**
-     * StatusStreamMetricsComponents is a custom HTML element that provides
-     * metrics and status streaming functionality for the node-metrics service.
-     */
-    class StatusStreamMetricsComponents extends HTMLElement {
-        #elem
-
-        constructor() {
-            super();
-
-            channel.subscribe(channel.eventType.onError, (e) => this.updateDisplay(e.message));
-            channel.subscribe(channel.eventType.onReady, (e) => this.updateDisplay(e.message));
-
-            this.render();
-        }
-
-        updateDisplay(value) {
-          this.#elem.textContent = value;
-        }
-
-        render() {
-          this.#elem = document.createElement('span');
-          this.#elem.textContent = this.getAttribute('text');
-
-          const shadowRoot = this.attachShadow({mode: 'open'});
-          shadowRoot.appendChild(this.#elem);
-        }
-    }
-
-    /**
-     * MetricsComponents is a custom HTML element that encapsulates the logic and presentation
-     * for displaying various metrics within the application.
-     */
-    class MetricsComponents extends HTMLElement {
-        #elem
-
-        constructor() {
-            super();
-
-            channel.subscribe(channel.eventType.onMessage, (payload) => this.updateDisplay(payload));
-
-            this.render();
-        }
-
-        updateDisplay(payload){
-          const attrMetrics = this.getAttribute('data-metric') ?? '';
-
-          if(Reflect.has(payload, attrMetrics)) {
-            this.#elem.textContent = normalizeMetrics(attrMetrics,payload[attrMetrics]);
-          }
-        }
-
-        render() {
-          this.#elem = document.createElement('span');
-          this.#elem.textContent = this.getAttribute('text');
-
-          const shadowRoot = this.attachShadow({mode: 'open'});
-          shadowRoot.appendChild(this.#elem);
-        }
-    }
-
-    /**
-     * TagsComponents is a custom HTML element that encapsulates the logic and presentation
-     * for displaying various metrics within the application.
-     */
-    class TagsComponents extends HTMLElement {
-        #elem
-
-        constructor() {
-            super();
-
-            channel.subscribe(channel.eventType.onMessage, (payload) => this.updateDisplay(payload));
-
-            this.render();
-        }
-
-        updateDisplay(payload){
-          const attrMetrics = this.getAttribute('data-metric') ?? '';
-
-          if(Reflect.has(payload, attrMetrics) && typeof payload[attrMetrics] === 'object') {
-            this.#elem.innerHTML = '';
-
-            for (const [key, value] of Object.entries(payload[attrMetrics])) {
-              this.#elem.innerHTML += `<li><span>${key}</span> <span class="counter">${value}</span></li>`;
-            }
-          }
-        }
-
-        render() {
-          this.#elem = document.createElement('ul');
-          const style = document.createElement('style');
-          style.textContent = `
+    render() {
+      this.#elem = document.createElement('ul');
+      const style = document.createElement('style');
+      style.textContent = `
 ul {
   margin-top: 2rem;
   margin-bottom: 1rem;
@@ -352,151 +380,152 @@ span {
 }
 `;
 
-          const shadowRoot = this.attachShadow({mode: 'open'});
-          shadowRoot.appendChild(this.#elem);
-          shadowRoot.appendChild(style);
-        }
+      const shadowRoot = this.attachShadow({mode: 'open'});
+      shadowRoot.appendChild(this.#elem);
+      shadowRoot.appendChild(style);
     }
+  }
 
-    /**
-     * GraphTimeSeries is a class designed to handle the creation, management, and rendering of time series graphs.
-     */
-    class GraphTimeSeries {
-      #uplotInstance
+  /**
+   * GraphTimeSeries is a class designed to handle the creation, management, and rendering of time series graphs.
+   */
+  class GraphTimeSeries {
+    #uplotInstance
 
-      constructor(
-        title = 'graph',
-        series = [{ label: "unknown", stroke: "red", fill: "rgba(255,0,0,0.1)" }],
-        htmlElement = document.body
-      ) {
-        if(!Array.isArray(series)) {
-          throw new Error('Incorrect series definitions');
-        }
-
-        const initData = [[Date.now() / 1e3],...Array(series.length).fill([0])];
-
-        this.#uplotInstance = new uplot({
-          title,
-          width: htmlElement.scrollWidth,
-          height: htmlElement.scrollWidth / 4,
-          series: [
-            {},
-            ...series
-          ]
-        }, initData, htmlElement);
+    constructor(
+      title = 'graph',
+      series = [{label: "unknown", stroke: "red", fill: "rgba(255,0,0,0.1)"}],
+      htmlElement = document.body
+    ) {
+      if (!Array.isArray(series)) {
+        throw new Error('Incorrect series definitions');
       }
 
-      setData(data= []) {
-        this.#uplotInstance.setData(data);
-      }
+      const initData = [[Date.now() / 1e3], ...Array(series.length).fill([0])];
+
+      this.#uplotInstance = new uplot({
+        title,
+        width: htmlElement.scrollWidth,
+        height: htmlElement.scrollWidth / 4,
+        series: [
+          {},
+          ...series
+        ]
+      }, initData, htmlElement);
     }
 
-    /**
-     * Initializes the main application logic.
-     */
-    const initializeApplication = () => {
+    setData(data = []) {
+      this.#uplotInstance.setData(data);
+    }
+  }
+
+  /**
+   * Initializes the main application logic.
+   */
+  const initializeApplication = () => {
     // Init dataSet consumer
-      const dataSetConsumer = storeInMemory();
+    const dataSetConsumer = storeInMemory();
 
-      // Register components
-      customElements.define('metrics-status', StatusStreamMetricsComponents);
-      customElements.define('metrics-card', MetricsComponents);
-      customElements.define('metrics-tags', TagsComponents);
+    // Register components
+    customElements.define('metrics-status', StatusStreamMetricsComponents);
+    customElements.define('metrics-card', MetricsComponents);
+    customElements.define('metrics-tags', TagsComponents);
 
-      // Register graphs
-      const eluUtilizedGraph = new GraphTimeSeries(
-        'Event Loop Utilized (%)',
-        [
-          { label: "Utilized", stroke: "red", fill: "rgba(255,0,0,0.1)", value: (self, rawValue) => rawValue == null ? '' : `${rawValue} %` }
-        ],
-        document.getElementById('graph-event-loop-utilized')
-      );
+    // Register graphs
+    const eluUtilizedGraph = new GraphTimeSeries(
+      'Event Loop Utilized (%)',
+      [
+        {label: "Utilized", stroke: "red", fill: "rgba(255,0,0,0.1)", value: (_self, rawValue) => rawValue == null ? '' : `${rawValue} %`}
+      ],
+      document.getElementById('graph-event-loop-utilized')
+    );
 
-      const eluDelayGraph = new GraphTimeSeries(
-        'Event Loop Delay (sec)',
-        [
-          { label: "Delay", stroke: "red", fill: "rgba(255,0,0,0.1)", value: (self, rawValue) => rawValue == null ? '' : `${rawValue} sec` }
-        ],
-        document.getElementById('graph-event-loop-delay')
-      );
+    const eluDelayGraph = new GraphTimeSeries(
+      'Event Loop Delay (sec)',
+      [
+        {label: "Delay", stroke: "red", fill: "rgba(255,0,0,0.1)", value: (_self, rawValue) => rawValue == null ? '' : `${rawValue} sec`}
+      ],
+      document.getElementById('graph-event-loop-delay')
+    );
 
-      const memoryGraph = new GraphTimeSeries(
-        'Memory (Mb)',
-        [
-          { label: "Heap total", stroke: "red", fill: "rgba(255,0,0,0.1)", value: (self, rawValue) => rawValue == null ? '' : `${rawValue.toFixed(2)} MB` },
-          { label: "Heap used", stroke: "green", fill: "rgba(0,255,0,0.1)", value: (self, rawValue) => rawValue == null ? '' : `${rawValue.toFixed(2)} MB` },
-          { label: "Rss", stroke: "blue", fill: "rgba(0,0,255,0.1)", value: (self, rawValue) => rawValue == null ? '' : `${rawValue.toFixed(2)} MB` },
-          { label: "ArrayBuffers", stroke: "#BA43A9", fill: "rgba(186, 67, 169, 0.1)", value: (self, rawValue) => rawValue == null ? '' : `${rawValue.toFixed(2)} MB` },
-          { label: "External", stroke: "#EAB839", fill: "rgba(234, 184, 57, 0.1)", value: (self, rawValue) => rawValue == null ? '' : `${rawValue.toFixed(2)} MB` }
-        ],
-        document.getElementById('graph-memory')
-      );
+    const memoryGraph = new GraphTimeSeries(
+      'Memory (Mb)',
+      [
+        {label: "Heap total", stroke: "red", fill: "rgba(255,0,0,0.1)", value: (_self, rawValue) => rawValue == null ? '' : `${rawValue.toFixed(2)} MB`},
+        {label: "Heap used", stroke: "green", fill: "rgba(0,255,0,0.1)", value: (_self, rawValue) => rawValue == null ? '' : `${rawValue.toFixed(2)} MB`},
+        {label: "Rss", stroke: "blue", fill: "rgba(0,0,255,0.1)", value: (_self, rawValue) => rawValue == null ? '' : `${rawValue.toFixed(2)} MB`},
+        {label: "ArrayBuffers", stroke: "#BA43A9", fill: "rgba(186, 67, 169, 0.1)", value: (_self, rawValue) => rawValue == null ? '' : `${rawValue.toFixed(2)} MB`},
+        {label: "External", stroke: "#EAB839", fill: "rgba(234, 184, 57, 0.1)", value: (_self, rawValue) => rawValue == null ? '' : `${rawValue.toFixed(2)} MB`}
+      ],
+      document.getElementById('graph-memory')
+    );
 
-      const cpuGraph = new GraphTimeSeries(
-        'CPU (sec)',
-        [
-          { label: "CPU total", stroke: "red", fill: "rgba(255,0,0,0.1)", value: (self, rawValue) => rawValue == null ? '' : `${rawValue.toFixed(2)} sec` },
-          { label: "CPU user", stroke: "green", fill: "rgba(0,255,0,0.1)", value: (self, rawValue) => rawValue == null ? '' : `${rawValue.toFixed(2)} sec` },
-          { label: "CPU system", stroke: "blue", fill: "rgba(0,0,255,0.1)", value: (self, rawValue) => rawValue == null ? '' : `${rawValue.toFixed(2)} sec` }
-        ],
-        document.getElementById('graph-cpu')
-      );
+    const cpuGraph = new GraphTimeSeries(
+      'CPU (sec)',
+      [
+        {label: "CPU total", stroke: "red", fill: "rgba(255,0,0,0.1)", value: (_self, rawValue) => rawValue == null ? '' : `${rawValue.toFixed(2)} sec`},
+        {label: "CPU user", stroke: "green", fill: "rgba(0,255,0,0.1)", value: (_self, rawValue) => rawValue == null ? '' : `${rawValue.toFixed(2)} sec`},
+        {label: "CPU system", stroke: "blue", fill: "rgba(0,0,255,0.1)", value: (_self, rawValue) => rawValue == null ? '' : `${rawValue.toFixed(2)} sec`}
+      ],
+      document.getElementById('graph-cpu')
+    );
 
-      // Register Events listeners on click
-      document.getElementById('turn-light-mode').addEventListener('click', e => {
-        e.preventDefault();
-        const attr = document.documentElement.getAttribute('data-theme') ?? 'light';
-        document.documentElement.setAttribute('data-theme', attr === 'light' ? 'dark' : 'light');
-      });
+    // Register Events listeners on click
+    document.getElementById('turn-light-mode').addEventListener('click', e => {
+      e.preventDefault();
+      const attr = document.documentElement.getAttribute('data-theme') ?? 'light';
+      document.documentElement.setAttribute('data-theme', attr === 'light' ? 'dark' : 'light');
+    });
 
-      // Listener event payload and update graphs
-      channel.subscribe(channel.eventType.onMessage, (payload) => {
-        const {
-          event_loop_delay_milliseconds,
-          event_loop_utilized,
-          heap_total_bytes,
-          heap_used_bytes,
-          process_cpu_seconds_total,
-          process_cpu_user_seconds_total,
-          process_cpu_system_seconds_total,
-          rss_bytes,
-          array_buffers_bytes,
-          external_bytes,
-          time
-        } = dataSetConsumer(payload);
+    // Listener event payload and update graphs
+    channel.subscribe(channel.eventType.onMessage, (payload) => {
+      const {
+        event_loop_delay_milliseconds,
+        event_loop_utilized,
+        heap_total_bytes,
+        heap_used_bytes,
+        process_cpu_seconds_total,
+        process_cpu_user_seconds_total,
+        process_cpu_system_seconds_total,
+        rss_bytes,
+        array_buffers_bytes,
+        external_bytes,
+        time
+      } = dataSetConsumer(payload);
 
-        eluUtilizedGraph.setData([
-          time,
-          event_loop_utilized
-        ]);
+      eluUtilizedGraph.setData([
+        time,
+        event_loop_utilized
+      ]);
 
-        eluDelayGraph.setData([
-          time,
-          event_loop_delay_milliseconds
-        ]);
+      eluDelayGraph.setData([
+        time,
+        event_loop_delay_milliseconds
+      ]);
 
-        memoryGraph.setData([
-          time,
-          heap_total_bytes,
-          heap_used_bytes,
-          rss_bytes,
-          array_buffers_bytes,
-          external_bytes
-        ]);
+      memoryGraph.setData([
+        time,
+        heap_total_bytes,
+        heap_used_bytes,
+        rss_bytes,
+        array_buffers_bytes,
+        external_bytes
+      ]);
 
-        cpuGraph.setData([
-          time,
-          process_cpu_seconds_total,
-          process_cpu_user_seconds_total,
-          process_cpu_system_seconds_total
-        ]);
-      });
+      cpuGraph.setData([
+        time,
+        process_cpu_seconds_total,
+        process_cpu_user_seconds_total,
+        process_cpu_system_seconds_total
+      ]);
+    });
 
-      // Start stream
-      fetchMetricsStream();
-    }
+    // Start stream
+    fetchMetricsStream();
+  }
 
-    // Start apps
-    initializeApplication();
-  </script>
+  // Start apps
+  initializeApplication();
+</script>
+
 </html>
