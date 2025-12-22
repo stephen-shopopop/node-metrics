@@ -115,7 +115,7 @@ try {
       );
     }
 
-    process.exit = 0;
+    process.exitCode = 0;
   });
 
   stream.compose(reporters[args.values.reporter]).pipe(process.stdout);
@@ -126,7 +126,7 @@ try {
     stream.compose(githubReporter).pipe(process.stdout);
   }
 
-  process.exit = 0;
+  process.exitCode = 0;
 } catch (err) {
   console.error(err);
 
