@@ -1,37 +1,21 @@
 [[tools.actionlint]]
 version = "1.7.7"
 backend = "aqua:rhysd/actionlint"
-
-[tools.actionlint.platforms.macos-arm64]
-checksum = "sha256:2693315b9093aeacb4ebd91a993fea54fc215057bf0da2659056b4bc033873db"
-size = 1962532
-url = "https://github.com/rhysd/actionlint/releases/download/v1.7.7/actionlint_1.7.7_darwin_arm64.tar.gz"
-
-[tools.actionlint.platforms.macos-x64]
-checksum = "sha256:28e5de5a05fc558474f638323d736d822fff183d2d492f0aecb2b73cc44584f5"
-size = 2092389
-url = "https://github.com/rhysd/actionlint/releases/download/v1.7.7/actionlint_1.7.7_darwin_amd64.tar.gz"
+"platforms.macos-arm64" = { checksum = "sha256:2693315b9093aeacb4ebd91a993fea54fc215057bf0da2659056b4bc033873db", url = "https://github.com/rhysd/actionlint/releases/download/v1.7.7/actionlint_1.7.7_darwin_arm64.tar.gz"}
+"platforms.macos-x64" = { checksum = "sha256:28e5de5a05fc558474f638323d736d822fff183d2d492f0aecb2b73cc44584f5", url = "https://github.com/rhysd/actionlint/releases/download/v1.7.7/actionlint_1.7.7_darwin_amd64.tar.gz"}
 
 [[tools.lazygit]]
 version = "0.55.1"
 backend = "aqua:jesseduffield/lazygit"
-
-[tools.lazygit.platforms.macos-x64]
-checksum = "sha256:897ba15196167c9853f2493d6f434cf7283000e9732b175035129334383232cd"
-size = 8076377
-url = "https://github.com/jesseduffield/lazygit/releases/download/v0.55.1/lazygit_0.55.1_darwin_x86_64.tar.gz"
+"platforms.macos-x64" = { checksum = "sha256:897ba15196167c9853f2493d6f434cf7283000e9732b175035129334383232cd", url = "https://github.com/jesseduffield/lazygit/releases/download/v0.55.1/lazygit_0.55.1_darwin_x86_64.tar.gz"}
 
 [[tools.neovim]]
 version = "0.11.4"
 backend = "aqua:neovim/neovim"
-
-[tools.neovim.platforms.macos-x64]
-checksum = "sha256:567b89138c29386f67a00fc8e26c6469c8bf0e5707dfea5e3fbaf4e21294d9eb"
-size = 9578774
-url = "https://github.com/neovim/neovim/releases/download/v0.11.4/nvim-macos-x86_64.tar.gz"
+"platforms.macos-x64" = { checksum = "sha256:567b89138c29386f67a00fc8e26c6469c8bf0e5707dfea5e3fbaf4e21294d9eb", url = "https://github.com/neovim/neovim/releases/download/v0.11.4/nvim-macos-x86_64.tar.gz"}
 
 [[tools.node]]
-version = "24.8.0"
+version = "24.12.0"
 backend = "core:node"
 
 [[tools."npm:@antfu/ni"]]
@@ -41,8 +25,4 @@ backend = "npm:@antfu/ni"
 [[tools.ripgrep]]
 version = "14.1.1"
 backend = "aqua:BurntSushi/ripgrep"
-
-[tools.ripgrep.platforms.macos-x64]
-checksum = "sha256:fc87e78f7cb3fea12d69072e7ef3b21509754717b746368fd40d88963630e2b3"
-size = 2082672
-url = "https://github.com/BurntSushi/ripgrep/releases/download/14.1.1/ripgrep-14.1.1-x86_64-apple-darwin.tar.gz"
+"platforms.macos-x64" = { checksum = "sha256:fc87e78f7cb3fea12d69072e7ef3b21509754717b746368fd40d88963630e2b3", url = "https://github.com/BurntSushi/ripgrep/releases/download/14.1.1/ripgrep-14.1.1-x86_64-apple-darwin.tar.gz"}

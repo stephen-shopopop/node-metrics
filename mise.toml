@@ -18,7 +18,7 @@ experimental = true
 actionlint = "latest"
 lazygit = "latest"
 neovim = "latest"
-node = "24.8.0"
+node = "24.12.0"
 
 "npm:@antfu/ni" = "latest"
 ripgrep = "latest"
