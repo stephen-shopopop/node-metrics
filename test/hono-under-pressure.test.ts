@@ -61,13 +61,19 @@ describe('underPressureHonoMiddleware', () => {
   it('should return 503 when server is under pressure (event loop utilization)', async (t: TestContext) => {
     t.plan(2);
 
-    t.mock.timers.enable({ apis: ['setTimeout'] });
-
     // Arrange: set maxEventLoopUtilization very low to trigger under pressure
     const app = setupHonoServer({ maxEventLoopUtilization: 0.01 });
 
-    // Advance in time
-    t.mock.timers.tick(DEFAULT_SAMPLE_INTERVAL + 1);
+    // Generate CPU load to trigger event loop utilization
+    // and wait for metrics to be collected
+    await new Promise<void>((resolve) => {
+      const start = Date.now();
+      while (Date.now() - start < 100) {
+        // Busy loop to create CPU pressure
+      }
+      // Wait for metrics sample interval
+      setTimeout(resolve, DEFAULT_SAMPLE_INTERVAL + 100);
+    });
 
     // Act
     const response = await app.request('/');
