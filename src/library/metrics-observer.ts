@@ -14,7 +14,7 @@ export class MetricsObservable {
    * @param {Observer} func - The observer function to attach
    * @returns {void}
    */
-  attach(func: Observer) {
+  attach(func: Observer): void {
     if (typeof func !== 'function' || this.#observers.includes(func)) {
       return;
     }
@@ -27,7 +27,7 @@ export class MetricsObservable {
    * @param {Observer} func - The observer function to detach
    * @returns {void}
    */
-  detach(func: Observer) {
+  detach(func: Observer): void {
     this.#observers = this.#observers.filter((observer) => observer !== func);
   }
 
@@ -38,7 +38,7 @@ export class MetricsObservable {
    * @param {object} [metadata] - Optional metadata to send to observers
    * @returns {void}
    */
-  notify(message: string | object, metadata?: object) {
+  notify(message: string | object, metadata?: object): void {
     for (const observer of this.#observers) {
       observer(message, metadata);
     }
